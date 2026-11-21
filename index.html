@@ -4809,6 +4809,299 @@ h3 {
     gap: 4px;
   }
 }
+.overview-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, .85fr) minmax(320px, 1.15fr);
+  gap: 16px;
+  align-items: start;
+  max-width: 1400px;
+}
+.overview-grid[hidden] {
+  display: none;
+}
+.overview-widget {
+  width: auto;
+  min-width: 0;
+  padding: 0;
+  box-shadow: 0 1px 1px #34113d0a;
+}
+.overview-widget .card-heading {
+  gap: 12px;
+}
+.overview-widget .widget-title {
+  font-size: 15px;
+}
+.overview-widget-body {
+  padding: 20px;
+}
+.overview-action {
+  min-height: 36px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+.overview-status-card .overview-widget-body {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  min-height: 190px;
+}
+.overview-ring {
+  --online:0%;
+  --offline-end:0%;
+  width: 148px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  flex: none;
+  background:
+    conic-gradient(
+      var(--color-success-success) 0 var(--online),
+      var(--color-warning-warning) var(--online) var(--offline-end),
+      var(--color-neutral-300) var(--offline-end) 100%);
+  display: grid;
+  place-items: center;
+}
+.overview-ring > div {
+  width: calc(100% - 24px);
+  aspect-ratio: 1;
+  background: var(--color-neutral-000);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.overview-ring strong {
+  font-size: 30px;
+  line-height: 1.15;
+}
+.overview-ring span {
+  font-size: 13px;
+  color: var(--color-neutral-400);
+}
+.overview-breakdown {
+  display: grid;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+.overview-breakdown > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+.overview-breakdown dt {
+  color: var(--color-neutral-500);
+}
+.overview-breakdown dd {
+  margin: 0;
+  font-weight: 600;
+}
+.overview-legend:before {
+  content: "";
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 8px;
+  background: var(--color-neutral-300);
+}
+.overview-legend--online:before {
+  background: var(--color-success-success);
+}
+.overview-legend--offline:before {
+  background: var(--color-warning-warning);
+}
+.overview-attention-count {
+  font-weight: 500;
+  color: var(--color-neutral-500);
+  margin-bottom: 12px;
+}
+.overview-exceptions,
+.overview-connections {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.overview-exceptions {
+  display: grid;
+  gap: 8px;
+}
+.overview-device {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 4px;
+  background: var(--color-neutral-000);
+  color: var(--color-neutral-600);
+  padding: 12px;
+  min-height: 64px;
+}
+.overview-device:hover,
+.overview-endpoint:hover {
+  background: var(--color-neutral-100);
+}
+.overview-device-identity {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  flex: 1;
+}
+.overview-device-identity strong {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+.overview-device-meta,
+.overview-empty-copy {
+  font-size: 13px;
+  color: var(--color-neutral-400);
+}
+.overview-badge {
+  flex: none;
+  border-radius: 4px;
+  padding: 4px 7px;
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-500);
+  font-size: 12px;
+}
+.overview-badge--offline {
+  background: var(--color-warning-lighter);
+  color: var(--color-warning-darker);
+}
+.overview-chevron {
+  font-size: 22px;
+  color: var(--color-primary-primary);
+}
+.overview-empty-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.overview-topology-card {
+  grid-column: 1/-1;
+}
+.overview-topology-stats {
+  display: flex;
+  gap: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+.overview-topology-stats div {
+  display: grid;
+  gap: 4px;
+}
+.overview-topology-stats strong {
+  font-size: 24px;
+}
+.overview-topology-stats span {
+  color: var(--color-neutral-400);
+  font-size: 13px;
+}
+.overview-connections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  margin-top: 16px;
+}
+.overview-connections li {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 4px;
+}
+.overview-endpoint {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 6px;
+  color: var(--color-primary-dark);
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.overview-endpoint-missing {
+  flex: 1;
+  color: var(--color-neutral-400);
+}
+.overview-connection-arrow {
+  color: var(--color-neutral-400);
+  font-size: 20px;
+}
+.overview-state[hidden] {
+  display: none;
+}
+@media (max-width: 850px) {
+  .overview-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .overview-attention-card {
+    grid-row: 1;
+  }
+  .overview-topology-card {
+    grid-column: auto;
+  }
+  .overview-connections {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  .overview-widget-body {
+    padding: 16px;
+  }
+  .overview-status-card .overview-widget-body {
+    gap: 18px;
+  }
+  .overview-ring {
+    width: 112px;
+  }
+  .overview-ring > div {
+    width: calc(100% - 20px);
+  }
+  .overview-topology-stats {
+    gap: 20px;
+    justify-content: space-between;
+  }
+  .overview-topology-stats strong {
+    font-size: 20px;
+  }
+  .overview-device {
+    gap: 8px;
+  }
+  .overview-badge {
+    font-size: 11px;
+  }
+}
+.overview-ring--empty {
+  background: var(--color-neutral-100);
+}
+.overview-more {
+  margin-top: 12px;
+  color: var(--color-primary-dark);
+}
+.overview-more summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+.overview-more summary::after {
+  content: "\2304";
+  margin-left: 8px;
+}
+.overview-more[open] summary::after {
+  transform: rotate(180deg);
+}
+@media (max-width: 850px) {
+  .overview-action {
+    min-height: 44px;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -6344,6 +6637,28 @@ h3 {
     return header;
   }
 
+  // src/ion-ui/widget-header.ts
+  function createWidgetHeader(options) {
+    const header = document.createElement("div");
+    header.className = "card-heading";
+    const text = document.createElement("div");
+    const heading = document.createElement("h2");
+    heading.className = "widget-title";
+    heading.textContent = options.title;
+    if (options.headingId) heading.id = options.headingId;
+    text.append(heading);
+    if (options.caption !== void 0 || options.captionId) {
+      const caption = document.createElement("p");
+      caption.className = "muted";
+      caption.textContent = options.caption ?? "";
+      if (options.captionId) caption.id = options.captionId;
+      text.append(caption);
+    }
+    header.append(text);
+    if (options.action) header.append(options.action);
+    return header;
+  }
+
   // src/vendor/ui/components/app-shell/app-shell.js
   init_menu();
   init_button();
@@ -7466,7 +7781,7 @@ h3 {
   }
 
   // src/views/infrastructure/infrastructure.view.ts
-  function createInfrastructureView(site) {
+  function createInfrastructureView(site, inspect) {
     const section = document.createElement("section");
     section.id = "infrastructure-overview";
     section.className = "infrastructure-overview";
@@ -7474,49 +7789,168 @@ h3 {
     section.setAttribute("aria-labelledby", "infrastructure-title");
     section.append(createPageHeader({ title: "Infrastructure", headingId: "infrastructure-title" }));
     const content = document.createElement("div");
-    content.className = "page-content";
-    content.innerHTML = `<section class="overview-widget" aria-labelledby="overview-devices-title">
-    <div class="overview-heading"><h2 id="overview-devices-title">Devices</h2><button type="button" id="open-devices" class="ion-button ion-button--primary">Open devices</button></div>
-    <div class="overview-state" role="status" aria-live="polite"></div>
-    <div class="overview-summary" hidden>
-      <div class="overview-total"><strong data-count="total"></strong><span>Configured devices</span></div>
-      <div class="overview-status"><span>Reported status</span><dl>
-        <div><dt>Online</dt><dd data-count="online"></dd></div>
-        <div><dt>Offline</dt><dd data-count="offline"></dd></div>
-        <div><dt>Other</dt><dd data-count="other"></dd></div>
-      </dl></div>
-    </div>
-  </section>`;
+    content.className = "page-content overview-content";
+    const state = document.createElement("div");
+    state.className = "overview-state";
+    state.setAttribute("role", "status");
+    const grid = document.createElement("div");
+    grid.className = "overview-grid";
+    const widget = (title, headingId, caption, action) => {
+      const card = document.createElement("section");
+      card.className = "card overview-widget";
+      card.setAttribute("aria-labelledby", headingId);
+      card.append(createWidgetHeader({ title, headingId, caption, action }));
+      const body = document.createElement("div");
+      body.className = "overview-widget-body";
+      card.append(body);
+      grid.append(card);
+      return { card, body };
+    };
+    const openDevices = document.createElement("button");
+    openDevices.type = "button";
+    openDevices.id = "open-devices";
+    openDevices.className = "ion-button ion-button--primary overview-action";
+    openDevices.textContent = "Open devices";
+    const statusCard = widget("Device status", "overview-devices-title", "Reported by data source", openDevices);
+    statusCard.card.classList.add("overview-status-card");
+    const attentionCard = widget("To inspect", "overview-attention-title", "Devices with a non-online status");
+    attentionCard.card.classList.add("overview-attention-card");
+    const topologyCard = widget("Configured connections", "overview-topology-title", "Equipment relationships");
+    topologyCard.card.classList.add("overview-topology-card");
+    content.append(state, grid);
     section.append(content);
-    const status = content.querySelector(".overview-state");
-    const summary = content.querySelector(".overview-summary");
+    const text = (tag, className, value) => {
+      const node = document.createElement(tag);
+      node.className = className;
+      node.textContent = value;
+      return node;
+    };
+    let renderedSnapshot = "";
     const update = () => {
-      const state = site.getState();
-      const ready = state.status === "ready";
-      summary.hidden = !ready;
-      status.replaceChildren();
-      status.hidden = ready;
+      const current = site.getState();
+      const ready = current.status === "ready";
+      grid.hidden = !ready;
+      state.replaceChildren();
+      state.hidden = ready;
       if (!ready) {
-        status.append(document.createTextNode(state.status === "error" ? "Could not load devices. " : "Loading devices\u2026"));
-        if (state.status === "error") {
+        state.append(document.createTextNode(current.status === "error" ? "Could not load devices. " : "Loading infrastructure\u2026"));
+        if (current.status === "error") {
           const retry = document.createElement("button");
           retry.type = "button";
           retry.className = "ion-button ion-button--primary";
           retry.textContent = "Retry";
-          retry.disabled = state.pending;
+          retry.disabled = current.pending;
           retry.addEventListener("click", () => {
             void site.load().catch(() => {
             });
           });
-          status.append(retry);
+          state.append(retry);
         }
         return;
       }
       const devices = site.getDevices();
+      const connections = site.getConnections();
+      const signature = JSON.stringify([devices, connections]);
+      if (signature === renderedSnapshot) return;
+      renderedSnapshot = signature;
       const online = devices.filter((device) => device.status === "Online").length;
       const offline = devices.filter((device) => device.status === "Offline").length;
-      const counts = { total: devices.length, online, offline, other: devices.length - online - offline };
-      for (const [key, value] of Object.entries(counts)) content.querySelector(`[data-count="${key}"]`).textContent = String(value);
+      const other = devices.length - online - offline;
+      const chart = document.createElement("div");
+      chart.className = "overview-ring";
+      chart.setAttribute("role", "img");
+      chart.setAttribute("aria-label", `${devices.length} configured devices`);
+      if (!devices.length) chart.classList.add("overview-ring--empty");
+      chart.style.setProperty("--online", `${devices.length ? online / devices.length * 100 : 0}%`);
+      chart.style.setProperty("--offline-end", `${devices.length ? (online + offline) / devices.length * 100 : 0}%`);
+      const ringCenter = document.createElement("div");
+      const total = text("strong", "", String(devices.length));
+      total.dataset.count = "total";
+      ringCenter.append(total, text("span", "", "devices"));
+      chart.append(ringCenter);
+      const breakdown = document.createElement("dl");
+      breakdown.className = "overview-breakdown";
+      for (const [key, label, count] of [["online", "Online", online], ["offline", "Offline", offline], ["other", "Other statuses", other]]) {
+        const row = document.createElement("div");
+        const dt = text("dt", `overview-legend overview-legend--${key}`, label);
+        const dd = text("dd", "", String(count));
+        dd.dataset.count = key;
+        row.append(dt, dd);
+        breakdown.append(row);
+      }
+      statusCard.body.replaceChildren(chart, breakdown);
+      const exceptions = devices.filter((device) => device.status !== "Online");
+      attentionCard.body.replaceChildren();
+      if (!exceptions.length) {
+        attentionCard.body.append(text("p", "overview-empty-title", devices.length ? "No non-online devices" : "No devices configured"), text("p", "overview-empty-copy", devices.length ? "All devices report online." : "Add a device to begin."));
+      } else {
+        attentionCard.body.append(text("p", "overview-attention-count", `${exceptions.length} ${exceptions.length === 1 ? "device" : "devices"} to inspect`));
+        const list2 = document.createElement("ul");
+        list2.className = "overview-exceptions";
+        const more = document.createElement("details");
+        more.className = "overview-more";
+        const moreLabel = document.createElement("summary");
+        moreLabel.textContent = `Show ${Math.max(0, exceptions.length - 5)} more`;
+        const moreList = document.createElement("ul");
+        moreList.className = "overview-exceptions";
+        more.append(moreLabel, moreList);
+        for (const [index, device] of exceptions.entries()) {
+          const item = document.createElement("li");
+          const open = document.createElement("button");
+          open.type = "button";
+          open.className = "overview-device";
+          const identity = document.createElement("span");
+          identity.className = "overview-device-identity";
+          identity.append(text("strong", "", device.name), text("span", "overview-device-meta", [device.nodeType ?? device.type, device.ipAddress].filter(Boolean).join(" \xB7 ")));
+          open.append(identity, text("span", `overview-badge ${device.status === "Offline" ? "overview-badge--offline" : ""}`, device.status), text("span", "overview-chevron", "\u203A"));
+          open.addEventListener("click", () => inspect(device, open));
+          item.append(open);
+          (index < 5 ? list2 : moreList).append(item);
+        }
+        attentionCard.body.append(list2);
+        if (exceptions.length > 5) attentionCard.body.append(more);
+      }
+      const byId = new Map(devices.map((device) => [device.id, device]));
+      const stats = document.createElement("div");
+      stats.className = "overview-topology-stats";
+      const linked = new Set(connections.flatMap((link) => [link.fromId, link.toId]).filter((id) => byId.has(id)));
+      for (const [value, label] of [[connections.length, "configured links"], [linked.size, "linked devices"], [devices.length - linked.size, "not linked"]]) {
+        const stat = document.createElement("div");
+        stat.append(text("strong", "", String(value)), text("span", "", label));
+        stats.append(stat);
+      }
+      const list = document.createElement("ul");
+      list.className = "overview-connections";
+      const moreLinks = document.createElement("details");
+      moreLinks.className = "overview-more";
+      const moreLinksLabel = document.createElement("summary");
+      moreLinksLabel.textContent = `Show ${Math.max(0, connections.length - 6)} more`;
+      const additionalLinks = document.createElement("ul");
+      additionalLinks.className = "overview-connections";
+      moreLinks.append(moreLinksLabel, additionalLinks);
+      for (const [index, link] of connections.entries()) {
+        const item = document.createElement("li");
+        const source = byId.get(link.fromId);
+        const target = byId.get(link.toId);
+        const endpoint = (device) => {
+          if (!device) return text("span", "overview-endpoint-missing", "Unknown device");
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "overview-endpoint";
+          b.textContent = device.name;
+          b.addEventListener("click", () => inspect(device, b));
+          return b;
+        };
+        const arrow = text("span", "overview-connection-arrow", "\u2192");
+        arrow.setAttribute("aria-label", "connected to");
+        item.append(endpoint(source), arrow, endpoint(target));
+        (index < 6 ? list : additionalLinks).append(item);
+      }
+      topologyCard.body.replaceChildren(stats);
+      if (connections.length) {
+        topologyCard.body.append(list);
+        if (connections.length > 6) topologyCard.body.append(moreLinks);
+      } else topologyCard.body.append(text("p", "overview-empty-copy", "No connections configured."));
     };
     return { element: section, update };
   }
@@ -7541,8 +7975,9 @@ h3 {
     let registerRequest = 0;
     const sample = site.getState().kind === "sample";
     const { shell, dispose: disposeShell } = mountShell(root2, site.getState().kind);
-    root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div class="card-heading"><div><h2 class="widget-title">Inventory</h2><p class="muted" id="device-count"></p></div></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll" role="region" aria-label="Device inventory table, scroll horizontally for more columns"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
-    const infrastructure = createInfrastructureView(site);
+    root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div id="inventory-header"></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll" role="region" aria-label="Device inventory table, scroll horizontally for more columns"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
+    root2.querySelector("#inventory-header").replaceWith(createWidgetHeader({ title: "Inventory", captionId: "device-count" }));
+    const infrastructure = createInfrastructureView(site, (device, opener) => open(device, opener));
     root2.querySelector("#app-content").prepend(infrastructure.element);
     root2.querySelector("#missing-header").append(createPageHeader({ title: "Page not found", headingId: "missing-title" }));
     root2.querySelector("#devices-header").append(createPageHeader({
@@ -7552,7 +7987,7 @@ h3 {
       ...sample ? { info: { label: "About sample data", text: "This preview uses sample data. Changes reset when the page reloads." } } : {},
       action: { id: "new-device", label: "+ New Device" }
     }));
-    const tableSteering = mountScrollSteering(root2.querySelector(".card .table-scroll"), root2.querySelector(".card-heading"), { label: "Device table navigation" });
+    const tableSteering = mountScrollSteering(root2.querySelector("#devices-page .card .table-scroll"), root2.querySelector("#devices-page .card-heading"), { label: "Device table navigation" });
     const overview = root2.querySelector("#infrastructure-overview");
     const devicesPage = root2.querySelector("#devices-page");
     const missingPage = root2.querySelector("#route-missing");
@@ -8263,7 +8698,7 @@ h3 {
       id: "dev-010",
       name: "Ziehl TR660IP Monitoring Relay",
       type: "Meter",
-      status: "Online",
+      status: "Offline",
       x: 710,
       y: 320,
       addedAt: "2026-10-12 14:45",
@@ -8282,7 +8717,7 @@ h3 {
       id: "dev-011",
       name: "PLCnext Axioline F Controller",
       type: "Loads",
-      status: "Online",
+      status: "Stale",
       x: 380,
       y: 360,
       addedAt: "2026-10-12 14:50",
