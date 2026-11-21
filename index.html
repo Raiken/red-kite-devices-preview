@@ -1238,6 +1238,22 @@ h3 {
     min-height: calc(100vh - 68px);
   }
 }
+.workspace {
+  padding-bottom: 12px;
+}
+.workspace main {
+  border-radius: 12px;
+  min-height: calc(100vh - 60px);
+}
+@media (max-width: 700px) {
+  .workspace {
+    padding-bottom: 8px;
+  }
+  .workspace main {
+    border-radius: clamp(12px, 4vw, 20px);
+    min-height: calc(100vh - 76px);
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   // src/features/devices/api/devices.ts
