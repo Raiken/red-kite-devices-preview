@@ -2938,6 +2938,34 @@ body {
   font-family: var(--font-secondary);
 }
 
+/* src/ion-ui/shared-token-bridge.css */
+.ds-app-shell,
+.ds-batch-bar {
+  --ds-font:
+    Roboto,
+    Arial,
+    sans-serif;
+  --ds-color-primary: var(--color-primary-dark);
+  --ds-color-state: var(--color-primary-dark);
+  --ds-color-state-text: var(--color-primary-dark);
+  --ds-color-focus: var(--color-info-info);
+  --ds-color-success: var(--color-success-dark);
+  --ds-color-warning: var(--color-warning-dark);
+  --ds-color-danger: var(--color-error-dark);
+  --ds-color-info: var(--color-info-dark);
+}
+.ds-app-shell-tabbar,
+.ds-batch-bar {
+  --ds-color-canvas: var(--color-neutral-100);
+  --ds-color-surface: var(--color-neutral-000);
+  --ds-color-text: var(--color-neutral-600);
+  --ds-color-text-strong: var(--color-neutral-600);
+  --ds-color-text-body: var(--color-neutral-600);
+  --ds-color-text-muted: var(--color-neutral-400);
+  --ds-color-divider: var(--color-neutral-200);
+  --ds-color-card-edge: var(--color-neutral-200);
+}
+
 /* src/ion-ui/app.css */
 @font-face {
   font-family: Roboto;
@@ -3070,7 +3098,7 @@ h3 {
 }
 .card {
   background: white;
-  border: 1px solid #e2dfe4;
+  border: 1px solid var(--color-neutral-200);
   border-radius: 8px;
   box-shadow: 0 2px 8px #1d12200d;
   overflow: hidden;
@@ -3102,7 +3130,7 @@ h3 {
 .ion-table td {
   height: 48px;
   padding: 10px 16px;
-  border-top: 1px solid #eeeaf0;
+  border-top: 1px solid var(--color-neutral-200);
 }
 .ion-table tbody tr:nth-child(even) {
   background: #faf9fa;
@@ -4096,25 +4124,9 @@ h3 {
 [data-theme=dark] .device-link {
   color: #dca7eb;
 }
-.ionity-shell-logo {
-  display: block;
-  width: 72px;
-  height: auto;
-  flex: none;
-  margin-left: 8px;
-}
 @media (max-width: 400px) {
-  .ionity-shell-logo {
-    width: 58px;
-    margin-left: 2px;
-  }
   .ds-app-shell-tools .demo {
     font-size: 11px;
-  }
-}
-@media (max-width: 360px) {
-  .ds-app-shell-tools .demo {
-    display: none;
   }
 }
 .ds-batch-bar > .ds-toolbar {
@@ -6794,7 +6806,6 @@ h3 {
     };
     root2.addEventListener("ds-batch-bar-toggle", onBatchToggle);
     const themeToggle = root2.querySelector("#theme-toggle");
-    themeToggle.insertAdjacentHTML("afterend", '<img class="ionity-shell-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+DQo8c3ZnDQogICB2ZXJzaW9uPSIxLjAiDQogICB3aWR0aD0iMTkyMC4wMDAwMDBwdCINCiAgIGhlaWdodD0iMzY3LjAwMDAwMHB0Ig0KICAgdmlld0JveD0iMCAwIDE5MjAuMDAwMDAwIDM2Ny4wMDAwMDAiDQogICBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWlkWU1pZCBtZWV0Ig0KICAgaWQ9InN2ZzYiDQogICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciDQo+DQogIDxkZWZzDQogICAgIGlkPSJkZWZzNiINCiAgLz4NCiAgPG1ldGFkYXRhDQogICAgIGlkPSJtZXRhZGF0YTEiPg0KICAgIENyZWF0ZWQgYnkgcG90cmFjZSAxLjE2LCB3cml0dGVuIGJ5IFBldGVyIFNlbGluZ2VyIDIwMDEtMjAxOQ0KICA8L21ldGFkYXRhPg0KICA8Zw0KICAgICB0cmFuc2Zvcm09InRyYW5zbGF0ZSgwLjAwMDAwMCwzNjcuMDAwMDAwKSBzY2FsZSgwLjEwMDAwMCwtMC4xMDAwMDApIg0KICAgICBmaWxsPSIjMDAwMDAwIg0KICAgICBzdHJva2U9Im5vbmUiDQogICAgIGlkPSJnNiINCiAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MSI+DQogICAgPHBhdGgNCiAgICAgICBkPSJNMzE5MCAzNjU2IGMtNjk1IC04OSAtMTI2NiAtNTUxIC0xNDkwIC0xMjA1IC0xMjggLTM3MyAtMTI4IC04NTkgMCAtMTIzMSAyMTYgLTYzMCA3NjkgLTEwOTQgMTQyMyAtMTE5NSAxNjQgLTI1IDM5MCAtMzAgNTUyIC0xMSA0MzAgNTAgNzc1IDIxNSAxMDc1IDUxNiAxNjIgMTYxIDI0NiAyNzYgMzQwIDQ2NSA3OSAxNTggMTI4IDMwMCAxNjIgNDY3IDIxIDEwMSAyMyAxNDEgMjMgMzc4IDAgMjQ5IC0yIDI3MiAtMjcgMzkxIC04MCAzNzEgLTI0OSA2NzMgLTUyNCA5MzkgLTI2MSAyNTIgLTU4NCA0MTMgLTk1NCA0NzUgLTEzMCAyMiAtNDQ1IDI4IC01ODAgMTF6IG01MjAgLTc2MCBjMzgyIC04OCA2NzAgLTM1OSA3ODcgLTc0MSAyNiAtODcgMjcgLTk3IDI3IC0zMjAgMCAtMjIzIC0xIC0yMzMgLTI3IC0zMTkgLTExNSAtMzcwIC0zODcgLTYzNSAtNzUyIC03MzMgLTkzIC0yNCAtMTE1IC0yNiAtMzAwIC0yNiAtMTg1IDAgLTIwOCAyIC0zMDAgMjYgLTMxMiA4MyAtNTU5IDI4OSAtNjk1IDU3OSAtMTAzIDIyMCAtMTI2IDUyNyAtNjAgNzgzIDI5IDExMyAxMTYgMjg0IDE5MyAzODEgMTY0IDIwMiAzOTcgMzM5IDY1MiAzODAgMTAyIDE3IDM4NCAxMSA0NzUgLTEweiINCiAgICAgICBpZD0icGF0aDEiDQogICAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MSIgLz4NCiAgICA8cGF0aA0KICAgICAgIGQ9Ik0wIDE4NDEgbDAgLTE4MDEgMzg1IDAgMzg1IDAgLTMgMTQ4OCBjLTMgMTY2MCAzIDE1MTggLTczIDE2NzggLTExMiAyMzcgLTM2MSA0MTEgLTYxNCA0MzEgbC04MCA2IDAgLTE4MDJ6Ig0KICAgICAgIGlkPSJwYXRoMiINCiAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIiAvPg0KICAgIDxwYXRoDQogICAgICAgZD0iTTExMjY1IDM2MjMgYy0yNDEgLTUxIC00NTEgLTIyNSAtNTQ2IC00NTIgLTYxIC0xNDcgLTU5IC04MCAtNTkgLTE2NzYgbDAgLTE0NTUgMzg1IDAgMzg1IDAgMCAxODAwIDAgMTgwMCAtNDcgLTEgYy0yNyAwIC03OSAtNyAtMTE4IC0xNnoiDQogICAgICAgaWQ9InBhdGgzIg0KICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjEiIC8+DQogICAgPHBhdGgNCiAgICAgICBkPSJNNzE5MSAzNjE0IGMtMjUwIC00MiAtNDkwIC0xNjUgLTY4MiAtMzUxIC0xNTkgLTE1NCAtMjY2IC0zMjIgLTMzMyAtNTIzIC02OCAtMjAyIC02NiAtMTY0IC02NiAtMTQ5NyBsMCAtMTIwMyAzODUgMCAzODUgMCAwIDExMTggYzAgMTA4MSAxIDExMjEgMjAgMTE5NiA1MyAyMDcgMTg3IDM3NCAzNzUgNDY2IDE0MCA2OSAxNjQgNzMgNTA3IDc4IDMzMCA0IDQwNCAtMiA1MjEgLTQzIDEwMiAtMzUgMTcyIC04MSAyNjIgLTE3MCA5MSAtOTAgMTQzIC0xNzQgMTgzIC0yOTAgbDI3IC04MCA1IC04MjUgYzYgLTgyMiA2IC04MjUgMjkgLTkwMCAzOSAtMTMxIDk2IC0yMjUgMTk2IC0zMjYgMTM1IC0xMzcgMjk2IC0yMTYgNDcxIC0yMzEgbDc0IC02IDAgMTE5NCBjMCAxMjkyIDAgMTI4MiAtNTUgMTQ3NCAtMzQgMTIxIC0xMzAgMzExIC0yMDkgNDE2IC0yMDAgMjY2IC00OTggNDQ2IC04MzAgNTA0IC0xMjMgMjEgLTExMzYgMjAgLTEyNjUgLTF6Ig0KICAgICAgIGlkPSJwYXRoNCINCiAgICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxIiAvPg0KICAgIDxwYXRoDQogICAgICAgZD0iTTEyMjgwIDMyNjUgbDAgLTM2NSA1NjUgMCA1NjUgMCAwIC0xNDMwIDAgLTE0MzAgMzg1IDAgMzg1IDAgMCAxNDI4IDAgMTQyOSAxNTggNiBjODYgNCAzNDAgNyA1NjUgNyBsNDA3IDAgMCAzNjAgMCAzNjAgLTE1MTUgMCAtMTUxNSAwIDAgLTM2NXoiDQogICAgICAgaWQ9InBhdGg1Ig0KICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjEiIC8+DQogICAgPHBhdGgNCiAgICAgICBkPSJNMTU3NTkgMzYxMyBjNSAtMTAgMzEzIC00OTUgNjg1IC0xMDc4IGw2NzYgLTEwNTkgMCAtNzI0IDAgLTcyNCA2MyA3IGMyNzggMzIgNTEwIDIxNCA2MDMgNDcyIGwyOCA3OCA2IDQ0MCBjMyAyNDYgOSA0NDcgMTQgNDU1IDYgOCAzMDIgNDgxIDY2MCAxMDUwIDM1NyA1NjkgNjU4IDEwNTAgNjY5IDEwNjggbDE5IDMyIC0zOTkgMCAtMzk4IDAgLTQ0OSAtNzI1IGMtMjQ3IC0zOTkgLTQ1NCAtNzI0IC00NjAgLTcyMiAtOCAzIC00NDYgNzA0IC03OTYgMTI3NSBsLTEwNSAxNzEgLTQxMyAxIGMtMzkwIDAgLTQxMiAtMSAtNDAzIC0xN3oiDQogICAgICAgaWQ9InBhdGg2Ig0KICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjEiIC8+DQogIDwvZz4NCjwvc3ZnPg0K" alt="IONITY">');
     themeToggle.addEventListener("click", () => {
       const dark = document.documentElement.dataset.theme !== "dark";
       document.documentElement.dataset.theme = dark ? "dark" : "light";
