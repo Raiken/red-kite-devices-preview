@@ -1242,6 +1242,49 @@
 
 /* src/ion-ui/batch-bar.css */
 
+/* src/ion-ui/widget-layout.css */
+.widget-layout-container {
+  container-type: inline-size;
+}
+.widget-layout {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--spacing-l, 16px);
+  align-items: stretch;
+}
+.widget-layout[hidden] {
+  display: none;
+}
+.widget-layout-item {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+.widget-layout-item--half {
+  grid-column: span 6;
+}
+.widget-layout-item--full {
+  grid-column: 1 / -1;
+}
+@supports (grid-template-columns: subgrid) {
+  .widget-layout-item {
+    grid-template-columns: subgrid;
+  }
+  .widget-layout-item > * {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 850px) {
+  .widget-layout-item--half {
+    grid-column: 1 / -1;
+  }
+}
+@container (max-width: 700px) {
+  .widget-layout-item--half {
+    grid-column: 1 / -1;
+  }
+}
+
 /* src/vendor/ui/components/scroll-steering/scroll-steering.css */
 @layer ds.tokens, ds.base, ds.components;
 @layer ds.components {
@@ -3430,8 +3473,8 @@ h3 {
 }
 .ion-button--primary {
   background: var(--color-neutral-000);
-  border: 1px solid var(--color-neutral-300);
-  color: var(--color-primary-dark);
+  border: 1px solid var(--color-neutral-200);
+  color: var(--color-primary-primary);
   min-height: 40px;
   padding: 0 16px;
 }
@@ -3589,7 +3632,7 @@ h3 {
   color: var(--color-neutral-600);
 }
 [data-theme=dark] .ion-button--primary {
-  color: var(--color-neutral-600);
+  color: var(--color-primary-dark);
 }
 .layout {
   grid-template-columns: 250px minmax(0, 1fr);
@@ -4809,16 +4852,6 @@ h3 {
     gap: 4px;
   }
 }
-.overview-grid {
-  display: grid;
-  grid-template-columns: minmax(280px, .85fr) minmax(320px, 1.15fr);
-  gap: 16px;
-  align-items: start;
-  max-width: 1400px;
-}
-.overview-grid[hidden] {
-  display: none;
-}
 .overview-widget {
   width: auto;
   min-width: 0;
@@ -4833,11 +4866,6 @@ h3 {
 }
 .overview-widget-body {
   padding: 20px;
-}
-.overview-action {
-  min-height: 36px;
-  padding: 0 12px;
-  white-space: nowrap;
 }
 .overview-status-card .overview-widget-body {
   display: flex;
@@ -5037,14 +5065,8 @@ h3 {
   display: none;
 }
 @media (max-width: 850px) {
-  .overview-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
   .overview-attention-card {
     grid-row: 1;
-  }
-  .overview-topology-card {
-    grid-column: auto;
   }
   .overview-connections {
     grid-template-columns: minmax(0, 1fr);
@@ -5096,11 +5118,6 @@ h3 {
 }
 .overview-more[open] summary::after {
   transform: rotate(180deg);
-}
-@media (max-width: 850px) {
-  .overview-action {
-    min-height: 44px;
-  }
 }
 .overview-ring {
   background: none;
@@ -5174,6 +5191,49 @@ h3 {
   }
   .overview-connection-group .overview-endpoint {
     min-height: 44px;
+  }
+}
+.widget-header-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.widget-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-inline-start: auto;
+  flex: none;
+}
+.ion-button--widget-s {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--input-border-radius-s,4px);
+  background: var(--color-neutral-000);
+  color: var(--color-primary-primary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+}
+.ion-button--widget-s:hover {
+  background: var(--color-primary-lighter);
+  border-color: var(--color-primary-dark);
+}
+.ion-button--widget-s:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+@media (pointer: coarse) {
+  .ion-button--widget-s::before {
+    content: "";
+    position: absolute;
+    inset: -6px 0;
   }
 }
 </style></head><body><div id="app"></div><script>"use strict";
@@ -6716,6 +6776,7 @@ h3 {
     const header = document.createElement("div");
     header.className = "card-heading";
     const text = document.createElement("div");
+    text.className = "widget-header-text";
     const heading = document.createElement("h2");
     heading.className = "widget-title";
     heading.textContent = options.title;
@@ -6729,7 +6790,12 @@ h3 {
       text.append(caption);
     }
     header.append(text);
-    if (options.action) header.append(options.action);
+    if (options.action) {
+      const actions = document.createElement("div");
+      actions.className = "widget-header-actions";
+      actions.append(options.action);
+      header.append(actions);
+    }
     return header;
   }
 
@@ -7895,15 +7961,15 @@ h3 {
     section.setAttribute("aria-labelledby", "infrastructure-title");
     section.append(createPageHeader({ title: "Infrastructure", headingId: "infrastructure-title" }));
     const content = document.createElement("div");
-    content.className = "page-content overview-content";
+    content.className = "page-content overview-content widget-layout-container";
     const state = document.createElement("div");
     state.className = "overview-state";
     state.setAttribute("role", "status");
     const grid = document.createElement("div");
-    grid.className = "overview-grid";
+    grid.className = "overview-grid widget-layout";
     const widget = (title, headingId, caption, action) => {
       const card = document.createElement("section");
-      card.className = "card overview-widget";
+      card.className = "card overview-widget widget-layout-item widget-layout-item--half";
       card.setAttribute("aria-labelledby", headingId);
       card.append(createWidgetHeader({ title, headingId, caption, action }));
       const body = document.createElement("div");
@@ -7915,7 +7981,7 @@ h3 {
     const openDevices = document.createElement("button");
     openDevices.type = "button";
     openDevices.id = "open-devices";
-    openDevices.className = "ion-button ion-button--primary overview-action";
+    openDevices.className = "ion-button ion-button--widget-s";
     openDevices.textContent = "Open devices";
     const statusCard = widget("Device status", "overview-devices-title", "Reported by data source", openDevices);
     statusCard.card.classList.add("overview-status-card");
@@ -7923,6 +7989,7 @@ h3 {
     attentionCard.card.classList.add("overview-attention-card");
     grid.prepend(attentionCard.card);
     const topologyCard = widget("Configured connections", "overview-topology-title", "Equipment relationships");
+    topologyCard.card.classList.replace("widget-layout-item--half", "widget-layout-item--full");
     topologyCard.card.classList.add("overview-topology-card");
     content.append(state, grid);
     section.append(content);
