@@ -4333,6 +4333,36 @@ h3 {
 [data-theme=dark] .metadata dt {
   color: var(--color-neutral-400);
 }
+.table-navigator {
+  border-color: var(--color-neutral-200);
+  box-shadow: 0 1px 4px #0002;
+}
+.table-navigator button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+.table-navigator button::before {
+  content: "";
+  width: 18px;
+  height: 18px;
+  background: currentColor;
+  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>') no-repeat center / contain;
+  -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>') no-repeat center / contain;
+}
+.table-navigator button:last-child::before {
+  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>');
+  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>');
+}
+.table-navigator-grip {
+  display: block;
+  width: 12px;
+  height: 2px;
+  margin: 0 5px;
+  border-radius: 1px;
+  background: currentColor;
+  box-shadow: 0 -4px currentColor, 0 4px currentColor;
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -5992,6 +6022,30 @@ h3 {
     };
   }
 
+  // src/ion-ui/title-bar.ts
+  function createTitleBar(options) {
+    const header = document.createElement("div");
+    header.className = "panel-head";
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "ion-button close";
+    close.setAttribute("aria-label", options.closeLabel);
+    close.addEventListener("click", options.onClose);
+    const text = document.createElement("div");
+    const title = document.createElement("h2");
+    title.id = options.headingId;
+    title.textContent = options.title;
+    text.append(title);
+    if (options.subtitle) {
+      const subtitle = document.createElement("p");
+      subtitle.className = "muted";
+      subtitle.textContent = options.subtitle;
+      text.append(subtitle);
+    }
+    header.append(close, text);
+    return header;
+  }
+
   // src/vendor/ui/components/app-shell/app-shell.js
   init_menu();
   init_button();
@@ -6776,12 +6830,9 @@ h3 {
     left.type = right.type = "button";
     left.setAttribute("aria-label", "Scroll table left");
     right.setAttribute("aria-label", "Scroll table right");
-    left.textContent = "\u2039";
-    right.textContent = "\u203A";
     const grip = document.createElement("span");
     grip.className = "table-navigator-grip";
     grip.setAttribute("aria-hidden", "true");
-    grip.textContent = "\u283F";
     control.append(left, grip, right);
     header.append(control);
     let frame = 0;
@@ -6986,14 +7037,16 @@ h3 {
       panel.setAttribute("role", "dialog");
       panel.setAttribute("aria-modal", "true");
       panel.setAttribute("aria-labelledby", "panel-title");
-      panel.innerHTML = '<div class="panel-head"><div><p class="eyebrow">DEVICE DETAILS</p><h2 id="panel-title"></h2><p class="muted" id="panel-subtitle"></p></div></div><div class="panel-content"><p class="sample-note">Sample readings \xB7 no live device connection</p><section><h3>Device information</h3><dl class="metadata"></dl></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" id="register-summary"></p></div></div><label for="register-search">Search registers</label><input id="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p id="result-count" class="muted" aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section></div>';
-      panel.querySelector("#panel-title").textContent = device.name;
-      panel.querySelector("#panel-subtitle").textContent = [device.vendor, device.model, device.id].filter(Boolean).join(" \xB7 ");
-      const closeButton = button("");
-      closeButton.classList.add("close");
-      closeButton.setAttribute("aria-label", "Close device details");
-      closeButton.addEventListener("click", close);
-      panel.querySelector(".panel-head").prepend(closeButton);
+      panel.innerHTML = '<div class="panel-content"><p class="sample-note">Sample readings \xB7 no live device connection</p><section><h3>Device information</h3><dl class="metadata"></dl></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" id="register-summary"></p></div></div><label for="register-search">Search registers</label><input id="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p id="result-count" class="muted" aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section></div>';
+      const titleBar = createTitleBar({
+        title: device.name,
+        subtitle: [device.vendor, device.model, device.id].filter(Boolean).join(" \xB7 "),
+        headingId: "panel-title",
+        closeLabel: "Close device details",
+        onClose: close
+      });
+      panel.prepend(titleBar);
+      const closeButton = titleBar.querySelector("button");
       const metadata = panel.querySelector("dl");
       const details = [["Status", device.status + " (sample)"], ["IP address", device.ipAddress ?? "\u2014"], ["Port", String(device.port ?? "\u2014")], ["Unit ID", String(device.unitId ?? "\u2014")], ["Type", device.nodeType ?? device.type], ["Capabilities", device.capabilities ?? "\u2014"], ["In use", device.inUse ? "Yes" : "No"], ["Connected links", String(site.getConnections().filter((c) => c.fromId === device.id || c.toId === device.id).length)]];
       for (const [label, value] of details) {
