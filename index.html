@@ -4192,6 +4192,25 @@ h3 {
     margin-inline-start: 0;
   }
 }
+@media (max-width: 768px) {
+  .ds-batch-bar .ds-batch-bar-count {
+    font-size: 0;
+  }
+  .ds-batch-bar .ds-batch-bar-count::after {
+    content: attr(data-compact-count);
+    font-size: 13px;
+  }
+}
+@media (max-width: 768px) {
+  .ds-batch-bar {
+    --ds-batch-bar-offset: 12px;
+    left: calc(12px + env(safe-area-inset-left, 0px));
+    right: calc(12px + env(safe-area-inset-right, 0px));
+    width: auto;
+    max-width: none;
+    transform: none;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -6984,6 +7003,9 @@ h3 {
         row.append(cell);
         body.append(row);
       }
+      const countLabel = bulk.querySelector(".ds-batch-bar-count");
+      countLabel.dataset.compactCount = selected.size + "\xD7";
+      countLabel.setAttribute("aria-label", selected.size + " selected");
       batch.update({ count: selected.size });
     }
     selectAll.addEventListener("change", () => {
