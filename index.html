@@ -4223,6 +4223,116 @@ h3 {
     transform: none;
   }
 }
+.ds-app-shell-sidebar {
+  padding: 0;
+}
+.ds-app-shell-panel,
+.ds-app-shell-panel:popover-open {
+  --_panel-fill: var(--color-black);
+  background: var(--color-black);
+  border-radius: 0;
+}
+.ds-app-shell .ds-app-shell-row {
+  border-radius: 6px;
+  min-height: 40px;
+  color: #e7cced;
+  font-size: 15px;
+}
+.ds-app-shell .ds-app-shell-row[aria-current] {
+  background: #222249;
+  color: #fff;
+  box-shadow: none;
+}
+.ds-app-shell .ds-app-shell-row[aria-current]::before {
+  background: var(--color-accent-accent);
+}
+.ds-app-shell .ds-app-shell-header {
+  min-height: 65px;
+}
+.page-heading h1,
+.infrastructure-overview h1 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+}
+.back-button {
+  border: 1px solid var(--color-neutral-200);
+  background: var(--color-neutral-000);
+  color: var(--color-primary-dark);
+}
+.panel {
+  inset: 12px 12px 12px auto;
+  width: min(477px, calc(100% - 24px));
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 8px;
+  background: var(--color-neutral-000);
+  color: var(--color-neutral-600);
+  overflow: hidden;
+}
+.panel-head {
+  min-height: 56px;
+  padding: 8px 16px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  border-color: var(--color-neutral-200);
+}
+.panel-head h2 {
+  font-size: 15px;
+  line-height: 21px;
+  font-weight: 500;
+  margin: 0;
+}
+.panel-head .eyebrow {
+  display: none;
+}
+.panel-head .muted {
+  font-size: 11px;
+  line-height: 16px;
+}
+.panel-head .close {
+  order: -1;
+  width: 32px;
+  height: 40px;
+  padding: 0;
+  color: var(--color-primary-dark);
+  font-size: 22px;
+}
+.panel-content {
+  padding: 24px;
+}
+.modal {
+  background: var(--color-neutral-000);
+  color: var(--color-neutral-600);
+}
+.modal::backdrop {
+  background: rgb(64 64 130 / 84%);
+  backdrop-filter: blur(5px);
+}
+@media (max-width: 600px) {
+  .panel-content {
+    padding: 16px;
+  }
+}
+@media (forced-colors: active) {
+  .ds-app-shell .ds-app-shell-row[aria-current] {
+    background: Highlight;
+    color: HighlightText;
+  }
+}
+.panel-head .close::before {
+  content: "";
+  display: block;
+  width: 16px;
+  height: 16px;
+  margin: auto;
+  background: currentColor;
+  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>') no-repeat center / contain;
+  -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>') no-repeat center / contain;
+}
+[data-theme=dark] .metadata dt {
+  color: var(--color-neutral-400);
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -6879,11 +6989,11 @@ h3 {
       panel.innerHTML = '<div class="panel-head"><div><p class="eyebrow">DEVICE DETAILS</p><h2 id="panel-title"></h2><p class="muted" id="panel-subtitle"></p></div></div><div class="panel-content"><p class="sample-note">Sample readings \xB7 no live device connection</p><section><h3>Device information</h3><dl class="metadata"></dl></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" id="register-summary"></p></div></div><label for="register-search">Search registers</label><input id="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p id="result-count" class="muted" aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section></div>';
       panel.querySelector("#panel-title").textContent = device.name;
       panel.querySelector("#panel-subtitle").textContent = [device.vendor, device.model, device.id].filter(Boolean).join(" \xB7 ");
-      const closeButton = button("\xD7");
+      const closeButton = button("");
       closeButton.classList.add("close");
       closeButton.setAttribute("aria-label", "Close device details");
       closeButton.addEventListener("click", close);
-      panel.querySelector(".panel-head").append(closeButton);
+      panel.querySelector(".panel-head").prepend(closeButton);
       const metadata = panel.querySelector("dl");
       const details = [["Status", device.status + " (sample)"], ["IP address", device.ipAddress ?? "\u2014"], ["Port", String(device.port ?? "\u2014")], ["Unit ID", String(device.unitId ?? "\u2014")], ["Type", device.nodeType ?? device.type], ["Capabilities", device.capabilities ?? "\u2014"], ["In use", device.inUse ? "Yes" : "No"], ["Connected links", String(site.getConnections().filter((c) => c.fromId === device.id || c.toId === device.id).length)]];
       for (const [label, value] of details) {
