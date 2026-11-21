@@ -2674,6 +2674,9 @@
     }
   }
   @media (prefers-reduced-motion: no-preference) {
+    .ds-app-shell[data-ds-sections=one] .ds-app-shell-panel:not(:popover-open) {
+      transition: inline-size 240ms var(--ds-motion-ease-standard), padding-inline 240ms var(--ds-motion-ease-standard);
+    }
     .ds-app-shell-row,
     .ds-app-shell-section-link {
       transition: background-color var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
@@ -4424,6 +4427,68 @@ h3 {
     margin-bottom: 19.5px;
   }
 }
+.ds-app-shell-main {
+  padding: 0;
+}
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 72px;
+  padding: 16px 24px;
+  background: var(--color-neutral-000);
+  border-radius: 12px 12px 0 0;
+  box-shadow:
+    0 1px 2px #340d3e1c,
+    0 9px 24px #340e3d0d,
+    0 4px 14px #1e1e3d0d;
+}
+.page-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.page-header h1,
+.infrastructure-overview .page-header h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 32px;
+}
+.page-header .back-button::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  mask: url('data:image/svg+xml,<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">%0A<g id="icon leading">%0A<path id="arrow_back" d="M5.04922 8.69282L8.31589 11.9595C8.44922 12.0928 8.51311 12.2484 8.50755 12.4262C8.502 12.6039 8.43255 12.7595 8.29922 12.8928C8.16589 13.015 8.01033 13.0789 7.83255 13.0845C7.65477 13.09 7.49922 13.0262 7.36589 12.8928L2.96589 8.49282C2.89922 8.42616 2.852 8.35393 2.82422 8.27616C2.79644 8.19838 2.78255 8.11504 2.78255 8.02616C2.78255 7.93727 2.79644 7.85393 2.82422 7.77616C2.852 7.69838 2.89922 7.62616 2.96589 7.55949L7.36589 3.15949C7.48811 3.03727 7.64089 2.97616 7.82422 2.97616C8.00755 2.97616 8.16589 3.03727 8.29922 3.15949C8.43255 3.29282 8.49922 3.45116 8.49922 3.63449C8.49922 3.81782 8.43255 3.97616 8.29922 4.10949L5.04922 7.35949H12.4992C12.6881 7.35949 12.8464 7.42338 12.9742 7.55116C13.102 7.67893 13.1659 7.83727 13.1659 8.02616C13.1659 8.21504 13.102 8.37338 12.9742 8.50116C12.8464 8.62893 12.6881 8.69282 12.4992 8.69282H5.04922Z" fill="%235757A8"/>%0A</g>%0A</svg>%0A') no-repeat center / contain;
+  -webkit-mask: url('data:image/svg+xml,<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">%0A<g id="icon leading">%0A<path id="arrow_back" d="M5.04922 8.69282L8.31589 11.9595C8.44922 12.0928 8.51311 12.2484 8.50755 12.4262C8.502 12.6039 8.43255 12.7595 8.29922 12.8928C8.16589 13.015 8.01033 13.0789 7.83255 13.0845C7.65477 13.09 7.49922 13.0262 7.36589 12.8928L2.96589 8.49282C2.89922 8.42616 2.852 8.35393 2.82422 8.27616C2.79644 8.19838 2.78255 8.11504 2.78255 8.02616C2.78255 7.93727 2.79644 7.85393 2.82422 7.77616C2.852 7.69838 2.89922 7.62616 2.96589 7.55949L7.36589 3.15949C7.48811 3.03727 7.64089 2.97616 7.82422 2.97616C8.00755 2.97616 8.16589 3.03727 8.29922 3.15949C8.43255 3.29282 8.49922 3.45116 8.49922 3.63449C8.49922 3.81782 8.43255 3.97616 8.29922 4.10949L5.04922 7.35949H12.4992C12.6881 7.35949 12.8464 7.42338 12.9742 7.55116C13.102 7.67893 13.1659 7.83727 13.1659 8.02616C13.1659 8.21504 13.102 8.37338 12.9742 8.50116C12.8464 8.62893 12.6881 8.69282 12.4992 8.69282H5.04922Z" fill="%235757A8"/>%0A</g>%0A</svg>%0A') no-repeat center / contain;
+}
+.page-content {
+  padding: 24px 40px 120px;
+}
+@media (max-width: 768px) {
+  .ds-app-shell-main {
+    padding: 0;
+  }
+  .page-header {
+    border-radius: clamp(12px, 4vw, 20px) clamp(12px, 4vw, 20px) 0 0;
+    padding: 16px;
+    flex-wrap: wrap;
+  }
+  .page-header-action {
+    flex: 1 1 auto;
+  }
+  .page-content {
+    padding: 24px 16px 120px;
+  }
+}
+@media (max-width: 450px) {
+  .page-header-action {
+    flex-basis: 100%;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -6083,6 +6148,49 @@ h3 {
     };
   }
 
+  // src/ion-ui/page-header.ts
+  function createPageHeader(options) {
+    const header = document.createElement("header");
+    header.className = "page-header";
+    const titleGroup = document.createElement("div");
+    titleGroup.className = "page-header-title";
+    if (options.back) {
+      const back = document.createElement("button");
+      back.type = "button";
+      back.id = options.back.id;
+      back.className = "back-button";
+      back.setAttribute("aria-label", options.back.label);
+      titleGroup.append(back);
+    }
+    const heading = document.createElement("h1");
+    heading.id = options.headingId;
+    heading.tabIndex = -1;
+    heading.textContent = options.title;
+    titleGroup.append(heading);
+    if (options.info) {
+      const info = document.createElement("details");
+      info.className = "info";
+      const summary = document.createElement("summary");
+      summary.setAttribute("aria-label", options.info.label);
+      summary.textContent = "i";
+      const body = document.createElement("div");
+      body.className = "info-content";
+      body.textContent = options.info.text;
+      info.append(summary, body);
+      titleGroup.append(info);
+    }
+    header.append(titleGroup);
+    if (options.action) {
+      const action = document.createElement("button");
+      action.type = "button";
+      action.id = options.action.id;
+      action.className = "ion-button ion-button--cta page-header-action";
+      action.textContent = options.action.label;
+      header.append(action);
+    }
+    return header;
+  }
+
   // src/ion-ui/title-bar.ts
   function createTitleBar(options) {
     const header = document.createElement("div");
@@ -7012,7 +7120,15 @@ h3 {
     const selected = /* @__PURE__ */ new Set();
     let activeDialog = null;
     root2.innerHTML = shellMarkup;
-    root2.querySelector("#app-content").innerHTML = '<section id="infrastructure-overview" class="infrastructure-overview" hidden aria-labelledby="infrastructure-title"><h1 id="infrastructure-title" tabindex="-1">Infrastructure</h1><button type="button" id="open-devices" class="overview-card"><strong>Devices</strong><span>Manage devices and inspect registers</span></button></section><div id="devices-page"><div class="page-heading"><div><div class="title-line"><button type="button" id="back-infrastructure" class="back-button" aria-label="Back to Infrastructure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button><h1 id="devices-title" tabindex="-1">Devices</h1><details class="info"><summary aria-label="About sample data">i</summary><div class="info-content">This preview uses sample data. Changes reset when the page reloads.</div></details></div></div><button type="button" id="new-device" class="ion-button ion-button--cta">+ New Device</button></div><section class="card" aria-label="Device inventory"><div class="card-heading"><p class="muted" id="device-count"></p></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div>';
+    root2.querySelector("#app-content").innerHTML = '<section id="infrastructure-overview" class="infrastructure-overview" hidden aria-labelledby="infrastructure-title"><div id="overview-header"></div><div class="page-content"><button type="button" id="open-devices" class="overview-card"><strong>Devices</strong><span>Manage devices and inspect registers</span></button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div class="card-heading"><p class="muted" id="device-count"></p></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
+    root2.querySelector("#overview-header").append(createPageHeader({ title: "Infrastructure", headingId: "infrastructure-title" }));
+    root2.querySelector("#devices-header").append(createPageHeader({
+      title: "Devices",
+      headingId: "devices-title",
+      back: { id: "back-infrastructure", label: "Back to Infrastructure" },
+      info: { label: "About sample data", text: "This preview uses sample data. Changes reset when the page reloads." },
+      action: { id: "new-device", label: "+ New Device" }
+    }));
     root2.insertAdjacentHTML("beforeend", '<div id="panel-host"></div>');
     const shell = root2.querySelector("[data-ds-app-shell]");
     shell.querySelectorAll('a[href^="/__rxui__/"]').forEach((link) => {
