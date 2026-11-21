@@ -1242,6 +1242,1481 @@
 
 /* src/ion-ui/batch-bar.css */
 
+/* src/vendor/ui/components/tag/tag.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  :where(.ds-tag, .ds-tag-ink) {
+    --_tone: var(--ds-color-text-muted);
+    &[data-tone=accent] {
+      --_tone: var(--ds-color-state);
+      --_set-ground: var(--ds-tag-accent);
+      --_set-ink: var(--ds-tag-accent-ink);
+    }
+    &[data-tone=info] {
+      --_tone: var(--ds-color-info);
+      --_set-ground: var(--ds-tag-info);
+      --_set-ink: var(--ds-tag-info-ink);
+    }
+    &[data-tone=success] {
+      --_tone: var(--ds-color-success);
+      --_set-ground: var(--ds-tag-success);
+      --_set-ink: var(--ds-tag-success-ink);
+    }
+    &[data-tone=warning] {
+      --_tone: var(--ds-color-warning);
+      --_set-ground: var(--ds-tag-warning);
+      --_set-ink: var(--ds-tag-warning-ink);
+    }
+    &[data-tone=error] {
+      --_tone: var(--ds-color-danger);
+      --_set-ground: var(--ds-tag-error);
+      --_set-ink: var(--ds-tag-error-ink);
+    }
+    --_ink: var(--_set-ink, color-mix(in srgb, color-mix(in srgb, var(--_tone) 75%, var(--ds-color-text)) calc(100% - var(--ds-contrast-amount)), var(--ds-color-text)));
+    --_ground: var(--_set-ground, color-mix(in srgb, var(--_tone) calc(11% - var(--ds-contrast-amount) * .04), var(--ds-color-surface)));
+    &[data-tone=neutral] {
+      --_ink: var(--ds-color-text-body);
+      --_ground: color-mix(in srgb, var(--ds-color-veil) calc(7% - var(--ds-contrast-amount) * .02), var(--ds-color-surface));
+    }
+  }
+  :where(.ds-tag-ink) {
+    display: inline-flex;
+    color: var(--_ink);
+  }
+  :where(.ds-tag) {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    max-inline-size: 100%;
+    min-inline-size: 0;
+    margin: 0;
+    padding: .125rem .5rem;
+    border: 1px solid color-mix(in srgb, var(--_ink) var(--ds-contrast-amount), transparent);
+    border-radius: 999px;
+    background-color: var(--_ground);
+    background-image: linear-gradient(transparent, transparent);
+    color: var(--_ink);
+    font: var(--ds-type-label-weight) var(--ds-type-control-xs)/1.4 var(--ds-font);
+    letter-spacing: .01em;
+    text-align: start;
+    vertical-align: middle;
+    &:has(> .ds-icon:first-child) {
+      padding-inline-start: calc(.125rem + (1lh - 1.2em) / 2);
+    }
+    & > .ds-icon {
+      inline-size: 1.2em;
+      block-size: 1.2em;
+      flex: none;
+    }
+    &:has(> .ds-tag-avatar) {
+      padding-inline-start: .125rem;
+    }
+    & > .ds-tag-avatar {
+      inline-size: 1.6em;
+      block-size: 1.6em;
+      background: color-mix(in srgb, var(--_ink) 22%, var(--_ground));
+      font-size: .7em;
+    }
+    & > .ds-tag-label {
+      min-inline-size: 0;
+      overflow-wrap: anywhere;
+    }
+    & > .ds-tag-field {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+  :where(.ds-tag-avatar) {
+    display: grid;
+    place-items: center;
+    flex: none;
+    overflow: hidden;
+    border-radius: 50%;
+    font-weight: 600;
+    line-height: 1;
+    text-transform: uppercase;
+    position: relative;
+    & > img {
+      position: absolute;
+      inset: 0;
+      inline-size: 100%;
+      block-size: 100%;
+      object-fit: cover;
+    }
+  }
+  :where(button.ds-tag) {
+    cursor: pointer;
+    &:hover {
+      background-image: linear-gradient(var(--ds-color-ghost-hover), var(--ds-color-ghost-hover));
+    }
+    &:active {
+      background-image: linear-gradient(var(--ds-color-ghost-pressed), var(--ds-color-ghost-pressed));
+    }
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: 2px;
+    }
+    &:disabled {
+      cursor: default;
+      border-style: dashed;
+      border-color: var(--ds-color-control-edge);
+      background-image: none;
+    }
+    &[aria-busy=true] {
+      cursor: progress;
+    }
+  }
+  :where(button.ds-tag[aria-busy=true])::after {
+    content: "";
+    box-sizing: border-box;
+    inline-size: .75rem;
+    block-size: .75rem;
+    flex: none;
+    border: var(--ds-spinner-stroke) solid currentColor;
+    border-inline-end-color: transparent;
+    border-radius: 50%;
+    animation: ds-button-spin var(--ds-motion-duration-spin) linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(button.ds-tag[aria-busy=true])::after {
+      animation: none;
+    }
+  }
+  :where(.ds-tag-select) {
+    box-sizing: border-box;
+    max-inline-size: 100%;
+    margin: 0;
+    padding: .0625rem .375rem;
+    border: 1px solid var(--ds-color-control-edge);
+    border-radius: var(--ds-radius-control);
+    background: var(--ds-color-surface);
+    color: var(--ds-color-text);
+    font: var(--ds-type-label-weight) var(--ds-type-control-xs)/1.4 var(--ds-font);
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: 2px;
+    }
+  }
+  :where(.ds-tag-list) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ds-space-1);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    min-inline-size: 0;
+    & > li {
+      display: flex;
+      min-inline-size: 0;
+      max-inline-size: 100%;
+    }
+  }
+  @media (forced-colors: active) {
+    :where(.ds-tag) {
+      border-color: CanvasText;
+    }
+    :where(button.ds-tag) {
+      border-color: ButtonText;
+    }
+  }
+}
+
+/* src/vendor/ui/components/count-badge/count-badge.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  :where(.ds-count-badge) {
+    --_ink: var(--ds-color-text-body);
+    --_ground: color-mix(in srgb, var(--ds-color-veil) calc(12% - var(--ds-contrast-amount) * .04), var(--ds-color-surface));
+    &[data-tone=accent] {
+      --_ink: color-mix(in srgb, color-mix(in srgb, var(--ds-color-state-text) 75%, var(--ds-color-text)) calc(100% - var(--ds-contrast-amount)), var(--ds-color-text));
+      --_ground: color-mix(in srgb, var(--ds-color-state) calc(16% - var(--ds-contrast-amount) * .06), var(--ds-color-surface));
+    }
+    box-sizing: border-box;
+    position: relative;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--_ink) var(--ds-contrast-amount), transparent);
+    border-radius: 999px;
+    background-color: var(--_ground);
+    color: var(--_ink);
+    font: var(--ds-type-control-weight) var(--ds-type-control-xs)/1 var(--ds-font);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+  :where(.ds-count-badge:not([hidden])) {
+    display: inline-flex;
+  }
+  :where(.ds-count-badge[data-form=inline]) {
+    min-inline-size: 1.25rem;
+    block-size: 1.25rem;
+    padding-inline: .375rem;
+  }
+  :where(.ds-count-badge[data-form=corner]) {
+    position: absolute;
+    inset-block-start: -.375rem;
+    inset-inline-end: -.375rem;
+    min-inline-size: 1.125rem;
+    block-size: 1.125rem;
+    padding-inline: .25rem;
+    border: 2px solid var(--ds-count-badge-ring, var(--ds-color-surface));
+    font-size: .6875rem;
+    &[data-tone=neutral] {
+      --_ground: var(--ds-color-text-strong);
+      --_ink: var(--ds-color-surface);
+    }
+  }
+  :where(.ds-count-badge[data-form=dot]) {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-end: 0;
+    inline-size: .625rem;
+    block-size: .625rem;
+    border: 2px solid var(--ds-count-badge-ring, var(--ds-color-surface));
+    background-color: var(--_ink);
+  }
+  :where(.ds-count-badge-digits) {
+    display: block;
+    text-box: trim-both cap alphabetic;
+  }
+  :where(.ds-count-badge-words) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  @media (forced-colors: active) {
+    :where(.ds-count-badge) {
+      border-color: CanvasText;
+    }
+    :where(.ds-count-badge[data-form=dot]) {
+      background-color: CanvasText;
+    }
+  }
+}
+
+/* src/vendor/ui/components/truncate/truncate.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  :where(.ds-truncate) {
+    display: block;
+    min-inline-size: 0;
+    overflow: clip;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    &:dir(ltr) {
+      text-align: left;
+    }
+    &:dir(rtl) {
+      text-align: right;
+    }
+    &:has(> .ds-truncate-text:dir(ltr)) {
+      direction: ltr;
+    }
+    &:has(> .ds-truncate-text:dir(rtl)) {
+      direction: rtl;
+    }
+    &[data-mode=start]:has(> .ds-truncate-text:dir(ltr)) {
+      direction: rtl;
+    }
+    &[data-mode=start]:has(> .ds-truncate-text:dir(rtl)) {
+      direction: ltr;
+    }
+    &[data-lines] {
+      text-align: start;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: var(--ds-truncate-lines);
+      line-clamp: var(--ds-truncate-lines);
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+    &[data-inline] {
+      display: inline;
+      overflow: visible;
+      white-space: normal;
+      text-align: inherit;
+    }
+  }
+  :where(.ds-truncate-text) {
+    unicode-bidi: isolate;
+  }
+  :where(.ds-truncate-cut) {
+    font-size: 0;
+    letter-spacing: 0;
+    word-spacing: 0;
+    white-space: pre;
+  }
+  :where(.ds-truncate[data-cut] .ds-truncate-head)::after {
+    content: "\2026";
+    content: "\2026" / "";
+  }
+  :where(.ds-truncate:has(> .ds-truncate-sizer) > .ds-truncate-text) {
+    display: block;
+    overflow: clip;
+    text-overflow: ellipsis;
+  }
+  :where(.ds-truncate-sizer) {
+    position: relative;
+    display: block;
+    inline-size: max-content;
+    block-size: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
+  :where(.ds-truncate-mark) {
+    position: absolute;
+  }
+}
+
+/* src/vendor/ui/components/app-shell/app-shell.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  .ds-app-shell {
+    --ds-app-shell-content-width: 80rem;
+    --ds-app-shell-panel-width: 16rem;
+    --ds-app-shell-aside-width: 20rem;
+    --_rail: 3.5rem;
+    --_panel-fill: color-mix(in srgb, var(--ds-color-canvas), var(--ds-color-veil) 4%);
+    --_current: light-dark(var(--ds-color-surface), color-mix(in srgb, var(--ds-color-surface), var(--ds-color-veil) 9%));
+    --_corner: calc(var(--ds-radius) * 2);
+    --_pill: 999px;
+    container: ds-app-shell / inline-size;
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    min-block-size: 100dvh;
+    background: var(--ds-color-canvas);
+    color: var(--ds-color-text-body);
+    font: 400 var(--ds-type-control-size)/1.5 var(--ds-font);
+    overflow-wrap: normal;
+    hyphens: manual;
+    & .ds-button {
+      overflow-wrap: normal;
+    }
+  }
+  .ds-app-shell-skip {
+    position: absolute;
+    inset-block-start: var(--ds-space-2);
+    inset-inline-start: var(--ds-space-2);
+    z-index: 3;
+    padding: var(--ds-space-2) var(--ds-space-3);
+    border-radius: var(--ds-radius-control);
+    background: var(--ds-color-surface);
+    color: var(--ds-color-text-strong);
+    box-shadow: var(--ds-shadow-popup);
+    font-weight: var(--ds-type-label-weight);
+    white-space: nowrap;
+    &:not(:focus) {
+      inline-size: 1px;
+      block-size: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: var(--ds-focus-offset);
+    }
+  }
+  .ds-app-shell-sidebar {
+    position: sticky;
+    inset-block-start: 0;
+    align-self: start;
+    display: flex;
+    gap: var(--ds-space-2);
+    box-sizing: border-box;
+    block-size: 100dvh;
+    padding: var(--ds-space-2);
+  }
+  .ds-app-shell-rail {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ds-space-4);
+    inline-size: var(--_rail);
+    padding-block-start: var(--ds-space-1);
+  }
+  .ds-app-shell-mark {
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    inline-size: var(--ds-control-size-m);
+    block-size: var(--ds-control-size-m);
+    border: var(--ds-control-border-width) solid var(--ds-color-control-edge);
+    border-radius: var(--ds-radius-control);
+    background: var(--ds-color-surface);
+    color: var(--ds-color-text-strong);
+    font-weight: var(--ds-type-control-weight);
+    text-decoration: none;
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: var(--ds-focus-offset);
+    }
+  }
+  .ds-app-shell-logo {
+    flex: none;
+    inline-size: var(--ds-icon-size-l);
+    block-size: var(--ds-icon-size-l);
+    object-fit: contain;
+  }
+  .ds-app-shell-sections {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ds-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ds-app-shell-section {
+    position: relative;
+  }
+  .ds-app-shell-section-link {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: var(--ds-control-size-l);
+    block-size: var(--ds-control-size-l);
+    border-radius: 50%;
+    background: var(--ds-color-neutral-hover);
+    color: var(--ds-color-text-body);
+    & > .ds-icon {
+      inline-size: var(--ds-icon-size-m);
+      block-size: var(--ds-icon-size-m);
+    }
+    &:hover {
+      background: color-mix(in srgb, var(--ds-color-neutral-hover), var(--ds-color-veil) 6%);
+      color: var(--ds-color-text-strong);
+    }
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: var(--ds-focus-offset);
+    }
+    &[aria-current],
+    &[aria-current]:hover {
+      background: var(--ds-color-text-strong);
+      color: var(--ds-color-surface);
+    }
+  }
+  .ds-app-shell-section-link > .ds-count-badge {
+    inset-block-start: .125rem;
+    inset-inline-end: .125rem;
+    --ds-count-badge-ring: var(--ds-color-canvas);
+  }
+  .ds-app-shell-flyout {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: calc(100% + var(--ds-space-3));
+    z-index: 2;
+    inline-size: max-content;
+    min-inline-size: 12rem;
+    overflow: visible;
+    opacity: 0;
+    pointer-events: none;
+    &::before {
+      content: "";
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: 100%;
+      inline-size: var(--ds-space-3);
+    }
+  }
+  .ds-app-shell-section:hover > .ds-app-shell-flyout {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity var(--ds-motion-duration-state) var(--ds-motion-ease-standard) 120ms;
+  }
+  .ds-app-shell-section:has(:focus-visible) > .ds-app-shell-flyout {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .ds-app-shell-section[data-ds-dismissed] > .ds-app-shell-flyout {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: none;
+  }
+  .ds-app-shell:not([data-ds-collapsed]) .ds-app-shell-section[data-ds-active] > .ds-app-shell-flyout,
+  .ds-app-shell[data-ds-mode=all]:not([data-ds-collapsed]) .ds-app-shell-flyout {
+    display: none;
+  }
+  .ds-app-shell-panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ds-space-2);
+    box-sizing: border-box;
+    inline-size: var(--ds-app-shell-panel-width);
+    min-block-size: 0;
+    padding: var(--ds-space-4) var(--ds-space-3) var(--ds-space-3);
+    border-radius: var(--_corner);
+    background: var(--_panel-fill);
+    color: inherit;
+  }
+  .ds-app-shell-panel:not(:popover-open) {
+    position: static;
+    inset: auto;
+    block-size: auto;
+    margin: 0;
+    border: 0;
+    overflow: visible;
+  }
+  .ds-app-shell-panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--ds-space-1);
+    min-inline-size: 0;
+    & > :is(.ds-app-shell-context, .ds-app-shell-panel-heading) {
+      flex: 1;
+    }
+  }
+  .ds-app-shell-panel-head > .ds-app-shell-context:has(~ .ds-app-shell-panel-heading) {
+    flex-basis: 100%;
+    margin-block-end: var(--ds-space-2);
+  }
+  .ds-app-shell-panel-heading {
+    margin: 0;
+    padding-inline: var(--ds-space-2);
+    color: var(--ds-color-text-strong);
+    font-size: 1.375rem;
+    font-weight: var(--ds-type-label-weight);
+    letter-spacing: -.01em;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  .ds-app-shell[data-ds-mode=all] .ds-app-shell-panel-heading,
+  .ds-app-shell-panel:popover-open .ds-app-shell-panel-heading,
+  .ds-app-shell-panel:has(> .ds-app-shell-pages[data-ds-searching]) .ds-app-shell-panel-heading {
+    display: none;
+  }
+  .ds-app-shell:not([data-ds-mode=all]) .ds-app-shell-panel:not(:popover-open) .ds-app-shell-pages:not([data-ds-searching]) .ds-app-shell-group-label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .ds-app-shell-context {
+    min-inline-size: 0;
+    margin: 0;
+    color: var(--ds-color-text-strong);
+    font-weight: var(--ds-type-label-weight);
+    & > .ds-button {
+      inline-size: 100%;
+      justify-content: flex-start;
+      text-align: start;
+      padding-inline: var(--ds-space-2) var(--ds-space-3);
+    }
+    & > .ds-button > [data-ds-button-label] {
+      flex: 1;
+      white-space: normal;
+      text-wrap: balance;
+    }
+  }
+  .ds-app-shell-context-only {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+    margin: 0;
+    padding: 0 var(--ds-space-2);
+    text-wrap: balance;
+  }
+  .ds-app-shell-context-label {
+    display: block;
+    color: var(--ds-color-text-muted);
+    font-size: var(--ds-type-control-small);
+    font-weight: 400;
+  }
+  .ds-app-shell :is(.ds-app-shell-context, .ds-app-shell-popup, .ds-app-shell-panel) .ds-tag-avatar {
+    inline-size: 1.75rem;
+    block-size: 1.75rem;
+    border-radius: var(--ds-radius-control);
+    background: var(--ds-color-neutral-hover);
+    color: var(--ds-color-text-strong);
+    font-size: var(--ds-type-control-xs);
+  }
+  .ds-app-shell :is(.ds-app-shell-who, .ds-app-shell-account) .ds-tag-avatar {
+    border-radius: 50%;
+  }
+  .ds-app-shell-person {
+    display: grid;
+    min-inline-size: 0;
+    text-wrap: balance;
+  }
+  .ds-app-shell-role {
+    color: var(--ds-color-text-muted);
+    font-size: var(--ds-type-control-small);
+    font-weight: 400;
+  }
+  .ds-app-shell-search {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+    min-block-size: var(--ds-control-size-m);
+    padding-inline: var(--ds-space-3) var(--ds-space-2);
+    border: var(--ds-control-border-width) solid var(--ds-color-control-edge);
+    border-radius: var(--_pill);
+    background: var(--ds-color-field);
+    box-shadow: var(--ds-shadow-control, none);
+    color: var(--ds-color-text-muted);
+    & > .ds-icon {
+      flex: none;
+      inline-size: var(--ds-icon-size-s);
+      block-size: var(--ds-icon-size-s);
+    }
+    & > input {
+      flex: 1;
+      min-inline-size: 0;
+      border: 0;
+      background: none;
+      color: var(--ds-color-text);
+      font: inherit;
+      outline: none;
+    }
+    & > input::placeholder {
+      color: var(--ds-color-placeholder);
+    }
+    &:focus-within {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: calc(-1 * var(--ds-control-border-width));
+    }
+  }
+  .ds-app-shell-kbd {
+    flex: none;
+    color: var(--ds-color-text-muted);
+    font: 400 var(--ds-type-control-xs)/1.2 var(--ds-font);
+  }
+  @media (hover: none) {
+    .ds-app-shell-kbd {
+      display: none;
+    }
+  }
+  .ds-app-shell-pages {
+    flex: 1;
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    display: flex;
+    flex-direction: column;
+  }
+  .ds-app-shell[data-ds-sections=many]:not([data-ds-mode=all]) .ds-app-shell-panel:not(:popover-open) .ds-app-shell-pages:not([data-ds-searching]) > .ds-app-shell-group:not([data-ds-active]) {
+    display: none;
+  }
+  .ds-app-shell-group {
+    scroll-margin-block-start: var(--ds-space-1);
+  }
+  .ds-app-shell-group-label {
+    margin: var(--ds-space-3) var(--ds-space-3) var(--ds-space-1);
+    color: var(--ds-color-text-muted);
+    font-size: var(--ds-type-control-small);
+    font-weight: var(--ds-type-label-weight);
+    line-height: 1.4;
+  }
+  .ds-app-shell-group:first-child > .ds-app-shell-group-label {
+    margin-block-start: var(--ds-space-1);
+  }
+  .ds-app-shell-group[data-ds-landed] {
+    animation: ds-app-shell-landed 1.1s var(--ds-motion-ease-standard) both;
+    border-radius: var(--ds-radius);
+  }
+  @keyframes ds-app-shell-landed {
+    from {
+      background-color: var(--ds-color-state-tint);
+    }
+    to {
+      background-color: transparent;
+    }
+  }
+  .ds-app-shell-empty {
+    margin: var(--ds-space-2) var(--ds-space-3);
+    color: var(--ds-color-text-muted);
+    &:empty,
+    &[data-ds-count] {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      margin: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+  }
+  .ds-app-shell-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ds-app-shell-rows > li[hidden] {
+    display: none;
+  }
+  .ds-app-shell-row {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+    box-sizing: border-box;
+    min-block-size: var(--ds-control-size-m);
+    padding: var(--ds-space-1) var(--ds-space-3);
+    border-radius: var(--_pill);
+    color: var(--ds-color-text-body);
+    text-decoration: none;
+    & > .ds-icon {
+      flex: none;
+      inline-size: var(--ds-icon-size-s);
+      block-size: var(--ds-icon-size-s);
+      color: var(--ds-color-text-muted);
+    }
+    & > .ds-count-badge[data-form=inline] {
+      margin-inline-start: auto;
+    }
+    & > .ds-count-badge[data-form=dot] {
+      display: none;
+      inset-block-start: .375rem;
+      inset-inline-end: .375rem;
+      --ds-count-badge-ring: var(--_panel-fill);
+    }
+    &:is(a):hover {
+      background: var(--ds-color-ghost-hover);
+      color: var(--ds-color-text-strong);
+    }
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: calc(-1 * var(--ds-focus-width));
+    }
+    &[aria-current],
+    &[aria-current]:hover {
+      background: var(--_current);
+      box-shadow: inset 0 0 0 var(--ds-contrast-edge) var(--ds-color-control-edge), var(--ds-shadow-raised);
+      color: var(--ds-color-text-strong);
+      font-weight: var(--ds-type-label-weight);
+    }
+    &[aria-current] > .ds-icon {
+      color: inherit;
+    }
+    &[data-ds-holds-current] {
+      color: var(--ds-color-text-strong);
+    }
+  }
+  .ds-app-shell-label {
+    min-inline-size: 0;
+    text-wrap: balance;
+  }
+  .ds-app-shell-rows:is([data-ds-level="3"], [data-ds-level="4"]) {
+    margin-block: 2px var(--ds-space-1);
+    margin-inline: calc(var(--ds-space-3) + var(--ds-space-2)) 0;
+    padding-inline-start: var(--ds-space-2);
+    border-inline-start: var(--ds-control-border-width) solid var(--ds-color-divider);
+    & .ds-app-shell-row {
+      min-block-size: var(--ds-control-size-s);
+    }
+  }
+  .ds-app-shell-foot {
+    margin-block-start: auto;
+    padding-block-start: var(--ds-space-2);
+  }
+  .ds-app-shell-line {
+    position: relative;
+    & > .ds-app-shell-row {
+      padding-inline-end: calc(var(--ds-control-size-s) + var(--ds-space-1));
+    }
+  }
+  .ds-app-shell-fold {
+    position: absolute;
+    inset-block-start: 50%;
+    inset-inline-end: var(--ds-space-1);
+    display: grid;
+    place-items: center;
+    inline-size: var(--ds-control-size-s);
+    block-size: var(--ds-control-size-s);
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--ds-color-text-muted);
+    cursor: pointer;
+    translate: 0 -50%;
+    & > .ds-icon {
+      inline-size: var(--ds-icon-size-s);
+      block-size: var(--ds-icon-size-s);
+    }
+    &[aria-expanded=true] > .ds-icon {
+      rotate: 180deg;
+    }
+    &:hover {
+      background: var(--ds-color-ghost-hover);
+      color: var(--ds-color-text-strong);
+    }
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: calc(-1 * var(--ds-focus-width));
+    }
+  }
+  .ds-app-shell[data-ds-enhanced] li[data-ds-folded] > .ds-app-shell-rows {
+    display: none;
+  }
+  .ds-app-shell-pages[data-ds-searching] li[data-ds-folded] > .ds-app-shell-rows {
+    display: flex;
+  }
+  .ds-app-shell-row[data-ds-best] {
+    outline: var(--ds-control-border-width) dashed var(--ds-color-control-edge);
+    outline-offset: calc(-1 * var(--ds-control-border-width));
+  }
+  .ds-app-shell-cancel {
+    inline-size: 100%;
+    margin-block-start: var(--ds-space-2);
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--ds-color-text-strong);
+    cursor: pointer;
+    justify-content: center;
+  }
+  .ds-app-shell-cancel:hover {
+    background: var(--ds-color-ghost-hover);
+  }
+  .ds-app-shell-popup {
+    min-inline-size: 14rem;
+    overflow-wrap: normal;
+    &:is([popover=""], [popover=auto]) {
+      position-area: block-end span-inline-start;
+      position-try-fallbacks: flip-inline, flip-block;
+      margin-block-start: var(--ds-space-1);
+    }
+  }
+  .ds-app-shell-panel-title {
+    margin: 0;
+    padding: var(--ds-space-2) var(--ds-space-3);
+    color: var(--ds-color-text-muted);
+    font-size: var(--ds-type-control-small);
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+  .ds-app-shell-who {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-3);
+    padding: var(--ds-space-2) var(--ds-space-3);
+    & > .ds-tag-avatar {
+      inline-size: 2.5rem;
+      block-size: 2.5rem;
+      font-size: var(--ds-type-control-small);
+    }
+    & > p {
+      display: grid;
+      margin: 0;
+      min-inline-size: 0;
+      color: var(--ds-color-text-muted);
+      font-size: var(--ds-type-control-small);
+      line-height: 1.4;
+    }
+    & strong {
+      color: var(--ds-color-text-strong);
+      font-size: var(--ds-type-control-size);
+      font-weight: var(--ds-type-label-weight);
+      text-wrap: balance;
+    }
+  }
+  .ds-app-shell-sign-out {
+    margin: 0;
+    & > .ds-button {
+      inline-size: 100%;
+      justify-content: flex-start;
+      padding-inline: var(--ds-space-3);
+      font-weight: 400;
+    }
+  }
+  .ds-app-shell-legal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--ds-space-3);
+    margin: var(--ds-space-1) 0 0;
+    padding: 0 var(--ds-space-3);
+    font-size: var(--ds-type-control-xs);
+    & a {
+      display: inline-flex;
+      align-items: center;
+      min-block-size: var(--ds-control-size-2xs);
+      color: var(--ds-color-text-muted);
+    }
+    & a:hover {
+      color: var(--ds-color-text-strong);
+    }
+  }
+  .ds-app-shell-popup:has(.ds-app-shell-row > .ds-icon) .ds-app-shell-sign-out > .ds-button {
+    padding-inline-start: calc(var(--ds-space-3) + var(--_row-glyph, var(--ds-icon-size-s)) + var(--_row-gap, var(--ds-space-2)));
+  }
+  [data-ds-sheet] {
+    --_row-glyph: var(--ds-icon-size-s);
+    --_row-gap: var(--ds-space-3);
+    & .ds-app-shell-row,
+    & .ds-app-shell-cancel,
+    & .ds-app-shell-sign-out > .ds-button {
+      min-block-size: calc(var(--ds-control-min-size) + var(--ds-space-1));
+      gap: var(--_row-gap);
+      font-size: var(--ds-type-control-size);
+    }
+    & .ds-app-shell-row > .ds-icon {
+      inline-size: var(--_row-glyph);
+      block-size: var(--_row-glyph);
+    }
+    & .ds-app-shell-rows {
+      gap: var(--ds-space-1);
+    }
+    & .ds-app-shell-who {
+      padding-block: var(--ds-space-3);
+      & > .ds-tag-avatar {
+        inline-size: var(--ds-control-size-l);
+        block-size: var(--ds-control-size-l);
+      }
+    }
+  }
+  .ds-app-shell-content {
+    display: flex;
+    flex-direction: column;
+    min-inline-size: 0;
+  }
+  .ds-app-shell-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ds-space-1) var(--ds-space-3);
+    box-sizing: border-box;
+    min-block-size: calc(var(--ds-control-size-m) + 2 * var(--ds-space-2));
+    padding: var(--ds-space-2) var(--ds-space-inset);
+  }
+  .ds-app-shell-toggle {
+    margin-inline-start: calc(-1 * var(--ds-space-3));
+    &[hidden] {
+      display: none;
+    }
+  }
+  .ds-app-shell .ds-app-shell-header > .ds-app-shell-toggle.ds-button[aria-expanded] {
+    background: transparent;
+    border-color: transparent;
+    color: var(--ds-color-text-muted);
+  }
+  .ds-app-shell .ds-app-shell-header > .ds-app-shell-toggle.ds-button[aria-expanded]:enabled:not([aria-disabled=true]):hover {
+    background: var(--ds-color-ghost-hover);
+    color: var(--ds-color-text-strong);
+  }
+  .ds-app-shell-toggle > .ds-icon,
+  .ds-app-shell-toggle > svg {
+    scale: -1 1;
+  }
+  .ds-app-shell-toggle:dir(rtl) > svg {
+    scale: 1;
+  }
+  .ds-app-shell-identity {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0 var(--ds-space-2);
+    min-inline-size: 0;
+    & > .ds-tag {
+      white-space: nowrap;
+    }
+  }
+  .ds-app-shell-product {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ds-space-2);
+    color: var(--ds-color-text-strong);
+    font-size: 1rem;
+    font-weight: var(--ds-type-label-weight);
+    text-decoration: none;
+    white-space: nowrap;
+    border-radius: var(--ds-radius-control);
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: var(--ds-focus-offset);
+    }
+  }
+  .ds-app-shell-team {
+    display: none;
+    margin: 0;
+    color: var(--ds-color-text-muted);
+    text-wrap: balance;
+  }
+  .ds-app-shell-team::before {
+    content: "/" / "";
+    padding-inline-end: var(--ds-space-3);
+    color: var(--ds-color-divider);
+  }
+  .ds-app-shell[data-ds-collapsed] .ds-app-shell-team {
+    display: block;
+  }
+  .ds-app-shell-trail {
+    flex: 1;
+    min-inline-size: 0;
+    & > ol {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: var(--ds-color-text-muted);
+      font-size: var(--ds-type-control-small);
+    }
+    & li {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+    }
+    & li + li::before {
+      content: "/" / "";
+      padding-inline: var(--ds-space-2);
+      color: var(--ds-color-divider);
+    }
+    & a {
+      color: inherit;
+      text-decoration: none;
+      border-radius: var(--ds-radius-control);
+    }
+    & a:any-link:hover {
+      color: var(--ds-color-text-strong);
+      text-decoration: underline;
+      text-underline-offset: .2em;
+    }
+    & a:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: var(--ds-focus-offset);
+    }
+    & [aria-current] {
+      color: var(--ds-color-text-strong);
+    }
+  }
+  .ds-app-shell-end {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-1);
+    margin-inline-start: auto;
+  }
+  .ds-app-shell-tools {
+    display: flex;
+    align-items: center;
+    gap: var(--ds-space-1);
+  }
+  .ds-app-shell-account {
+    padding-block: 0;
+    padding-inline: var(--ds-space-1) var(--ds-space-2);
+    & > [data-ds-button-label] {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    & > .ds-tag-avatar {
+      inline-size: 1.75rem;
+      block-size: 1.75rem;
+      background: var(--ds-color-neutral-hover);
+      color: var(--ds-color-text-strong);
+      font-size: var(--ds-type-control-xs);
+    }
+    & > [data-ds-button-icon] {
+      inline-size: var(--ds-icon-size-s);
+      block-size: var(--ds-icon-size-s);
+      color: var(--ds-color-text-muted);
+    }
+  }
+  .ds-app-shell-link {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--ds-control-size-m);
+    padding-inline: var(--ds-space-3);
+    color: var(--ds-color-state-text);
+    white-space: nowrap;
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: var(--ds-focus-offset);
+      border-radius: var(--ds-radius-control);
+    }
+  }
+  .ds-app-shell-body {
+    display: grid;
+    gap: var(--ds-space-section-gap);
+    box-sizing: border-box;
+    inline-size: 100%;
+    max-inline-size: var(--ds-app-shell-content-width);
+    margin-inline: auto;
+    padding: var(--ds-space-section-gap) var(--ds-space-inset);
+  }
+  .ds-app-shell-main {
+    min-inline-size: 0;
+    &:focus {
+      outline: none;
+    }
+  }
+  .ds-app-shell-aside {
+    min-inline-size: 0;
+  }
+  .ds-app-shell[data-ds-collapsed][data-ds-sections=many] .ds-app-shell-panel:not(:popover-open) {
+    display: none;
+  }
+  .ds-app-shell[data-ds-collapsed][data-ds-sections=one] .ds-app-shell-panel:not(:popover-open) {
+    inline-size: var(--_rail);
+    align-items: center;
+    padding-inline: var(--ds-space-1);
+    & :is(.ds-app-shell-panel-head, .ds-app-shell-search, .ds-app-shell-fold, .ds-app-shell-rows[data-ds-level="3"]) {
+      display: none;
+    }
+    & .ds-app-shell-pages {
+      overflow: visible;
+    }
+    & .ds-app-shell-row {
+      position: relative;
+      justify-content: center;
+      inline-size: var(--ds-control-size-m);
+      min-block-size: var(--ds-control-size-m);
+      padding: 0;
+    }
+    & .ds-app-shell-row > .ds-icon {
+      inline-size: var(--ds-icon-size-m);
+      block-size: var(--ds-icon-size-m);
+    }
+    & .ds-app-shell-line > .ds-app-shell-row {
+      padding: 0;
+    }
+    & .ds-app-shell-label {
+      position: absolute;
+      inset-inline-start: calc(100% + var(--ds-space-2));
+      z-index: 2;
+      padding: var(--ds-space-1) var(--ds-space-2);
+      border-radius: var(--ds-radius-control);
+      background: var(--ds-color-text-strong);
+      color: var(--ds-color-surface);
+      font-size: var(--ds-type-control-small);
+      font-weight: 400;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+    }
+    & .ds-app-shell-label::before {
+      content: "";
+      position: absolute;
+      inset-block: 0;
+      inset-inline-end: 100%;
+      inline-size: var(--ds-space-2);
+    }
+    & .ds-app-shell-row:hover > .ds-app-shell-label {
+      opacity: 1;
+      pointer-events: auto;
+      transition: opacity 0s var(--ds-tooltip-delay);
+    }
+    & .ds-app-shell-row:focus-visible > .ds-app-shell-label {
+      opacity: 1;
+    }
+    & .ds-app-shell-row[data-ds-dismissed] > .ds-app-shell-label {
+      opacity: 0;
+      pointer-events: none;
+      transition: none;
+    }
+    & .ds-count-badge[data-form=inline] {
+      display: none;
+    }
+    & .ds-count-badge[data-form=dot] {
+      display: block;
+    }
+  }
+  @container ds-app-shell (width >= 72rem) {
+    .ds-app-shell[data-ds-aside] .ds-app-shell-body {
+      grid-template-columns: minmax(0, 1fr) var(--ds-app-shell-aside-width);
+      align-items: start;
+    }
+    .ds-app-shell-aside {
+      position: sticky;
+      inset-block-start: var(--ds-space-section-gap);
+    }
+  }
+  .ds-app-shell-tabbar {
+    display: none;
+  }
+  .ds-app-shell-sheet:not(:popover-open) {
+    display: none;
+  }
+  @container ds-app-shell (width < 48rem) {
+    .ds-app-shell-sidebar {
+      display: contents;
+    }
+    .ds-app-shell-rail,
+    .ds-app-shell-toggle {
+      display: none;
+    }
+    .ds-app-shell-panel:not(:popover-open) {
+      display: none;
+    }
+    .ds-app-shell-content {
+      grid-column: 1 / -1;
+    }
+    .ds-app-shell-trail {
+      flex-basis: 100%;
+      order: 3;
+    }
+    .ds-app-shell-trail li:not(:nth-last-child(2)) {
+      display: none;
+    }
+    .ds-app-shell-trail ol > li::before {
+      content: "\2039" / "";
+      padding-inline: 0 var(--ds-space-1);
+      color: inherit;
+    }
+    .ds-app-shell-trail:dir(rtl) ol > li::before {
+      content: "\203a" / "";
+    }
+    .ds-app-shell-team {
+      display: block;
+      flex-basis: 100%;
+      order: 2;
+      &::before {
+        content: none;
+      }
+    }
+    .ds-app-shell-tabbar {
+      --_solid: var(--ds-contrast-amount);
+      --_glass: color-mix(in oklab, light-dark(var(--ds-color-surface), var(--ds-color-canvas)) 90%, transparent);
+      --_backdrop: blur(var(--ds-space-4)) saturate(1.5);
+      --_edge: var(--ds-control-border-width) solid color-mix(in oklab, var(--ds-color-control-edge) var(--_solid), color-mix(in oklab, var(--ds-color-divider) 70%, transparent));
+      --_fill: color-mix(in oklab, var(--ds-color-surface) var(--_solid), var(--_glass));
+      --_tab-min: calc(var(--ds-icon-size-m) + 1.75rem + 2 * var(--ds-space-1));
+      --_tab-slot: calc(var(--_tab-min) + 2 * var(--ds-space-2));
+      --_round: calc(2 * (var(--ds-control-border-width) + var(--ds-space-2)) + 2 * var(--ds-space-1) + var(--ds-icon-size-m) + .25rem + 2px + 1.2 * var(--ds-type-control-xs));
+      position: sticky;
+      inset-block-end: calc(var(--ds-space-3) + env(safe-area-inset-bottom, 0px));
+      z-index: 1;
+      grid-column: 1 / -1;
+      justify-self: center;
+      display: block;
+      box-sizing: border-box;
+      inline-size: fit-content;
+      max-inline-size: calc(100% - 2 * var(--ds-space-3));
+      margin: 0 auto calc(var(--ds-space-3) + env(safe-area-inset-bottom, 0px));
+      padding: var(--ds-space-2) var(--ds-space-1);
+      border: var(--_edge);
+      border-radius: var(--_corner);
+      background: var(--_fill);
+      -webkit-backdrop-filter: var(--_backdrop);
+      backdrop-filter: var(--_backdrop);
+      box-shadow: var(--ds-shadow-popup);
+      & > ul {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(var(--_tab-min), var(--_tab-slot));
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      &[data-ds-labels=off] {
+        --_round: calc(2 * (var(--ds-control-border-width) + var(--ds-space-2)) + var(--ds-control-size-m));
+      }
+      &[data-ds-width=full],
+      &[data-ds-layout=split] {
+        justify-self: stretch;
+        inline-size: auto;
+        max-inline-size: none;
+        margin-inline: var(--ds-space-3);
+      }
+      &[data-ds-width=full] > ul {
+        grid-auto-columns: minmax(var(--_tab-min), 1fr);
+      }
+      &:not([data-ds-width=full], [data-ds-layout=split]):has(> ul > li:only-child) {
+        display: grid;
+        place-content: center;
+        inline-size: var(--_round);
+        block-size: var(--_round);
+        padding: 0;
+        border-radius: 50%;
+        & > ul {
+          grid-auto-columns: auto;
+        }
+      }
+      &[data-ds-layout=split] {
+        display: flex;
+        justify-content: space-between;
+        gap: var(--ds-space-2);
+        padding: 0;
+        border: 0;
+        background: none;
+        box-shadow: none;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        & > ul {
+          box-sizing: border-box;
+          min-inline-size: 0;
+          padding: var(--ds-space-2) var(--ds-space-1);
+          border: var(--_edge);
+          border-radius: var(--_corner);
+          background: var(--_fill);
+          -webkit-backdrop-filter: var(--_backdrop);
+          backdrop-filter: var(--_backdrop);
+          box-shadow: var(--ds-shadow-popup);
+        }
+        & > ul:last-child {
+          flex: none;
+          place-content: center;
+          grid-auto-columns: auto;
+          inline-size: var(--_round);
+          block-size: var(--_round);
+          margin-inline-start: auto;
+          padding: 0;
+          border-radius: 50%;
+        }
+        &[data-ds-width=full] > ul:first-child:not(:last-child) {
+          flex: 1;
+        }
+      }
+    }
+  }
+  .ds-app-shell-tab {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: 2px;
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: var(--ds-control-size-m);
+    padding: var(--ds-space-1);
+    border: 0;
+    border-radius: var(--ds-radius-control);
+    background: none;
+    color: var(--ds-color-text-muted);
+    font: 400 var(--ds-type-control-xs)/1.2 var(--ds-font);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    & > .ds-icon {
+      box-sizing: border-box;
+      inline-size: var(--ds-icon-size-m);
+      block-size: calc(var(--ds-icon-size-m) + .25rem);
+      padding-block: .125rem;
+      border-radius: var(--_pill);
+    }
+    & > .ds-count-badge {
+      inset-block-start: var(--ds-space-1);
+      inset-inline-end: calc(50% - var(--ds-icon-size-m) / 2 - .25rem);
+    }
+    & > .ds-truncate {
+      max-inline-size: 100%;
+    }
+    &[aria-current] {
+      color: var(--ds-color-text-strong);
+      font-weight: var(--ds-type-label-weight);
+    }
+    &[aria-current] > .ds-icon {
+      inline-size: calc(var(--ds-icon-size-m) + 1.75rem);
+      padding-inline: .875rem;
+      background: var(--ds-color-neutral-hover);
+    }
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: calc(-1 * var(--ds-focus-width));
+    }
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .ds-app-shell-tabbar {
+      --_solid: 100%;
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .ds-app-shell-tabbar {
+      --_solid: 100%;
+      --_backdrop: none;
+    }
+  }
+  .ds-app-shell-panel:popover-open {
+    position: fixed;
+    inset: auto 0 0;
+    inline-size: 100%;
+    max-inline-size: 32rem;
+    max-block-size: 85dvh;
+    margin: 0 auto;
+    padding: var(--ds-space-5) var(--ds-space-2) calc(var(--ds-space-3) + env(safe-area-inset-bottom, 0px));
+    border: var(--ds-control-border-width) solid var(--ds-color-control-edge);
+    border-block-end: 0;
+    border-radius: var(--_corner) var(--_corner) 0 0;
+    background: var(--ds-color-surface);
+    box-shadow: var(--ds-shadow-popup);
+    overflow: hidden;
+    &::before {
+      content: "";
+      position: absolute;
+      inset-block-start: var(--ds-space-3);
+      inset-inline: 0;
+      margin-inline: auto;
+      inline-size: 2.5rem;
+      block-size: .25rem;
+      border-radius: .125rem;
+      background: color-mix(in srgb, var(--ds-color-veil) calc(25% + var(--ds-contrast-amount) * .75), transparent);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ds-app-shell-row,
+    .ds-app-shell-section-link {
+      transition: background-color var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+    }
+    .ds-app-shell-fold > .ds-icon {
+      transition: rotate var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ds-app-shell-group[data-ds-landed] {
+      animation: none;
+    }
+  }
+  @media (forced-colors: active) {
+    .ds-app-shell-tabbar {
+      --_backdrop: none;
+    }
+    .ds-app-shell-tabbar:not([data-ds-layout=split]),
+    .ds-app-shell-tabbar[data-ds-layout=split] > ul {
+      border-color: CanvasText;
+      background: Canvas;
+      box-shadow: none;
+    }
+    .ds-app-shell-row[aria-current],
+    .ds-app-shell-section-link[aria-current],
+    .ds-app-shell-tab[aria-current] {
+      forced-color-adjust: none;
+      background: Highlight;
+      color: HighlightText;
+    }
+    .ds-app-shell-tab[aria-current] > .ds-icon {
+      background: none;
+    }
+    .ds-app-shell-mark {
+      border-color: CanvasText;
+    }
+    .ds-app-shell-panel,
+    .ds-app-shell-skip {
+      border: 1px solid CanvasText;
+    }
+  }
+}
+
 /* src/ion-ui/colors.css */
 :root,
 :host {
@@ -2561,6 +4036,66 @@ h3 {
     display: block;
   }
 }
+.ds-app-shell {
+  --ds-font:
+    Roboto,
+    Arial,
+    sans-serif;
+  background: var(--color-black);
+  color-scheme: light;
+}
+[data-theme=dark] .ds-app-shell {
+  color-scheme: dark;
+}
+.ds-app-shell-header {
+  min-height: 68px;
+  color-scheme: dark;
+}
+.ds-app-shell-header .ds-app-shell-product {
+  color: #fff;
+}
+.ds-app-shell-sidebar {
+  color-scheme: dark;
+}
+.ds-app-shell-main {
+  max-width: none;
+  width: auto;
+  margin: 0 12px 12px;
+  min-height: calc(100dvh - 80px);
+  padding: 32px 40px 120px;
+  border-radius: 12px;
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+}
+.ds-app-shell-tabbar.batch-bar-active {
+  visibility: hidden;
+  pointer-events: none;
+}
+.ds-app-shell-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+@media (max-width: 768px) {
+  .ds-app-shell-main {
+    margin: 0 8px 8px;
+    padding: 24px 16px 120px;
+    min-height: calc(100dvh - 76px);
+    border-radius: clamp(12px, 4vw, 20px);
+  }
+}
+.ds-app-shell-body {
+  padding: 0;
+  max-inline-size: none;
+}
+.rkc-shell-logo {
+  width: 32px;
+  height: 24px;
+  object-fit: contain;
+}
+[data-theme=dark] .device-link {
+  color: #dca7eb;
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -2643,6 +4178,21 @@ h3 {
     if (!Button || !(button2 instanceof Button)) {
       throw new TypeError("A native button in a document is required.");
     }
+  }
+  function labelNode(button2) {
+    const label = button2.querySelector(":scope > [data-ds-button-label]");
+    if (!label && button2.children.length) {
+      throw new TypeError("Buttons with child elements need a direct data-ds-button-label span.");
+    }
+    return label;
+  }
+  function setButtonLabel(button2, label) {
+    requireButton(button2);
+    if (typeof label !== "string" || !label.trim()) throw new TypeError("Button labels must be non-empty text.");
+    const target = labelNode(button2) || button2;
+    const keys = target.querySelector(":scope > [data-ds-keys]");
+    target.textContent = label;
+    if (keys) target.append(keys);
   }
   function showShortcuts(element2) {
     const decided = element2.closest("[data-ds-platform]");
@@ -4205,6 +5755,360 @@ h3 {
     };
   }
 
+  // src/vendor/ui/components/app-shell/app-shell.js
+  init_menu();
+  init_button();
+
+  // src/vendor/ui/components/announce/announce.js
+  var pending = /* @__PURE__ */ new WeakMap();
+  var write = (region, text) => {
+    if (region.textContent !== text) region.textContent = text;
+  };
+  function announce(region, text, { rest = 0, said } = {}) {
+    clearTimeout(pending.get(region));
+    const done = () => {
+      write(region, text);
+      said?.();
+    };
+    if (rest > 0) pending.set(region, setTimeout(done, rest));
+    else done();
+  }
+
+  // src/vendor/ui/components/app-shell/app-shell.js
+  var mounted2 = /* @__PURE__ */ new WeakSet();
+  var isApple2 = (view) => /Mac|iPhone|iPad/.test(view.navigator.platform || view.navigator.userAgent || "");
+  var normalizeText = (text) => (text || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ß/g, "ss").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").trim();
+  function editDistance(a, b) {
+    if (Math.abs(a.length - b.length) > 2) return 3;
+    const rows = [];
+    for (let i = 0; i <= a.length; i++) rows.push([i]);
+    for (let j = 1; j <= b.length; j++) rows[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        rows[i][j] = Math.min(rows[i - 1][j] + 1, rows[i][j - 1] + 1, rows[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) rows[i][j] = Math.min(rows[i][j], rows[i - 2][j - 2] + 1);
+      }
+    }
+    return rows[a.length][b.length];
+  }
+  function wordScore(query, word) {
+    if (word === query) return 1;
+    if (word.startsWith(query)) return 0.9;
+    if (query.length >= 3 && word.includes(query)) return 0.7;
+    const allowed = query.length >= 7 ? 2 : query.length >= 4 ? 1 : 0;
+    if (allowed === 0 || word.length < 4 || word[0] !== query[0]) return 0;
+    const slips = query.length >= 5 ? Math.min(editDistance(query, word), editDistance(query, word.slice(0, query.length))) : editDistance(query, word);
+    return slips <= allowed ? 0.6 - 0.15 * slips : 0;
+  }
+  function searchScore(queryWords, fields) {
+    const words = fields.map(([text, weight]) => [normalizeText(text).split(" ").filter(Boolean), weight]);
+    let total = 0;
+    for (const query of queryWords) {
+      let best = 0;
+      for (const [list, weight] of words) for (const word of list) best = Math.max(best, wordScore(query, word) * weight);
+      if (best === 0) return 0;
+      total += best;
+    }
+    return total / queryWords.length;
+  }
+  function enhanceAppShell(shell, { storage = defaultStorage(shell), onPreference } = {}) {
+    if (!shell?.matches?.("[data-ds-app-shell]")) throw new TypeError("enhanceAppShell needs the shell renderAppShell wrote ([data-ds-app-shell]).");
+    if (mounted2.has(shell)) throw new Error("This app shell is already enhanced; call its dispose() first.");
+    if (onPreference !== void 0 && typeof onPreference !== "function") throw new TypeError("onPreference is a function.");
+    mounted2.add(shell);
+    const controller = new AbortController();
+    const { signal } = controller;
+    const doc = shell.ownerDocument, view = doc.defaultView;
+    const listen = (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal });
+    const disposers = [];
+    const written = /* @__PURE__ */ new Map();
+    const set = (element2, name, value) => {
+      if (!written.has(element2)) written.set(element2, /* @__PURE__ */ new Map());
+      const was = written.get(element2);
+      if (!was.has(name)) was.set(name, element2.getAttribute(name));
+      if (value === null) element2.removeAttribute(name);
+      else element2.setAttribute(name, value);
+    };
+    const key = (name) => `ds-app-shell:${shell.id}:${name}`;
+    const recall = (name) => {
+      try {
+        const value = storage?.getItem(key(name));
+        return value === null || value === void 0 ? void 0 : JSON.parse(value);
+      } catch {
+        return void 0;
+      }
+    };
+    const remember = (name, value) => {
+      try {
+        storage?.setItem(key(name), JSON.stringify(value));
+      } catch {
+      }
+      onPreference?.(name, value);
+    };
+    set(shell, "data-ds-enhanced", "");
+    const hideFailed = (image) => set(image, "hidden", "");
+    for (const image of shell.querySelectorAll(".ds-tag-avatar > img")) {
+      if (image.complete && image.naturalWidth === 0) hideFailed(image);
+      else listen(image, "error", () => hideFailed(image), { once: true });
+    }
+    const hostOwns = shell.hasAttribute("data-ds-host-preferences");
+    for (const opener of shell.querySelectorAll("button[popovertarget]")) {
+      const id = opener.getAttribute("popovertarget");
+      const surface = shell.querySelector(`[id="${CSS.escape(id)}"][popover]`);
+      if (!surface) continue;
+      if (surface.matches(":popover-open")) surface.hidePopover();
+      set(opener, "popovertarget", null);
+      set(surface, "popover", "manual");
+      set(surface, "style", surface.getAttribute("style"));
+      set(opener, "aria-controls", id);
+      set(opener, "aria-expanded", "false");
+      const popup = adoptPopup(surface, { signal, opener, sheet: true, onClose: () => opener.setAttribute("aria-expanded", "false") });
+      const follows = Boolean(opener.compareDocumentPosition(surface) & Node.DOCUMENT_POSITION_FOLLOWING) && !surface.contains(opener) && opener.parentElement === surface.parentElement;
+      listen(opener, "click", () => {
+        if (popup.isOpen) {
+          popup.close({ focus: true });
+          return;
+        }
+        popup.open({ anchor: opener });
+        opener.setAttribute("aria-expanded", "true");
+        if (popup.isSheet || !follows) {
+          const first = [...surface.querySelectorAll("input, a[href], button")].find((control) => control.checkVisibility() && !control.matches("[data-ds-menu-cancel]"));
+          (first ?? surface.querySelector(":scope > [data-ds-menu-cancel]"))?.focus();
+        }
+      });
+      listen(surface, "click", (event) => {
+        if (event.target.closest?.("[data-ds-menu-cancel]")?.parentElement === surface) popup.close({ focus: true });
+      });
+      listen(opener, "keydown", (event) => {
+        if (event.key === "Escape" && popup.isOpen) {
+          event.preventDefault();
+          popup.close({ focus: true });
+        }
+      });
+      listen(surface, "click", (event) => {
+        if (event.target.closest?.("a[href]") && popup.isSheet) popup.close();
+      });
+    }
+    const toggle = shell.querySelector(".ds-app-shell-toggle");
+    const panel = shell.querySelector(".ds-app-shell-panel");
+    const collapsed = () => shell.hasAttribute("data-ds-collapsed");
+    const setCollapsed = (value, { store = true } = {}) => {
+      if (!toggle || value === collapsed()) return;
+      set(shell, "data-ds-collapsed", value ? "" : null);
+      set(toggle, "aria-expanded", String(!value));
+      setButtonLabel(toggle, value ? toggle.dataset.dsExpand : toggle.dataset.dsCollapse);
+      if (store) remember("collapsed", value);
+    };
+    if (toggle) {
+      const rendered = collapsed();
+      set(toggle, "hidden", null);
+      disposers.push(() => setButtonLabel(toggle, rendered ? toggle.dataset.dsExpand : toggle.dataset.dsCollapse));
+      disposers.push(enhanceButton(toggle, { onAction: () => setCollapsed(!collapsed()) }));
+      const stored = hostOwns ? void 0 : recall("collapsed");
+      if (typeof stored === "boolean") setCollapsed(stored, { store: false });
+    }
+    const viewTrigger = shell.querySelector('.ds-app-shell-panel-head [aria-haspopup="menu"]');
+    const setMode = (mode, { store = true } = {}) => {
+      set(shell, "data-ds-mode", mode === "all" ? "all" : null);
+      for (const option of shell.querySelectorAll('[role="menuitemradio"][name="mode"]')) set(option, "aria-checked", String(option.value === mode));
+      if (mode === "all") shell.querySelector(".ds-app-shell-pages [aria-current]")?.scrollIntoView?.({ block: "nearest" });
+      if (store) remember("mode", mode);
+    };
+    if (viewTrigger) {
+      const menu = doc.getElementById(viewTrigger.getAttribute("aria-controls"));
+      for (const element2 of [menu, ...menu.querySelectorAll('[role^="menuitem"]')]) for (const name of ["style", "tabindex", "aria-checked"]) set(element2, name, element2.getAttribute(name));
+      disposers.push(enhanceMenuButton(viewTrigger, { onSelect: (item) => item.name === "mode" ? setMode(item.value) : setCollapsed(!collapsed()) }));
+      const stored = hostOwns ? void 0 : recall("mode");
+      if (stored === "all" || stored === "sections") setMode(stored, { store: false });
+    }
+    const search = shell.querySelector(".ds-app-shell-search");
+    const input = search?.querySelector("input");
+    listen(doc, "keydown", (event) => {
+      if (event.defaultPrevented || !(isApple2(view) ? event.metaKey : event.ctrlKey) || event.altKey || event.shiftKey) return;
+      if (event.target.isContentEditable || event.target.closest?.("textarea")) return;
+      const letter = event.key.toLowerCase();
+      if (letter === "b" && toggle?.checkVisibility()) {
+        event.preventDefault();
+        setCollapsed(!collapsed());
+      }
+      if (letter === "k" && input) {
+        event.preventDefault();
+        if (collapsed()) setCollapsed(false, { store: false });
+        if (!panel.checkVisibility()) shell.querySelector(`.ds-app-shell-tab[aria-controls="${CSS.escape(panel.id)}"]`)?.click();
+        input.focus();
+        input.select();
+      }
+    });
+    if (input) {
+      set(search, "hidden", null);
+      const kbd = search.querySelector("kbd"), keys = kbd.textContent;
+      if (isApple2(view)) kbd.textContent = "\u2318K";
+      disposers.push(() => {
+        kbd.textContent = keys;
+      });
+      const pages = shell.querySelector(".ds-app-shell-pages");
+      const groups = [...pages.querySelectorAll(".ds-app-shell-group")];
+      const empty = pages.querySelector(".ds-app-shell-empty");
+      let best = null;
+      const filter = () => {
+        const query = normalizeText(input.value);
+        const words = query.split(" ").filter(Boolean);
+        set(pages, "data-ds-searching", query ? "" : null);
+        best?.removeAttribute("data-ds-best");
+        best = null;
+        let bestScore = 0, matches = 0;
+        for (const group of groups) {
+          const section = group.querySelector(".ds-app-shell-group-label")?.textContent ?? "";
+          let groupBest = 0;
+          const items = [...group.querySelectorAll("li")];
+          for (const item of items) {
+            const link = item.querySelector(":scope > a, :scope > .ds-app-shell-line > a");
+            const parent = item.parentElement.closest("li")?.querySelector(":scope > a, :scope > .ds-app-shell-line > a");
+            const score = !query ? 1 : searchScore(words, [[link?.querySelector(".ds-app-shell-label")?.textContent, 1], [link?.dataset.dsKeywords, 0.8], [parent?.querySelector(".ds-app-shell-label")?.textContent, 0.5], [section, 0.5]]);
+            set(item, "hidden", score === 0 ? "" : null);
+            if (score > 0) {
+              matches += query ? 1 : 0;
+              groupBest = Math.max(groupBest, score);
+              if (query && score > bestScore) {
+                bestScore = score;
+                best = link;
+              }
+            }
+          }
+          for (const item of items) if (item.hasAttribute("hidden") && item.querySelector("li:not([hidden])")) set(item, "hidden", null);
+          set(group, "hidden", query && groupBest === 0 ? "" : null);
+        }
+        best?.setAttribute("data-ds-best", "");
+        const found = Boolean(query) && matches > 0;
+        set(empty, "data-ds-count", found ? "" : null);
+        if (found) announce(empty, empty.dataset[matches === 1 ? "dsFoundOne" : "dsFound"].replace("{count}", matches), { rest: 500 });
+        else announce(empty, query ? empty.dataset.dsWords : "");
+      };
+      listen(input, "input", filter);
+      listen(input, "keydown", (event) => {
+        if (event.key === "Enter" && best && input.value.trim()) {
+          event.preventDefault();
+          best.click();
+        } else if (event.key === "Escape" && input.value) {
+          event.preventDefault();
+          event.stopPropagation();
+          input.value = "";
+          filter();
+        }
+      });
+      disposers.push(() => {
+        input.value = "";
+        announce(empty, "");
+        empty.removeAttribute("data-ds-count");
+        best?.removeAttribute("data-ds-best");
+      });
+    }
+    const remembered = (() => {
+      const value = recall("open");
+      return value && typeof value === "object" ? { ...value } : {};
+    })();
+    const reduced = view.matchMedia("(prefers-reduced-motion: reduce)");
+    const setOpen = (fold, open, animate = false) => {
+      set(fold, "aria-expanded", String(open));
+      set(fold, "aria-label", open ? fold.dataset.dsHide : fold.dataset.dsShow);
+      const list = doc.getElementById(fold.getAttribute("aria-controls"));
+      list?.getAnimations?.().forEach((motion2) => motion2.cancel());
+      if (!animate || reduced.matches || !list?.animate) {
+        set(fold.closest("li"), "data-ds-folded", open ? null : "");
+        return;
+      }
+      set(fold.closest("li"), "data-ds-folded", null);
+      const height = list.scrollHeight;
+      const frames = [{ height: "0px", opacity: 0, overflow: "hidden" }, { height: `${height}px`, opacity: 1, overflow: "hidden" }];
+      const easing = view.getComputedStyle(list).getPropertyValue("--ds-motion-ease-standard").trim() || "ease-out";
+      const motion = list.animate(open ? frames : frames.reverse(), { duration: 160 + Math.min(height, 300) * 0.4, easing });
+      motion.onfinish = () => {
+        if (!open && fold.getAttribute("aria-expanded") === "false") set(fold.closest("li"), "data-ds-folded", "");
+      };
+    };
+    disposers.unshift(() => {
+      for (const fold of shell.querySelectorAll(".ds-app-shell-fold")) doc.getElementById(fold.getAttribute("aria-controls"))?.getAnimations?.().forEach((motion) => motion.cancel());
+    });
+    for (const fold of shell.querySelectorAll(".ds-app-shell-fold")) {
+      set(fold, "hidden", null);
+      const holds = fold.closest("li").querySelector("[aria-current]");
+      const stored = remembered[fold.dataset.dsKey];
+      if (!holds && typeof stored === "boolean") setOpen(fold, stored);
+    }
+    listen(shell, "click", (event) => {
+      const fold = event.target.closest?.(".ds-app-shell-fold");
+      if (!fold) return;
+      const open = event.altKey || fold.getAttribute("aria-expanded") !== "true";
+      const scope = event.altKey ? fold.closest(".ds-app-shell-pages, .ds-app-shell-flyout, .ds-app-shell-sheet") : null;
+      for (const each of scope ? scope.querySelectorAll(".ds-app-shell-fold") : [fold]) {
+        for (const twin of shell.querySelectorAll(`.ds-app-shell-fold[data-ds-key="${CSS.escape(each.dataset.dsKey)}"]`)) setOpen(twin, open, twin === fold);
+        remembered[each.dataset.dsKey] = open;
+      }
+      remember("open", { ...remembered });
+    });
+    for (const link of shell.querySelectorAll(".ds-app-shell-section-link")) {
+      listen(link, "click", (event) => {
+        if (shell.dataset.dsMode !== "all" || collapsed() || !panel.checkVisibility() || event.ctrlKey || event.metaKey || event.shiftKey) return;
+        const group = shell.querySelector(`.ds-app-shell-group[data-ds-section="${CSS.escape(link.dataset.dsSection)}"]`);
+        if (!group) return;
+        event.preventDefault();
+        group.scrollIntoView({ block: "start", behavior: reduced.matches ? "auto" : "smooth" });
+        group.querySelector("a")?.focus({ preventScroll: true });
+        group.removeAttribute("data-ds-landed");
+        void group.offsetWidth;
+        group.setAttribute("data-ds-landed", "");
+      });
+    }
+    disposers.push(() => {
+      for (const group of shell.querySelectorAll("[data-ds-landed]")) group.removeAttribute("data-ds-landed");
+    });
+    const dismissable = () => [...shell.querySelectorAll(".ds-app-shell-section, .ds-app-shell[data-ds-collapsed] .ds-app-shell-pages .ds-app-shell-row")];
+    listen(doc, "keydown", (event) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      const open = dismissable().find((shown) => !shown.hasAttribute("data-ds-dismissed") && shown.matches(":hover, :focus-visible, :has(:focus-visible)"));
+      if (!open) return;
+      open.setAttribute("data-ds-dismissed", "");
+      if (open.contains(doc.activeElement) && open.matches(".ds-app-shell-section")) open.querySelector(".ds-app-shell-section-link").focus();
+    });
+    listen(shell, "mouseout", (event) => {
+      const was = event.target.closest?.("[data-ds-dismissed]");
+      if (was && !was.contains(event.relatedTarget)) was.removeAttribute("data-ds-dismissed");
+    });
+    listen(shell, "focusout", (event) => {
+      const was = event.target.closest?.("[data-ds-dismissed]");
+      if (was && !was.contains(event.relatedTarget)) was.removeAttribute("data-ds-dismissed");
+    });
+    disposers.push(() => {
+      for (const section of shell.querySelectorAll("[data-ds-dismissed]")) section.removeAttribute("data-ds-dismissed");
+    });
+    return () => {
+      if (signal.aborted) return;
+      controller.abort();
+      for (const dispose of disposers.reverse()) dispose();
+      for (const [element2, names] of written) {
+        for (const [name, value] of names) {
+          if (name === "style" && value === null) {
+            element2.style.cssText = "";
+            element2.getAttribute("style");
+          }
+          if (value === null) element2.removeAttribute(name);
+          else element2.setAttribute(name, value);
+        }
+      }
+      mounted2.delete(shell);
+    };
+  }
+  function defaultStorage(shell) {
+    try {
+      return shell?.ownerDocument?.defaultView?.localStorage ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  // src/vendor/ui/shell-markup.ts
+  var shellMarkup = '<div class="ds-app-shell" id="app" data-ds-app-shell data-ds-sections="one"><a class="ds-app-shell-skip" href="#app-main">Skip to content</a><div class="ds-app-shell-sidebar"><div class="ds-app-shell-panel" id="app-panel" popover><div class="ds-app-shell-search" hidden><svg class="ds-icon" aria-hidden="true" data-icon="search" viewBox="0 0 24 24" fill="currentColor"><path d="M16.1017 17.1624C14.717 18.3101 12.9391 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11C19 12.9391 18.3101 14.717 17.1624 16.1018L21.7803 20.7197C22.0732 21.0126 22.0732 21.4874 21.7803 21.7803C21.4874 22.0732 21.0125 22.0732 20.7196 21.7803L16.1017 17.1624ZM17.5 11C17.5 7.41015 14.5899 4.5 11 4.5C7.41015 4.5 4.5 7.41015 4.5 11C4.5 14.5899 7.41015 17.5 11 17.5C14.5899 17.5 17.5 14.5899 17.5 11Z"/></svg><input type="search" id="app-search" aria-label="Search pages" placeholder="Search pages" autocomplete="off" enterkeyhint="go" spellcheck="false"><kbd class="ds-app-shell-kbd" aria-hidden="true">Ctrl K</kbd></div><nav class="ds-app-shell-pages" aria-label="Navigation"><section class="ds-app-shell-group" data-ds-section="0" data-ds-active><ul class="ds-app-shell-rows" data-ds-level="2" aria-label="Navigation"><li><a class="ds-app-shell-row" href="/__rxui__/infrastructure"><svg class="ds-icon" aria-hidden="true" data-icon="grid" viewBox="0 0 24 24" fill="currentColor"><path d="M8.75 13C9.99264 13 11 14.0074 11 15.25V18.75C11 19.9926 9.99264 21 8.75 21H5.25C4.00736 21 3 19.9926 3 18.75V15.25C3 14.0074 4.00736 13 5.25 13H8.75ZM18.75 13C19.9926 13 21 14.0074 21 15.25V18.75C21 19.9926 19.9926 21 18.75 21H15.25C14.0074 21 13 19.9926 13 18.75V15.25C13 14.0074 14.0074 13 15.25 13H18.75ZM8.75 14.5H5.25C4.83579 14.5 4.5 14.8358 4.5 15.25V18.75C4.5 19.1642 4.83579 19.5 5.25 19.5H8.75C9.16421 19.5 9.5 19.1642 9.5 18.75V15.25C9.5 14.8358 9.16421 14.5 8.75 14.5ZM18.75 14.5H15.25C14.8358 14.5 14.5 14.8358 14.5 15.25V18.75C14.5 19.1642 14.8358 19.5 15.25 19.5H18.75C19.1642 19.5 19.5 19.1642 19.5 18.75V15.25C19.5 14.8358 19.1642 14.5 18.75 14.5ZM8.75 3C9.99264 3 11 4.00736 11 5.25V8.75C11 9.99264 9.99264 11 8.75 11H5.25C4.00736 11 3 9.99264 3 8.75V5.25C3 4.00736 4.00736 3 5.25 3H8.75ZM18.75 3C19.9926 3 21 4.00736 21 5.25V8.75C21 9.99264 19.9926 11 18.75 11H15.25C14.0074 11 13 9.99264 13 8.75V5.25C13 4.00736 14.0074 3 15.25 3H18.75ZM8.75 4.5H5.25C4.83579 4.5 4.5 4.83579 4.5 5.25V8.75C4.5 9.16421 4.83579 9.5 5.25 9.5H8.75C9.16421 9.5 9.5 9.16421 9.5 8.75V5.25C9.5 4.83579 9.16421 4.5 8.75 4.5ZM18.75 4.5H15.25C14.8358 4.5 14.5 4.83579 14.5 5.25V8.75C14.5 9.16421 14.8358 9.5 15.25 9.5H18.75C19.1642 9.5 19.5 9.16421 19.5 8.75V5.25C19.5 4.83579 19.1642 4.5 18.75 4.5Z"/></svg><span class="ds-app-shell-label">Infrastructure</span></a></li><li><a class="ds-app-shell-row" href="/__rxui__/devices" aria-current="page"><svg class="ds-icon" aria-hidden="true" data-icon="list" viewBox="0 0 24 24" fill="currentColor"><path d="M2 5.75C2 5.33579 2.33579 5 2.75 5H18.25C18.6642 5 19 5.33579 19 5.75C19 6.16421 18.6642 6.5 18.25 6.5H2.75C2.33579 6.5 2 6.16421 2 5.75ZM2 17.75C2 17.3358 2.33579 17 2.75 17H15.25C15.6642 17 16 17.3358 16 17.75C16 18.1642 15.6642 18.5 15.25 18.5H2.75C2.33579 18.5 2 18.1642 2 17.75ZM2.75 11C2.33579 11 2 11.3358 2 11.75C2 12.1642 2.33579 12.5 2.75 12.5H21.25C21.6642 12.5 22 12.1642 22 11.75C22 11.3358 21.6642 11 21.25 11H2.75Z"/></svg><span class="ds-app-shell-label">Devices</span></a></li></ul></section><p class="ds-app-shell-empty" role="status" data-ds-words="Nothing matches." data-ds-found="{count} pages found" data-ds-found-one="1 page found"></p></nav><button class="ds-app-shell-row ds-app-shell-cancel" type="button" data-ds-menu-cancel hidden>Cancel</button></div></div><div class="ds-app-shell-content"><header class="ds-app-shell-header"><button class="ds-button ds-app-shell-toggle" aria-controls="app-panel" aria-expanded="true" data-ds-collapse="Hide navigation" data-ds-expand="Show navigation" hidden data-variant="tertiary" data-size="m" type="button" id="app-toggle" data-ds-shortcut="Mod+B" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="panel-right-contract" viewBox="0 0 24 24" fill="currentColor"><path d="M9.19253 9.24894C9.46962 8.94112 9.94384 8.91617 10.2517 9.1932L12.7517 11.4427C12.9098 11.5849 13 11.7874 13 12C13 12.2126 12.9098 12.4152 12.7517 12.5574L10.2517 14.8068C9.94384 15.0839 9.46962 15.0589 9.19253 14.7511C8.91543 14.4433 8.94039 13.9692 9.24827 13.6922L10.2955 12.7499H6.75C6.33579 12.7499 6 12.4141 6 12C6 11.5859 6.33579 11.2502 6.75 11.2502H10.2955L9.24828 10.3079C8.94039 10.0309 8.91543 9.55675 9.19253 9.24894ZM22 17.2506C22 18.7691 20.7688 20 19.25 20L4.75 20C3.23122 20 2 18.7691 2 17.2506V6.74937C2 5.23093 3.23122 4 4.75 4H19.25C20.7688 4 22 5.23094 22 6.74937L22 17.2506ZM19.25 18.5003C19.9404 18.5003 20.5 17.9408 20.5 17.2506L20.5 6.74937C20.5 6.05917 19.9404 5.49966 19.25 5.49966L15.9958 5.49966L15.9958 18.5003H19.25ZM14.4958 18.5003L14.4958 5.49966L4.75 5.49965C4.05965 5.49965 3.5 6.05917 3.5 6.74937L3.5 17.2506C3.5 17.9408 4.05964 18.5003 4.75 18.5003L14.4958 18.5003Z"/></svg><span data-ds-button-label>Hide navigation<span data-ds-keys="Ctrl+B" data-ds-keys-apple="\u2318B" aria-hidden="true"></span></span></button><div class="ds-app-shell-identity"><a class="ds-app-shell-product" href="/__rxui__/infrastructure">Satellite</a></div><div class="ds-app-shell-end"><div class="ds-app-shell-tools"><span class="demo">Sample data</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme"><svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg></button></div></div></header><div class="ds-app-shell-body"><main class="ds-app-shell-main" id="app-main" tabindex="-1"><div id="app-content"></div></main></div></div><nav class="ds-app-shell-tabbar" aria-label="Navigation"><ul><li><a class="ds-app-shell-tab" href="/__rxui__/infrastructure"><svg class="ds-icon" aria-hidden="true" data-icon="grid" viewBox="0 0 24 24" fill="currentColor"><path d="M8.75 13C9.99264 13 11 14.0074 11 15.25V18.75C11 19.9926 9.99264 21 8.75 21H5.25C4.00736 21 3 19.9926 3 18.75V15.25C3 14.0074 4.00736 13 5.25 13H8.75ZM18.75 13C19.9926 13 21 14.0074 21 15.25V18.75C21 19.9926 19.9926 21 18.75 21H15.25C14.0074 21 13 19.9926 13 18.75V15.25C13 14.0074 14.0074 13 15.25 13H18.75ZM8.75 14.5H5.25C4.83579 14.5 4.5 14.8358 4.5 15.25V18.75C4.5 19.1642 4.83579 19.5 5.25 19.5H8.75C9.16421 19.5 9.5 19.1642 9.5 18.75V15.25C9.5 14.8358 9.16421 14.5 8.75 14.5ZM18.75 14.5H15.25C14.8358 14.5 14.5 14.8358 14.5 15.25V18.75C14.5 19.1642 14.8358 19.5 15.25 19.5H18.75C19.1642 19.5 19.5 19.1642 19.5 18.75V15.25C19.5 14.8358 19.1642 14.5 18.75 14.5ZM8.75 3C9.99264 3 11 4.00736 11 5.25V8.75C11 9.99264 9.99264 11 8.75 11H5.25C4.00736 11 3 9.99264 3 8.75V5.25C3 4.00736 4.00736 3 5.25 3H8.75ZM18.75 3C19.9926 3 21 4.00736 21 5.25V8.75C21 9.99264 19.9926 11 18.75 11H15.25C14.0074 11 13 9.99264 13 8.75V5.25C13 4.00736 14.0074 3 15.25 3H18.75ZM8.75 4.5H5.25C4.83579 4.5 4.5 4.83579 4.5 5.25V8.75C4.5 9.16421 4.83579 9.5 5.25 9.5H8.75C9.16421 9.5 9.5 9.16421 9.5 8.75V5.25C9.5 4.83579 9.16421 4.5 8.75 4.5ZM18.75 4.5H15.25C14.8358 4.5 14.5 4.83579 14.5 5.25V8.75C14.5 9.16421 14.8358 9.5 15.25 9.5H18.75C19.1642 9.5 19.5 9.16421 19.5 8.75V5.25C19.5 4.83579 19.1642 4.5 18.75 4.5Z"/></svg><span class="ds-truncate" title="Infrastructure"><span class="ds-truncate-text" dir="auto">Infrastructure</span></span></a></li><li><a class="ds-app-shell-tab" href="/__rxui__/devices" aria-current="page"><svg class="ds-icon" aria-hidden="true" data-icon="list" viewBox="0 0 24 24" fill="currentColor"><path d="M2 5.75C2 5.33579 2.33579 5 2.75 5H18.25C18.6642 5 19 5.33579 19 5.75C19 6.16421 18.6642 6.5 18.25 6.5H2.75C2.33579 6.5 2 6.16421 2 5.75ZM2 17.75C2 17.3358 2.33579 17 2.75 17H15.25C15.6642 17 16 17.3358 16 17.75C16 18.1642 15.6642 18.5 15.25 18.5H2.75C2.33579 18.5 2 18.1642 2 17.75ZM2.75 11C2.33579 11 2 11.3358 2 11.75C2 12.1642 2.33579 12.5 2.75 12.5H21.25C21.6642 12.5 22 12.1642 22 11.75C22 11.3358 21.6642 11 21.25 11H2.75Z"/></svg><span class="ds-truncate" title="Devices"><span class="ds-truncate-text" dir="auto">Devices</span></span></a></li><li><button class="ds-app-shell-tab" type="button" popovertarget="app-panel"><svg class="ds-icon" aria-hidden="true" data-icon="more-horizontal" viewBox="0 0 24 24" fill="currentColor"><path d="M7.75 12C7.75 12.9665 6.9665 13.75 6 13.75C5.0335 13.75 4.25 12.9665 4.25 12C4.25 11.0335 5.0335 10.25 6 10.25C6.9665 10.25 7.75 11.0335 7.75 12ZM13.75 12C13.75 12.9665 12.9665 13.75 12 13.75C11.0335 13.75 10.25 12.9665 10.25 12C10.25 11.0335 11.0335 10.25 12 10.25C12.9665 10.25 13.75 11.0335 13.75 12ZM18 13.75C18.9665 13.75 19.75 12.9665 19.75 12C19.75 11.0335 18.9665 10.25 18 10.25C17.0335 10.25 16.25 11.0335 16.25 12C16.25 12.9665 17.0335 13.75 18 13.75Z"/></svg><span class="ds-truncate" title="More"><span class="ds-truncate-text" dir="auto">More</span></span></button></li></ul></nav></div>';
+
   // src/vendor/ui/components/batch-bar/batch-bar.js
   init_button();
 
@@ -4212,14 +6116,14 @@ h3 {
   var CONTROLS = 'button, a[href], input:not([type="hidden"]), select, textarea';
   var OWNERS = '[role="toolbar"], [popover], dialog, [role="dialog"], [role="menu"], [role="listbox"]';
   var OWN_KEYS = 'input:not([type="button"], [type="submit"], [type="reset"], [type="checkbox"], [type="image"], [type="file"], [type="color"]), select, textarea';
-  var mounted2 = /* @__PURE__ */ new WeakSet();
+  var mounted3 = /* @__PURE__ */ new WeakSet();
   function enhanceToolbar(toolbar) {
     const view = toolbar?.ownerDocument?.defaultView;
     if (!view || !(toolbar instanceof view.Element) || toolbar.getAttribute("role") !== "toolbar") {
       throw new TypeError('enhanceToolbar needs the role="toolbar" element from renderToolbar.');
     }
-    if (mounted2.has(toolbar)) throw new Error("This toolbar is already enhanced; dispose before remounting.");
-    mounted2.add(toolbar);
+    if (mounted3.has(toolbar)) throw new Error("This toolbar is already enhanced; dispose before remounting.");
+    mounted3.add(toolbar);
     const doc = toolbar.ownerDocument;
     const controller = new AbortController();
     const { signal } = controller;
@@ -4314,12 +6218,12 @@ h3 {
         if (value === null) control.removeAttribute("tabindex");
         else control.setAttribute("tabindex", value);
       }
-      mounted2.delete(toolbar);
+      mounted3.delete(toolbar);
     };
   }
 
   // src/vendor/ui/components/batch-bar/batch-bar.js
-  var mounted3 = /* @__PURE__ */ new WeakSet();
+  var mounted4 = /* @__PURE__ */ new WeakSet();
   var STATE_KEYS = ["count", "verbs", "narrow"];
   var KEBAB = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
   var MORPH = ["ds-batch-bar-travel", "ds-batch-bar-open", "ds-batch-bar-word"];
@@ -4341,8 +6245,8 @@ h3 {
     if (text !== void 0 && (!text || typeof text !== "object" || Object.entries(text).some(([key, value]) => !["count", "reach"].includes(key) || typeof value !== "function"))) {
       throw new TypeError("Batch bar text takes count(count) and reach(applies, count) functions.");
     }
-    if (mounted3.has(bar)) throw new Error("This batch bar is already enhanced; dispose before remounting.");
-    mounted3.add(bar);
+    if (mounted4.has(bar)) throw new Error("This batch bar is already enhanced; dispose before remounting.");
+    mounted4.add(bar);
     const doc = bar.ownerDocument;
     const controller = new AbortController();
     const { signal } = controller;
@@ -4593,7 +6497,7 @@ h3 {
         endEntering();
         controller.abort();
         for (const dispose of disposers.reverse()) dispose();
-        mounted3.delete(bar);
+        mounted4.delete(bar);
       }
     };
   }
@@ -4758,72 +6662,23 @@ h3 {
   function mountDevices(root2, site) {
     const selected = /* @__PURE__ */ new Set();
     let activeDialog = null;
-    root2.innerHTML = '<div class="layout" id="shell"><aside class="nav" id="sidebar" aria-label="Main navigation"><div class="nav-header"><button type="button" class="nav-toggle" id="nav-toggle" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar-menu"><span aria-hidden="true">\u2630</span></button><img class="nav-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="Red Kite" width="56" height="24"></div><nav id="sidebar-menu" class="nav-menu" aria-label="Main navigation"><div class="menu-group is-active"><button type="button" class="menu-link menu-parent" id="infrastructure-toggle" aria-expanded="true" aria-controls="infrastructure-items"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="3" width="11" height="18" rx="1.5"/><path d="M7 7h5M7 10h5M15 7h2l2 2v7a2 2 0 0 1-4 0"/></svg><span class="menu-label">Infrastructure</span><svg class="menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="menu-children" id="infrastructure-items"><a href="#/devices" class="menu-child is-active" aria-current="page">Devices</a></div></div></nav></aside><button type="button" class="nav-backdrop" id="nav-backdrop" aria-label="Close navigation" tabindex="-1"></button><div class="workspace"><header class="topbar"><div class="mobile-header-start"><button type="button" class="mobile-menu" id="mobile-menu" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="mobile-app-name">Satellite</span></div><div class="header-actions"><span class="environment">SATELLITE LOCAL</span><span class="demo">Sample data</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme"><svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg><span>Theme</span></button></div></header><main><section id="infrastructure-overview" class="infrastructure-overview" hidden aria-labelledby="infrastructure-title"><h1 id="infrastructure-title" tabindex="-1">Infrastructure</h1><button type="button" id="open-devices" class="overview-card"><strong>Devices</strong><span>Manage devices and inspect registers</span></button></section><div id="devices-page"><div class="page-heading"><div><div class="title-line"><button type="button" id="back-infrastructure" class="back-button" aria-label="Back to Infrastructure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button><h1 id="devices-title" tabindex="-1">Devices</h1><details class="info"><summary aria-label="About sample data">i</summary><div class="info-content">This preview uses sample data. Changes reset when the page reloads.</div></details></div></div><button type="button" id="new-device" class="ion-button ion-button--cta">+ New Device</button></div><section class="card" aria-label="Device inventory"><div class="card-heading"><p class="muted" id="device-count"></p></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></main></div></div><div id="panel-host"></div>';
-    const shell = root2.querySelector("#shell");
-    const navToggle = root2.querySelector("#nav-toggle");
-    const mobileMenu = root2.querySelector("#mobile-menu");
-    const groupToggle = root2.querySelector("#infrastructure-toggle");
-    const groupItems = root2.querySelector("#infrastructure-items");
-    groupToggle.addEventListener("click", () => {
-      if (shell.classList.contains("collapsed") && !window.matchMedia("(max-width: 700px)").matches) {
-        shell.classList.remove("collapsed");
-        navToggle.setAttribute("aria-expanded", "true");
-        navToggle.setAttribute("aria-label", "Collapse sidebar");
-        groupItems.hidden = false;
-        groupToggle.setAttribute("aria-expanded", "true");
-        return;
-      }
-      groupItems.hidden = !groupItems.hidden;
-      groupToggle.setAttribute("aria-expanded", String(!groupItems.hidden));
+    root2.innerHTML = shellMarkup;
+    root2.querySelector("#app-content").innerHTML = '<section id="infrastructure-overview" class="infrastructure-overview" hidden aria-labelledby="infrastructure-title"><h1 id="infrastructure-title" tabindex="-1">Infrastructure</h1><button type="button" id="open-devices" class="overview-card"><strong>Devices</strong><span>Manage devices and inspect registers</span></button></section><div id="devices-page"><div class="page-heading"><div><div class="title-line"><button type="button" id="back-infrastructure" class="back-button" aria-label="Back to Infrastructure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button><h1 id="devices-title" tabindex="-1">Devices</h1><details class="info"><summary aria-label="About sample data">i</summary><div class="info-content">This preview uses sample data. Changes reset when the page reloads.</div></details></div></div><button type="button" id="new-device" class="ion-button ion-button--cta">+ New Device</button></div><section class="card" aria-label="Device inventory"><div class="card-heading"><p class="muted" id="device-count"></p></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div>';
+    root2.insertAdjacentHTML("beforeend", '<div id="panel-host"></div>');
+    const shell = root2.querySelector("[data-ds-app-shell]");
+    shell.querySelectorAll('a[href^="/__rxui__/"]').forEach((link) => {
+      link.setAttribute("href", "#/" + link.getAttribute("href").split("/").pop());
     });
-    const backdrop = root2.querySelector("#nav-backdrop");
-    const sidebar = root2.querySelector("#sidebar");
-    const workspace = root2.querySelector(".workspace");
-    const mobileLayout = window.matchMedia("(max-width: 700px)");
-    const closeNavigation = (restoreFocus = true) => {
-      shell.classList.remove("mobile-open");
-      workspace.inert = false;
-      sidebar.removeAttribute("role");
-      sidebar.removeAttribute("aria-modal");
-      document.documentElement.classList.remove("navigation-open");
-      mobileMenu.setAttribute("aria-expanded", "false");
-      if (restoreFocus && mobileLayout.matches) mobileMenu.focus();
+    shell.querySelector(".ds-app-shell-product").insertAdjacentHTML("afterbegin", '<img class="rkc-shell-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="">');
+    const disposeShell = enhanceAppShell(shell);
+    const tabbar = root2.querySelector(".ds-app-shell-tabbar");
+    const onBatchToggle = (event) => {
+      const shown = event.detail.shown;
+      tabbar.inert = shown;
+      tabbar.classList.toggle("batch-bar-active", shown);
     };
-    backdrop.addEventListener("click", () => closeNavigation());
-    root2.querySelector(".menu-child").addEventListener("click", () => {
-      if (mobileLayout.matches) closeNavigation(false);
-    });
-    const handleMobileChange = () => {
-      closeNavigation(false);
-      navToggle.setAttribute("aria-label", mobileLayout.matches ? "Close navigation" : shell.classList.contains("collapsed") ? "Expand sidebar" : "Collapse sidebar");
-    };
-    mobileLayout.addEventListener("change", handleMobileChange);
-    handleMobileChange();
+    root2.addEventListener("ds-batch-bar-toggle", onBatchToggle);
     const themeToggle = root2.querySelector("#theme-toggle");
-    navToggle.addEventListener("click", () => {
-      if (window.matchMedia("(max-width: 700px)").matches) {
-        closeNavigation();
-        return;
-      }
-      const collapsed = shell.classList.toggle("collapsed");
-      navToggle.setAttribute("aria-expanded", String(!collapsed));
-      navToggle.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
-    });
-    mobileMenu.addEventListener("click", () => {
-      const open2 = shell.classList.toggle("mobile-open");
-      mobileMenu.setAttribute("aria-expanded", String(open2));
-      document.documentElement.classList.toggle("navigation-open", open2);
-      workspace.inert = open2;
-      if (open2) {
-        sidebar.setAttribute("role", "dialog");
-        sidebar.setAttribute("aria-modal", "true");
-        navToggle.focus();
-      } else {
-        sidebar.removeAttribute("role");
-        sidebar.removeAttribute("aria-modal");
-        mobileMenu.focus();
-      }
-    });
     themeToggle.addEventListener("click", () => {
       const dark = document.documentElement.dataset.theme !== "dark";
       document.documentElement.dataset.theme = dark ? "dark" : "light";
@@ -4843,15 +6698,16 @@ h3 {
     const disposeTableNavigator = mountTableNavigator(root2.querySelector(".card .table-scroll"), root2.querySelector(".card-heading"));
     const overview = root2.querySelector("#infrastructure-overview");
     const devicesPage = root2.querySelector("#devices-page");
-    const activeLink = root2.querySelector(".menu-child");
     const transition = createPageTransition({ enabled: true });
     let previousOverview;
     const syncRoute = (focusHeading = false) => {
       const showingOverview = location.hash === "#/infrastructure";
       overview.hidden = !showingOverview;
       devicesPage.hidden = showingOverview;
-      if (showingOverview) activeLink.removeAttribute("aria-current");
-      else activeLink.setAttribute("aria-current", "page");
+      shell.querySelectorAll(".ds-app-shell-row, .ds-app-shell-tab").forEach((link) => {
+        if (link.hash === (showingOverview ? "#/infrastructure" : "#/devices")) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+      });
       if (focusHeading) {
         root2.querySelector(showingOverview ? "#infrastructure-title" : "#devices-title")?.focus();
         if (previousOverview !== showingOverview) transition.enter(showingOverview ? overview : devicesPage, showingOverview ? "back" : "deeper");
@@ -4877,21 +6733,9 @@ h3 {
       lastOpener = null;
     };
     const keydown = (event) => {
-      if (event.key === "Tab" && shell.classList.contains("mobile-open")) {
-        const controls = Array.from(sidebar.querySelectorAll("button, a[href]")).filter((control) => control.checkVisibility());
-        const first = controls[0], last = controls[controls.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last?.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first?.focus();
-        }
-      }
       if (event.key !== "Escape") return;
       if (activeDialog) return;
       if (host.firstChild) close();
-      else if (shell.classList.contains("mobile-open")) closeNavigation();
     };
     document.addEventListener("keydown", keydown);
     function open(device, opener, candidates = []) {
@@ -4899,8 +6743,8 @@ h3 {
       const registers = getDeviceModbusRegisters(device);
       let status = "all";
       host.replaceChildren();
-      const backdrop2 = element("div", "backdrop");
-      backdrop2.addEventListener("click", close);
+      const backdrop = element("div", "backdrop");
+      backdrop.addEventListener("click", close);
       let panel = element("aside", "panel");
       panel.setAttribute("role", "dialog");
       panel.setAttribute("aria-modal", "true");
@@ -4990,7 +6834,7 @@ h3 {
           first.focus();
         }
       });
-      host.append(backdrop2, panel);
+      host.append(backdrop, panel);
       render();
       closeButton.focus();
     }
@@ -5000,7 +6844,7 @@ h3 {
     const newButton = root2.querySelector("#new-device");
     const selectAll = root2.querySelector("#select-all");
     const notice = root2.querySelector("#notice");
-    const announce = (message) => {
+    const announce2 = (message) => {
       notice.textContent = message;
     };
     function renderInventory() {
@@ -5088,7 +6932,7 @@ h3 {
         renderInventory();
         dismiss();
         newButton.focus();
-        announce(`Deleted ${ids.size} devices and ${linkCount} links.`);
+        announce2(`Deleted ${ids.size} devices and ${linkCount} links.`);
       });
       actions.append(cancel, confirm);
       box.append(actions);
@@ -5149,7 +6993,7 @@ h3 {
         site.add({ name: name.value.trim(), ipAddress: ip.value.trim(), port: Number(port.value), unitId: Number(unit.value), vendorId: vendorItem?.id, vendor: vendorItem?.name, modelId: modelItem?.id, model: modelItem?.name });
         renderInventory();
         dismiss();
-        announce("Device added to sample data.");
+        announce2("Device added to sample data.");
       });
       box.append(form);
       form.querySelector("#device-name").focus();
@@ -5159,7 +7003,7 @@ h3 {
         selected.clear();
         renderInventory();
         newButton.focus();
-        announce("Selection cleared.");
+        announce2("Selection cleared.");
       },
       onAction: (action, opener) => {
         if (action === "register-check") {
@@ -5169,7 +7013,7 @@ h3 {
           const count = selected.size;
           site.toggle(selected);
           renderInventory();
-          announce("Updated sample status for " + count + " devices.");
+          announce2("Updated sample status for " + count + " devices.");
         } else if (action === "delete") {
           confirmDelete(opener);
         }
@@ -5178,8 +7022,8 @@ h3 {
     newButton.addEventListener("click", createDevice);
     renderInventory();
     return () => {
-      closeNavigation(false);
-      mobileLayout.removeEventListener("change", handleMobileChange);
+      root2.removeEventListener("ds-batch-bar-toggle", onBatchToggle);
+      disposeShell();
       batch.dispose();
       transition.dispose();
       disposeTableNavigator();
