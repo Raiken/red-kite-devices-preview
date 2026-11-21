@@ -1044,6 +1044,35 @@ h3 {
   background: var(--color-black);
   color: var(--color-white);
 }
+.workspace {
+  background: var(--color-black);
+  min-height: 100vh;
+}
+.workspace main {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+  border-radius: 12px 12px 0 0;
+  min-height: calc(100vh - 48px);
+  margin: 0 12px;
+  padding-top: 32px;
+}
+@media (max-width: 700px) {
+  .nav {
+    visibility: hidden;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .layout.mobile-open .nav {
+    visibility: visible;
+    pointer-events: auto;
+    overflow: auto;
+  }
+  .workspace main {
+    margin: 0 8px;
+    padding: 24px 16px 90px;
+    border-radius: 12px 12px 0 0;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   // src/features/devices/api/devices.ts
