@@ -1614,6 +1614,28 @@ h3 {
     };
   }
 
+  // src/platform/page-transition.ts
+  function createPageTransition({ enabled = true, duration = 160 } = {}) {
+    let active;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    return {
+      enter(page, direction) {
+        active?.cancel();
+        active = void 0;
+        if (!enabled || reducedMotion.matches || typeof page.animate !== "function") return;
+        const offset = direction === "deeper" ? "12px" : direction === "back" ? "-12px" : "0px";
+        active = page.animate(
+          [{ opacity: 0, transform: `translateX(${offset})` }, { opacity: 1, transform: "translateX(0)" }],
+          { duration, easing: "ease-out" }
+        );
+      },
+      dispose() {
+        active?.cancel();
+        active = void 0;
+      }
+    };
+  }
+
   // src/views/devices/table-navigator.ts
   function mountTableNavigator(scroller, header) {
     const media = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 769px)");
@@ -1804,13 +1826,19 @@ h3 {
     const overview = root2.querySelector("#infrastructure-overview");
     const devicesPage = root2.querySelector("#devices-page");
     const activeLink = root2.querySelector(".menu-child");
+    const transition = createPageTransition({ enabled: true });
+    let previousOverview;
     const syncRoute = (focusHeading = false) => {
       const showingOverview = location.hash === "#/infrastructure";
       overview.hidden = !showingOverview;
       devicesPage.hidden = showingOverview;
       if (showingOverview) activeLink.removeAttribute("aria-current");
       else activeLink.setAttribute("aria-current", "page");
-      if (focusHeading) root2.querySelector(showingOverview ? "#infrastructure-title" : "#devices-title")?.focus();
+      if (focusHeading) {
+        root2.querySelector(showingOverview ? "#infrastructure-title" : "#devices-title")?.focus();
+        if (previousOverview !== showingOverview) transition.enter(showingOverview ? overview : devicesPage, showingOverview ? "back" : "deeper");
+      }
+      previousOverview = showingOverview;
     };
     const routeChanged = () => syncRoute(true);
     root2.querySelector("#back-infrastructure").addEventListener("click", () => {
@@ -2119,6 +2147,7 @@ h3 {
     newButton.addEventListener("click", createDevice);
     renderInventory();
     return () => {
+      transition.dispose();
       disposeTableNavigator();
       window.removeEventListener("hashchange", routeChanged);
       document.removeEventListener("keydown", keydown);
