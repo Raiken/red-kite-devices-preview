@@ -1274,14 +1274,32 @@
     grid-column: 1 / -1;
   }
 }
-@media (max-width: 850px) {
+@supports (grid-template-rows: subgrid) {
+  .widget-layout {
+    row-gap: 0;
+  }
+  .widget-layout-item {
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+    margin-block-end: var(--spacing-l, 16px);
+  }
+}
+@media (max-width: 1100px) {
   .widget-layout-item--half {
     grid-column: 1 / -1;
   }
 }
-@container (max-width: 700px) {
-  .widget-layout-item--half {
-    grid-column: 1 / -1;
+@supports (container-type: inline-size) {
+  @media (min-width: 851px) {
+    .widget-layout-item--half {
+      grid-column: span 6;
+    }
+  }
+  @container (max-width: 700px) {
+    .widget-layout-item--half {
+      grid-column: 1 / -1;
+    }
   }
 }
 
@@ -3113,6 +3131,707 @@ body {
   --ds-color-card-edge: var(--color-neutral-200);
 }
 
+/* src/vendor/ui/components/side-panel/side-panel.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  :where(.ds-side-panel-layout) {
+    display: flex;
+    align-items: flex-start;
+    & > :where(:not(.ds-side-panel)) {
+      flex: 1 1 0;
+      min-inline-size: 0;
+    }
+  }
+  :where(.ds-side-panel) {
+    --_gap: 1rem;
+    --_radius: 1rem;
+    --_grip: 1rem;
+    --_rim: var(--ds-color-rim);
+    --_motion: .26s cubic-bezier(.2, .8, .3, 1);
+    &:not(.is-open) {
+      --_motion: .18s cubic-bezier(.2, .8, .3, 1);
+    }
+    --_default-width: min(30rem, 40vw);
+    --_width: min(var(--_user-width, var(--ds-side-panel-width, var(--_default-width))), var(--_max-width, 100vw));
+    --_closed: calc(100% + var(--_gap) + 1rem);
+    &:dir(rtl) {
+      --_closed: calc(-100% - var(--_gap) - 1rem);
+    }
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    inline-size: var(--_width);
+    min-block-size: 0;
+    background: var(--ds-color-surface);
+    color: var(--ds-color-text);
+    font: 400 var(--ds-type-control-size)/1.6 var(--ds-font);
+    &[hidden] {
+      display: none;
+    }
+    & > .ds-side-panel-head {
+      flex: none;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      box-sizing: border-box;
+      padding-block: 1rem;
+      padding-inline: 1.25rem 1rem;
+      border-block-end: 1px solid var(--ds-color-hairline);
+      --_tool: var(--ds-control-size-s);
+      &:has(> .ds-button:not([hidden]):first-child) {
+        padding-inline-start: .75rem;
+      }
+      & .ds-button {
+        position: relative;
+        z-index: 3;
+      }
+      & > .ds-button,
+      & .ds-side-panel-actions > .ds-button {
+        --_icon: 1.125rem;
+        block-size: var(--_tool);
+        min-block-size: 0;
+        min-inline-size: 0;
+        inline-size: auto;
+        aspect-ratio: 4 / 3;
+        border: 0;
+        border-radius: .5rem;
+        color: var(--ds-color-text-muted);
+      }
+    }
+    & .ds-side-panel-title {
+      flex: 1;
+      min-inline-size: 0;
+      margin: 0;
+      font-size: 1rem;
+      font-weight: var(--ds-type-title-weight);
+      line-height: 1.6;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      &:focus {
+        outline: none;
+      }
+    }
+    & .ds-side-panel-actions {
+      flex: none;
+      display: flex;
+      gap: .25rem;
+    }
+    @media (pointer: coarse) {
+      & > .ds-side-panel-head {
+        --_tool: var(--ds-control-min-size);
+      }
+    }
+    & > .ds-side-panel-body {
+      flex: 1;
+      min-block-size: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 1.25rem;
+      transition: opacity .18s ease;
+      &.is-loading {
+        opacity: .35;
+      }
+    }
+    & > .ds-side-panel-foot {
+      flex: none;
+      padding: .75rem 1.25rem 1.25rem;
+      border-block-start: 1px solid var(--ds-color-hairline);
+      background: var(--ds-color-surface);
+      &:empty {
+        display: none;
+      }
+    }
+    & > .ds-side-panel-failed {
+      flex: none;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--ds-space-2) var(--ds-space-3);
+      padding: 1.25rem 1.25rem 0;
+      &[hidden] {
+        display: none;
+      }
+      & > p {
+        margin: 0;
+      }
+    }
+    & > .ds-side-panel-discard {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--ds-space-4);
+      padding: 1.25rem;
+      border-radius: inherit;
+      background: color-mix(in srgb, var(--ds-color-surface) 94%, transparent);
+      text-align: center;
+      &[hidden] {
+        display: none;
+      }
+    }
+    & .ds-side-panel-discard-question {
+      margin: 0;
+      font-weight: var(--ds-type-title-weight);
+      text-wrap: balance;
+    }
+    & .ds-side-panel-discard-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--ds-space-2);
+    }
+    & > .ds-side-panel-grip {
+      --_shown: var(--ds-contrast-amount);
+      --_ink: color-mix(in srgb, var(--ds-color-veil) calc(48% + var(--ds-contrast-amount) * .52), transparent);
+      position: absolute;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      touch-action: none;
+      user-select: none;
+      -webkit-user-select: none;
+      &:hover,
+      &:focus-visible,
+      &.is-active {
+        --_shown: 1;
+        --_ink: var(--ds-color-text);
+      }
+      &.is-active {
+        --_ink: var(--ds-color-state-text);
+      }
+      &:focus-visible {
+        outline: var(--ds-focus-width) solid var(--ds-color-focus);
+        outline-offset: -2px;
+      }
+    }
+    & .ds-side-panel-grip-bar,
+    & > .ds-side-panel-grip::before {
+      opacity: var(--_shown);
+      background-color: var(--_ink);
+      transition: opacity var(--ds-motion-duration-state), background-color var(--ds-motion-duration-state);
+    }
+    & .ds-side-panel-grip-bar {
+      display: block;
+      border-radius: 999px;
+    }
+    @media (hover: hover) {
+      &:dir(ltr) > .ds-side-panel-grip[data-edge=left]:not(:hover, :focus-visible, .is-active),
+      &:dir(rtl) > .ds-side-panel-grip[data-edge=right]:not(:hover, :focus-visible, .is-active) {
+        --_shown: calc(45% + var(--ds-contrast-amount) * .55);
+      }
+    }
+    & > .ds-side-panel-grip:is([data-edge=left], [data-edge=right]) {
+      inset-block: 4rem 0;
+      inline-size: var(--_grip);
+      cursor: col-resize;
+      & > .ds-side-panel-grip-bar {
+        inline-size: 3px;
+        block-size: 2.5rem;
+        margin-block-start: -2rem;
+      }
+    }
+    & > .ds-side-panel-grip[data-edge=left] {
+      left: 0;
+    }
+    & > .ds-side-panel-grip[data-edge=right] {
+      right: 0;
+    }
+    & > .ds-side-panel-grip:is([data-edge=top], [data-edge=bottom]) {
+      inset-inline: var(--_grip);
+      block-size: var(--_grip);
+      cursor: row-resize;
+      & > .ds-side-panel-grip-bar {
+        inline-size: 2.5rem;
+        block-size: 3px;
+      }
+    }
+    & > .ds-side-panel-grip[data-edge=top] {
+      top: 0;
+    }
+    & > .ds-side-panel-grip[data-edge=bottom] {
+      bottom: 0;
+    }
+    & > .ds-side-panel-grip:is([data-edge=top-left], [data-edge=top-right], [data-edge=bottom-left], [data-edge=bottom-right]) {
+      inline-size: 1.5rem;
+      block-size: 1.5rem;
+      border-radius: 0;
+      &::before {
+        content: "";
+        position: absolute;
+        inline-size: var(--_radius);
+        block-size: var(--_radius);
+        -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M12.5 2A10.5 10.5 0 0 1 2 12.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M12.5 2A10.5 10.5 0 0 1 2 12.5' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+      }
+    }
+    & > .ds-side-panel-grip[data-edge=bottom-right] {
+      right: 0;
+      bottom: 0;
+      cursor: nwse-resize;
+      &::before {
+        right: 2px;
+        bottom: 2px;
+      }
+    }
+    & > .ds-side-panel-grip[data-edge=bottom-left] {
+      left: 0;
+      bottom: 0;
+      cursor: nesw-resize;
+      &::before {
+        left: 2px;
+        bottom: 2px;
+        scale: -1 1;
+      }
+    }
+    & > .ds-side-panel-grip[data-edge=top-right] {
+      right: 0;
+      top: 0;
+      cursor: nesw-resize;
+      &::before {
+        right: 2px;
+        top: 2px;
+        scale: 1 -1;
+      }
+    }
+    & > .ds-side-panel-grip[data-edge=top-left] {
+      left: 0;
+      top: 0;
+      cursor: nwse-resize;
+      &::before {
+        left: 2px;
+        top: 2px;
+        scale: -1 -1;
+      }
+    }
+  }
+  :where(.ds-side-panel)[data-mode=floating] {
+    position: fixed;
+    inset-block-start: calc(var(--_boundary-top, 0px) + var(--_gap));
+    inset-inline-end: var(--_gap);
+    block-size: max(0px, min(var(--_user-height, calc(100dvh - var(--_boundary-top, 0px) - 2 * var(--_gap))), calc(100dvh - var(--_boundary-top, 0px) - 2 * var(--_gap))));
+    border: 1px solid var(--_rim);
+    border-radius: var(--_radius);
+    box-shadow: var(--ds-side-panel-shadow, var(--ds-shadow-float-left));
+    &:dir(rtl) {
+      box-shadow: var(--ds-side-panel-shadow, var(--ds-shadow-float-right));
+    }
+    z-index: 40;
+    transform: translateX(var(--_closed));
+    opacity: 0;
+    transition:
+      transform var(--_motion),
+      translate var(--_motion),
+      opacity var(--_motion);
+    &.is-open {
+      transform: none;
+      translate: var(--_shift, none);
+      opacity: 1;
+    }
+    & > .ds-side-panel-head {
+      cursor: grab;
+      touch-action: none;
+    }
+    &.is-dragging > .ds-side-panel-head {
+      cursor: grabbing;
+    }
+    & > .ds-side-panel-foot {
+      border-end-start-radius: calc(var(--_radius) - 1px);
+      border-end-end-radius: calc(var(--_radius) - 1px);
+    }
+  }
+  :where(.ds-side-panel)[data-mode=docked] {
+    --_default-width: min(40rem, 45vw);
+    position: fixed;
+    inset-block: var(--_boundary-top, 0px) 0;
+    inset-inline-end: var(--_dock-end, 0px);
+    z-index: 40;
+    inline-size: 0;
+    opacity: 0;
+    overflow: hidden;
+    border-inline-start: 1px solid var(--ds-color-hairline);
+    transition: inline-size var(--_motion), opacity var(--_motion);
+    &.is-open {
+      inline-size: var(--_width);
+      opacity: 1;
+    }
+    & > :is(.ds-side-panel-head, .ds-side-panel-body, .ds-side-panel-foot, .ds-side-panel-failed) {
+      min-inline-size: calc(var(--_width) - 1px);
+      box-sizing: border-box;
+    }
+    &:dir(ltr) > .ds-side-panel-grip:not([data-edge=left]),
+    &:dir(rtl) > .ds-side-panel-grip:not([data-edge=right]) {
+      display: none;
+    }
+    &.is-open:is(.ds-side-panel[data-mode=docked].is-open ~ *, :has(~ .ds-side-panel[data-mode=docked].is-open)) {
+      --_default-width: min(32rem, 30vw);
+    }
+  }
+  :where(.ds-side-panel).is-leaving {
+    padding: 0;
+    border-block: 0;
+    border-inline-end: 0;
+    animation: ds-side-panel-leave .12s ease-in forwards;
+    pointer-events: none;
+  }
+  @keyframes ds-side-panel-leave {
+    to {
+      opacity: 0;
+    }
+  }
+  :where(:root) {
+    --ds-side-panel-docked-room: 0px;
+  }
+  :where(:root[data-ds-docked]) {
+    overflow: hidden !important;
+    & > body {
+      box-sizing: border-box;
+      block-size: 100dvh !important;
+      margin-block: 0 !important;
+      overflow: auto;
+    }
+  }
+  :where(.ds-side-panel-snap) {
+    position: fixed;
+    z-index: 39;
+    pointer-events: none;
+    box-sizing: border-box;
+    border: 2px solid var(--ds-color-state);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--ds-color-state) 14%, transparent);
+    opacity: 0;
+    transition:
+      opacity .16s ease,
+      left .16s ease,
+      top .16s ease,
+      width .16s ease,
+      height .16s ease;
+    &.is-visible {
+      opacity: 1;
+    }
+  }
+  @media (max-width: 768px) {
+    :where(.ds-side-panel)[data-mode] {
+      position: fixed;
+      inset: 0;
+      inline-size: 100%;
+      block-size: 100dvh;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      z-index: 40;
+      overflow: hidden;
+      transform: translateY(100%);
+      translate: none;
+      opacity: 0;
+      transition: transform var(--_motion), opacity var(--_motion);
+      &.is-open {
+        transform: none;
+        translate: none;
+        opacity: 1;
+        inline-size: 100%;
+      }
+      & > .ds-side-panel-head {
+        cursor: auto;
+      }
+      & > :is(.ds-side-panel-head, .ds-side-panel-body, .ds-side-panel-foot, .ds-side-panel-failed) {
+        min-inline-size: 0;
+      }
+      & > :is(.ds-side-panel-body, .ds-side-panel-foot) {
+        padding-block-end: max(1.25rem, env(safe-area-inset-bottom));
+      }
+      & > .ds-side-panel-grip {
+        display: none;
+      }
+    }
+  }
+  :where(.ds-side-panel)[data-mode]:is(.is-dragging, .is-resizing) {
+    transition: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  @media (hover: none) {
+    :where(.ds-side-panel) > .ds-side-panel-grip {
+      --_shown: 1;
+    }
+  }
+  :where(:root) {
+    --ds-side-panel-scrim-strength: 80%;
+    --ds-side-panel-scrim-extent: 75%;
+  }
+  :where(.ds-side-panel-scrim) {
+    --_room: 0px;
+    --_extent: var(--ds-side-panel-scrim-extent);
+    position: fixed;
+    inset-block: var(--_boundary-top, 0px) 0;
+    inset-inline-end: 0;
+    z-index: 39;
+    inline-size: var(--_room);
+    pointer-events: none;
+    background: color-mix(in srgb, var(--ds-side-panel-scrim-color, var(--_under, var(--ds-color-canvas))) var(--ds-side-panel-scrim-strength), transparent);
+    --_fade:
+      #000 0,
+      #000 calc(var(--_extent) / 3),
+      rgb(0 0 0 / .84) calc(var(--_extent) * .5),
+      rgb(0 0 0 / .5) calc(var(--_extent) * .667),
+      rgb(0 0 0 / .16) calc(var(--_extent) * .833),
+      #0000 var(--_extent);
+    mask-image: linear-gradient(to left, var(--_fade));
+    &:dir(rtl) {
+      mask-image: linear-gradient(to right, var(--_fade));
+    }
+    --_motion: .18s cubic-bezier(.2, .8, .3, 1);
+    opacity: 0;
+    transition: opacity var(--_motion);
+    &:has(+ .ds-side-panel[data-mode=floating].is-open:not(.is-moved)) {
+      --_motion: .26s cubic-bezier(.2, .8, .3, 1);
+      opacity: 1;
+    }
+    @media (max-width: 768px) {
+      display: none;
+    }
+    @media (forced-colors: active) {
+      display: none;
+    }
+  }
+  @media (forced-colors: active) {
+    :where(.ds-side-panel)[data-mode=floating] {
+      border-color: CanvasText;
+    }
+    :where(.ds-side-panel) .ds-side-panel-grip-bar,
+    :where(.ds-side-panel) > .ds-side-panel-grip::before {
+      forced-color-adjust: none;
+      background-color: CanvasText;
+    }
+    :where(.ds-side-panel) > .ds-side-panel-grip:is(:hover, :focus-visible, .is-active) :is(.ds-side-panel-grip-bar),
+    :where(.ds-side-panel) > .ds-side-panel-grip:is(:hover, :focus-visible, .is-active)::before {
+      background-color: Highlight;
+    }
+    :where(.ds-side-panel-snap) {
+      border-color: Highlight;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(.ds-side-panel)[data-mode],
+    :where(.ds-side-panel) > .ds-side-panel-body {
+      transition: none;
+    }
+    :where(.ds-side-panel-snap) {
+      transition: opacity .16s ease;
+    }
+    :where(.ds-side-panel-scrim) {
+      transition: none;
+    }
+  }
+}
+
+/* src/ion-ui/side-panel-bridge.css */
+.ds-side-panel {
+  --ds-font:
+    Roboto,
+    Arial,
+    sans-serif;
+  --ds-color-primary: var(--color-primary-primary);
+  --ds-color-state: var(--color-primary-primary);
+  --ds-color-state-text: var(--color-primary-primary);
+  --ds-color-focus: var(--color-info-info);
+  --ds-color-canvas: var(--color-neutral-100);
+  --ds-color-surface: var(--color-neutral-000);
+  --ds-color-text: var(--color-neutral-600);
+  --ds-color-text-strong: var(--color-neutral-600);
+  --ds-color-text-body: var(--color-neutral-600);
+  --ds-color-text-muted: var(--color-neutral-400);
+  --ds-color-divider: var(--color-neutral-200);
+  --ds-color-hairline: var(--color-neutral-200);
+  --ds-color-card-edge: var(--color-neutral-200);
+}
+.device-detail section {
+  margin-top: 24px;
+}
+.device-detail h3 {
+  color: var(--color-neutral-600);
+}
+.device-detail .sample-note {
+  background: var(--color-primary-lighter);
+  color: var(--color-primary-dark);
+}
+.device-detail .metadata dt {
+  color: var(--color-neutral-400);
+}
+.device-detail .register-search {
+  height: 44px;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 6px;
+  padding: 0 12px;
+  width: 100%;
+  background: var(--color-neutral-000);
+  color: var(--color-neutral-600);
+}
+@media (max-width: 768px) {
+  .ds-side-panel-actions .compare-device {
+    display: none;
+  }
+}
+.ds-side-panel > .widget-titlebar {
+  min-height: 58px;
+  padding: 8px 16px;
+  gap: 12px;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+.ds-side-panel .widget-titlebar-title {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 21px;
+}
+.ds-side-panel .widget-titlebar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ds-side-panel {
+  --ds-side-panel-shadow:var(--shadow-flyout);
+}
+.device-detail .filters {
+  gap: 12px;
+}
+.device-detail .filter {
+  position: relative;
+  min-height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--input-border-radius-chips,12px);
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-500);
+  font-size: 13px;
+  line-height: 1.4;
+}
+.device-detail .filter[aria-pressed=true] {
+  background: var(--color-primary-lighter);
+  border-color: var(--color-primary-primary);
+  color: var(--color-primary-dark);
+}
+.device-detail .register-search {
+  height: 32px;
+}
+@media (pointer: coarse) {
+  .device-detail .filter::before {
+    content: "";
+    position: absolute;
+    inset: -6px -4px;
+  }
+  .device-detail .register-search {
+    height: 44px;
+  }
+}
+@media (max-width: 768px) {
+  .device-detail .register-search {
+    height: 44px;
+  }
+}
+:root {
+  --ds-side-panel-scrim-strength: 0%;
+}
+@media (max-width: 768px) {
+  .ds-side-panel .compare-device {
+    display: none;
+  }
+}
+
+/* src/ion-ui/shell-scroll.css */
+.ds-app-shell {
+  block-size: 100dvh;
+  min-block-size: 0;
+  overflow: hidden;
+}
+.ds-app-shell-content {
+  min-block-size: 0;
+}
+.ds-app-shell-header {
+  flex: none;
+}
+.ds-app-shell-body {
+  flex: 1 1 0;
+  min-block-size: 0;
+  grid-template-rows: minmax(0, 1fr);
+}
+.ds-app-shell-main {
+  min-block-size: 0;
+  overflow: hidden;
+}
+#app-content {
+  block-size: 100%;
+  min-block-size: 0;
+}
+#app-content > :not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  min-block-size: 0;
+}
+#app-content > :not([hidden]) > :not(.page-content) {
+  flex: none;
+}
+#app-content > :not([hidden]) > .page-content {
+  flex: 1 1 0;
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+.page-header {
+  position: relative;
+  z-index: 1;
+}
+#app-content > :not([hidden]) > .page-content:focus-visible {
+  outline: 3px solid var(--color-info-info);
+  outline-offset: -3px;
+}
+@container ds-app-shell (width < 48rem) {
+  .ds-app-shell-tabbar {
+    position: fixed;
+    inset-block-end: calc(12px + env(safe-area-inset-bottom, 0px));
+    inset-inline-start: calc((100% - var(--ds-side-panel-docked-room, 0px)) / 2);
+    transform: translateX(-50%);
+    margin: 0;
+  }
+  .ds-app-shell-tabbar:dir(rtl) {
+    transform: translateX(50%);
+  }
+  .ds-app-shell-tabbar:not([data-ds-layout=split]) {
+    width: min(330px, calc(100vw - var(--ds-side-panel-docked-room, 0px) - 24px));
+  }
+  #app-content > :not([hidden]) > .page-content {
+    padding-block-end: calc(96px + env(safe-area-inset-bottom, 0px));
+    scroll-padding-block-end: calc(96px + env(safe-area-inset-bottom, 0px));
+  }
+}
+@media (max-height: 420px) {
+  .ds-app-shell {
+    block-size: auto;
+    min-block-size: 100dvh;
+    overflow: visible;
+  }
+  .ds-app-shell-body {
+    flex: 0 0 auto;
+    grid-template-rows: auto;
+  }
+  .ds-app-shell-main {
+    overflow: visible;
+  }
+  #app-content,
+  #app-content > :not([hidden]) {
+    block-size: auto;
+  }
+  #app-content > :not([hidden]) > .page-content {
+    flex: none;
+    overflow-y: visible;
+  }
+}
+
 /* src/ion-ui/app.css */
 @font-face {
   font-family: Roboto;
@@ -4532,7 +5251,7 @@ h3 {
   -webkit-mask: url('data:image/svg+xml,<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">%0A<g id="icon leading">%0A<path id="arrow_back" d="M5.04922 8.69282L8.31589 11.9595C8.44922 12.0928 8.51311 12.2484 8.50755 12.4262C8.502 12.6039 8.43255 12.7595 8.29922 12.8928C8.16589 13.015 8.01033 13.0789 7.83255 13.0845C7.65477 13.09 7.49922 13.0262 7.36589 12.8928L2.96589 8.49282C2.89922 8.42616 2.852 8.35393 2.82422 8.27616C2.79644 8.19838 2.78255 8.11504 2.78255 8.02616C2.78255 7.93727 2.79644 7.85393 2.82422 7.77616C2.852 7.69838 2.89922 7.62616 2.96589 7.55949L7.36589 3.15949C7.48811 3.03727 7.64089 2.97616 7.82422 2.97616C8.00755 2.97616 8.16589 3.03727 8.29922 3.15949C8.43255 3.29282 8.49922 3.45116 8.49922 3.63449C8.49922 3.81782 8.43255 3.97616 8.29922 4.10949L5.04922 7.35949H12.4992C12.6881 7.35949 12.8464 7.42338 12.9742 7.55116C13.102 7.67893 13.1659 7.83727 13.1659 8.02616C13.1659 8.21504 13.102 8.37338 12.9742 8.50116C12.8464 8.62893 12.6881 8.69282 12.4992 8.69282H5.04922Z" fill="%235757A8"/>%0A</g>%0A</svg>%0A') no-repeat center / contain;
 }
 .page-content {
-  padding: 24px 40px 120px;
+  padding: 24px 40px 24px;
 }
 @media (max-width: 768px) {
   .ds-app-shell-main {
@@ -4547,7 +5266,7 @@ h3 {
     flex: 1 1 auto;
   }
   .page-content {
-    padding: 24px 16px 120px;
+    padding: 24px 16px 24px;
   }
 }
 @media (max-width: 450px) {
@@ -4888,7 +5607,7 @@ h3 {
   display: grid;
   place-items: center;
 }
-.overview-ring > div {
+.overview-ring > .overview-ring-center {
   width: calc(100% - 24px);
   aspect-ratio: 1;
   background: var(--color-neutral-000);
@@ -5065,9 +5784,6 @@ h3 {
   display: none;
 }
 @media (max-width: 850px) {
-  .overview-attention-card {
-    grid-row: 1;
-  }
   .overview-connections {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -5082,7 +5798,7 @@ h3 {
   .overview-ring {
     width: 112px;
   }
-  .overview-ring > div {
+  .overview-ring > .overview-ring-center {
     width: calc(100% - 20px);
   }
   .overview-topology-stats {
@@ -5131,7 +5847,7 @@ h3 {
   height: 100%;
   grid-area: 1/1;
 }
-.overview-ring > div {
+.overview-ring > .overview-ring-center {
   grid-area: 1/1;
   background: transparent;
 }
@@ -5234,6 +5950,105 @@ h3 {
     content: "";
     position: absolute;
     inset: -6px 0;
+  }
+}
+.card-heading .widget-caption {
+  color: var(--color-neutral-400);
+  letter-spacing: .4px;
+}
+.widget-header-text {
+  flex: 1 1 auto;
+}
+.widget-header-actions {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50%;
+}
+.ion-button--widget-s {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+  text-align: center;
+}
+[data-theme=dark] .ion-button--widget-s {
+  color: var(--color-primary-dark);
+}
+html,
+body,
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-neutral-400) 35%, transparent) transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-neutral-400) 35%, transparent);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--color-neutral-400) 60%, transparent);
+}
+@media (forced-colors: active) {
+  html,
+  body,
+  * {
+    scrollbar-color: auto;
+    scrollbar-width: auto;
+  }
+}
+.overview-chart-tooltip {
+  position: absolute;
+  z-index: 2;
+  inset: auto auto calc(100% + 6px) 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 200px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  background: var(--color-neutral-600);
+  color: var(--color-neutral-000);
+  box-shadow: 0 2px 10px #0003;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  pointer-events: auto;
+}
+.overview-chart-tooltip[hidden] {
+  display: none;
+}
+.overview-slice {
+  cursor: help;
+}
+.overview-slice:focus-visible {
+  outline: none;
+  stroke: var(--color-info-info);
+  stroke-width: 2px;
+  paint-order: stroke;
+}
+.panel-content {
+  overscroll-behavior: contain;
+}
+@supports not (grid-template-rows: subgrid) {
+  .widget-header-text {
+    overflow: hidden;
+  }
+  .widget-header-text > * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ion-button--widget-s {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 </style></head><body><div id="app"></div><script>"use strict";
@@ -6747,31 +7562,722 @@ h3 {
     return header;
   }
 
-  // src/ion-ui/title-bar.ts
-  function createTitleBar(options) {
-    const header = document.createElement("div");
-    header.className = "panel-head";
-    const close = document.createElement("button");
-    close.type = "button";
-    close.className = "ion-button close";
-    close.setAttribute("aria-label", options.closeLabel);
-    close.addEventListener("click", options.onClose);
-    const text = document.createElement("div");
-    const title = document.createElement("h2");
-    title.id = options.headingId;
-    title.textContent = options.title;
-    text.append(title);
-    if (options.subtitle) {
-      const subtitle = document.createElement("p");
-      subtitle.className = "muted";
-      subtitle.textContent = options.subtitle;
-      text.append(subtitle);
-    }
-    header.append(close, text);
-    return header;
+  // src/vendor/ui/components/side-panel/side-panel.js
+  init_button();
+  init_menu();
+
+  // src/vendor/ui/components/button/safe-href.js
+  function safeHref(value) {
+    if (typeof value != "string" || /[\u0000- \u007f\\]/.test(value) || !/^(?:https:\/\/[^/?#@]+(?:[/?#]|$)|\/(?!\/))/i.test(value)) throw new TypeError("A URL is HTTPS or site-relative, without credentials.");
+    return value;
   }
 
+  // src/vendor/ui/components/side-panel/side-panel.js
+  init_pointer_gesture();
+  init_leaving_copy();
+  var MODES = ["floating", "docked"];
+  var PHONE = "(max-width: 768px)";
+  var WIDE = "(min-width: 1024px)";
+  var MIN_WIDTH = 320;
+  var MIN_HEIGHT = 240;
+  var EDGE_KEEP = 48;
+  var LIST_KEEP = 360;
+  var CASCADE = 28;
+  var SNAP_ZONE = 24;
+  var KEY_STEP = 16;
+  var WIDER_STEP = 160;
+  var VIEW_KEYS = ["title", "section", "content", "foot", "isDirty", "href"];
+  var mounted2 = /* @__PURE__ */ new WeakSet();
+  var openPanels = /* @__PURE__ */ new WeakMap();
+  var escapeHeard = /* @__PURE__ */ new WeakSet();
+  var openIn = (document2) => {
+    if (!openPanels.has(document2)) openPanels.set(document2, []);
+    return openPanels.get(document2);
+  };
+  function syncDock(document2) {
+    const root2 = document2.documentElement;
+    const panels = document2.defaultView.matchMedia(PHONE).matches ? [] : [...document2.querySelectorAll('.ds-side-panel[data-mode="docked"]:not(.is-leaving)')];
+    let room = 0;
+    for (const panel of panels.reverse()) {
+      panel.style.setProperty("--_dock-end", `${room}px`);
+      room += panel.offsetWidth;
+    }
+    if (Boolean(room) !== root2.hasAttribute("data-ds-docked")) {
+      const [from, to] = room ? [root2, document2.body] : [document2.body, root2];
+      const { scrollLeft: left, scrollTop: top } = from;
+      root2.toggleAttribute("data-ds-docked", Boolean(room));
+      to.scrollTo({ left, top, behavior: "instant" });
+    }
+    root2.style.paddingInlineEnd = room ? `${room}px` : "";
+    if (room) root2.style.setProperty("--ds-side-panel-docked-room", `${room}px`);
+    else root2.style.removeProperty("--ds-side-panel-docked-room");
+  }
+  function remembered(key) {
+    try {
+      return globalThis.localStorage?.getItem(key) ?? null;
+    } catch {
+      return null;
+    }
+  }
+  function remember(key, value) {
+    try {
+      if (value === null) globalThis.localStorage?.removeItem(key);
+      else globalThis.localStorage?.setItem(key, String(value));
+    } catch {
+    }
+  }
+  function checkView(view) {
+    const keys = view && typeof view === "object" ? Object.keys(view) : null;
+    if (!keys) throw new TypeError(`A side-panel view is { ${VIEW_KEYS.join(", ")} }.`);
+    const unknown = keys.filter((key) => !VIEW_KEYS.includes(key));
+    if (unknown.length) throw new TypeError(`Unknown side-panel view key: ${unknown.join(", ")}. Keys: ${VIEW_KEYS.join(", ")}.`);
+    if (typeof view.title !== "string" || !view.title.trim()) throw new TypeError("A side-panel view needs a title: non-empty plain text.");
+    if (view.section !== void 0 && (typeof view.section !== "string" || !view.section.trim())) throw new TypeError("A side-panel section is non-empty plain text: the list the view belongs to.");
+    const Node2 = globalThis.Node;
+    const { content } = view;
+    if (content !== void 0 && typeof content !== "string" && typeof content !== "function" && !(Node2 && content instanceof Node2)) {
+      throw new TypeError("Side-panel content is plain text, a node, or a function (isStale) returning either (or a promise of either): never an HTML string.");
+    }
+    if (view.foot !== void 0 && typeof view.foot !== "function" && !(Node2 && view.foot instanceof Node2)) {
+      throw new TypeError("Side-panel foot is a node, or a function (body) returning one, shown once the content is: a row that stays in sight while the body scrolls.");
+    }
+    if (view.isDirty !== void 0 && typeof view.isDirty !== "function") throw new TypeError("Side-panel isDirty must be a function: true while the view holds work that closing would lose.");
+    if (view.href !== void 0) safeHref(view.href);
+  }
+  function enhanceSidePanel(panel, { onClose, topBoundary, ...unknown } = {}) {
+    const Element = panel?.ownerDocument?.defaultView?.HTMLElement;
+    if (!Element || !(panel instanceof Element) || !panel.matches("aside.ds-side-panel")) {
+      throw new TypeError('enhanceSidePanel needs the <aside class="ds-side-panel"> from renderSidePanel.');
+    }
+    if (Object.keys(unknown).length) throw new TypeError(`Unknown enhanceSidePanel option: ${Object.keys(unknown).join(", ")}. Options: onClose, topBoundary.`);
+    if (onClose !== void 0 && typeof onClose !== "function") throw new TypeError("enhanceSidePanel onClose must be a function.");
+    if (topBoundary !== void 0 && (!(topBoundary instanceof Element) || topBoundary.ownerDocument !== panel.ownerDocument || panel.contains(topBoundary))) throw new TypeError("enhanceSidePanel topBoundary must be an element outside the panel in the same document.");
+    if (mounted2.has(panel)) throw new TypeError("This side panel is already enhanced; dispose() the first mount before mounting it again.");
+    mounted2.add(panel);
+    const blank = panel.outerHTML;
+    const document2 = panel.ownerDocument;
+    const view = document2.defaultView;
+    const part = (selector) => panel.querySelector(selector);
+    const head = part(":scope > .ds-side-panel-head");
+    const title = part(".ds-side-panel-title");
+    const body = part(":scope > .ds-side-panel-body");
+    const foot = part(":scope > .ds-side-panel-foot");
+    const back = part(`#${panel.id}-back`);
+    const close = part(`#${panel.id}-close`);
+    const layout2 = part(`#${panel.id}-layout`);
+    const full = part(`#${panel.id}-full`);
+    const question = part(":scope > .ds-side-panel-discard");
+    const failed = part(":scope > .ds-side-panel-failed");
+    const failedText = failed?.querySelector(".ds-side-panel-failed-text");
+    if (!head || !title || !body || !foot || !back || !close || !layout2 || !question || !failed || !failedText) {
+      throw new TypeError("The side panel is missing parts renderSidePanel writes (head, title, body, foot, back, close, layout, discard, failed).");
+    }
+    const grips = [...panel.querySelectorAll(":scope > .ds-side-panel-grip")];
+    const separators = grips.filter((grip) => grip.getAttribute("role") === "separator");
+    const controller = new view.AbortController();
+    const { signal } = controller;
+    const cleanups = [];
+    const home = panel.dataset.home ?? panel.id;
+    const key = (name) => `ds-side-panel:${home}:${name}`;
+    const state = {
+      view: null,
+      // the view on screen
+      views: [],
+      // the views behind it (push), newest last
+      ticket: 0,
+      // bumped by every show and every close: a later answer makes an earlier one stale
+      opener: null,
+      // where focus goes back to on close
+      asking: null
+      // the pending answer of the "discard?" question
+    };
+    const mode = () => panel.dataset.mode === "docked" ? "docked" : "floating";
+    const phone = () => view.matchMedia(PHONE).matches;
+    const platform = () => phone() ? "phone" : view.matchMedia(WIDE).matches ? "wide" : "tablet";
+    const asked = () => panel.getAttribute(`data-open-${platform()}`);
+    const rtl = () => view.getComputedStyle(panel).direction === "rtl";
+    const anchor = () => rtl() ? "left" : "right";
+    const gap = () => mode() === "floating" && !phone() ? Math.max(0, parseFloat(view.getComputedStyle(panel).insetInlineEnd) || 0) : 0;
+    const boundary = () => !phone() && topBoundary?.isConnected ? Math.max(0, Math.min(view.innerHeight, topBoundary.getBoundingClientRect().bottom)) : 0;
+    const contentWidth = () => {
+      const box = panel.parentElement?.getBoundingClientRect();
+      if (!box?.width) return view.innerWidth;
+      return view.innerWidth - Math.max(0, rtl() ? view.innerWidth - box.right : box.left);
+    };
+    const dockedBeside = () => openIn(document2).filter((other) => other.dataset.mode === "docked").length;
+    const maxWidth = () => Math.max(MIN_WIDTH, Math.min(
+      Math.round(view.innerWidth * 0.9),
+      (contentWidth() - LIST_KEEP) / (mode() === "docked" ? Math.max(1, dockedBeside()) : 1)
+    ));
+    const maxHeight = () => Math.max(0, Math.round(view.innerHeight - boundary() - 2 * gap()));
+    const minHeight = () => Math.min(MIN_HEIGHT, maxHeight());
+    const clampWidth = (width) => Math.min(maxWidth(), Math.max(MIN_WIDTH, Math.round(width)));
+    const clampHeight = (height) => Math.min(maxHeight(), Math.max(minHeight(), Math.round(height)));
+    const setWidth = (width) => panel.style.setProperty("--_user-width", `${clampWidth(width)}px`);
+    const setHeight = (height) => panel.style.setProperty("--_user-height", `${clampHeight(height)}px`);
+    let shift = { dx: 0, dy: 0 };
+    const offset = () => ({ ...shift });
+    const setOffset = (dx, dy) => {
+      shift = { dx: Math.round(dx), dy: Math.round(dy) };
+      if (shift.dx || shift.dy) panel.style.setProperty("--_shift", `${shift.dx}px ${shift.dy}px`);
+      else panel.style.removeProperty("--_shift");
+      panel.classList.toggle("is-moved", Boolean(shift.dx || shift.dy));
+    };
+    const rest = () => ({ left: panel.offsetLeft, top: panel.offsetTop, width: panel.offsetWidth, height: panel.offsetHeight });
+    const clampOffset = (dx, dy) => {
+      const at = rest();
+      return {
+        dx: Math.min(view.innerWidth - at.left - EDGE_KEEP, Math.max(-(at.left + at.width - EDGE_KEEP), dx)),
+        dy: Math.min(view.innerHeight - at.top - EDGE_KEEP, Math.max(boundary() - at.top, dy))
+      };
+    };
+    const syncLimits = () => {
+      panel.style.setProperty("--_max-width", `${Math.round(maxWidth())}px`);
+      const rect = panel.getBoundingClientRect();
+      for (const grip of separators) {
+        const vertical = grip.getAttribute("aria-orientation") === "vertical";
+        grip.setAttribute("aria-valuemin", String(vertical ? MIN_WIDTH : minHeight()));
+        grip.setAttribute("aria-valuemax", String(vertical ? Math.round(maxWidth()) : maxHeight()));
+        grip.setAttribute("aria-valuenow", String(Math.round(vertical ? rect.width : rect.height)));
+      }
+      const wider = widerItem();
+      if (wider) wider.setAttribute("aria-disabled", String(rect.width >= Math.round(maxWidth()) - 1 || (rtl() ? view.innerWidth - rect.right : rect.left) < 1));
+    };
+    const syncNeighbours = () => {
+      for (const other of openIn(document2)) {
+        if (other !== panel && other.dataset.mode === "docked") other.dispatchEvent(new view.CustomEvent("side-panel-limits"));
+      }
+    };
+    function applyStoredSize() {
+      const width = Number(remembered(key(`width:${mode()}`)));
+      if (width > 0) setWidth(width);
+      else panel.style.removeProperty("--_user-width");
+      const height = Number(remembered(key(`height:${mode()}`)));
+      if (mode() === "floating" && height > 0) setHeight(height);
+      else panel.style.removeProperty("--_user-height");
+    }
+    function storeSize() {
+      const width = parseFloat(panel.style.getPropertyValue("--_user-width"));
+      const height = parseFloat(panel.style.getPropertyValue("--_user-height"));
+      if (width > 0) remember(key(`width:${mode()}`), Math.round(width));
+      if (mode() === "floating" && height > 0) remember(key(`height:${mode()}`), Math.round(height));
+      syncLimits();
+    }
+    function resetSize() {
+      remember(key(`width:${mode()}`), null);
+      remember(key(`height:${mode()}`), null);
+      panel.style.removeProperty("--_user-width");
+      panel.style.removeProperty("--_user-height");
+      syncLimits();
+    }
+    const widerItem = () => document2.querySelector(`#${panel.id}-layout-menu [value="wider"]`);
+    function widen() {
+      if (phone() || !panel.classList.contains("is-open")) return;
+      resizeFrom(rtl() ? "right" : "left", rtl() ? WIDER_STEP : -WIDER_STEP, 0, snapshot());
+      storeSize();
+    }
+    function resizeFrom(edge, dx, dy, start) {
+      const [first, second] = edge.split("-");
+      const vertical = ["top", "bottom"].includes(first) ? first : null;
+      const horizontal = second ?? (["left", "right"].includes(first) ? first : null);
+      let { dx: shiftX, dy: shiftY } = start.offset;
+      if (horizontal) {
+        const sign = horizontal === "right" ? 1 : -1;
+        const room = horizontal === "right" ? view.innerWidth - start.rect.right : start.rect.left;
+        const width = clampWidth(Math.min(start.rect.width + sign * dx, start.rect.width + Math.max(0, room)));
+        setWidth(width);
+        if (mode() === "floating" && horizontal === anchor()) shiftX = start.offset.dx + sign * (width - start.rect.width);
+      }
+      if (vertical && mode() === "floating") {
+        const sign = vertical === "bottom" ? 1 : -1;
+        const room = vertical === "bottom" ? view.innerHeight - start.rect.bottom : start.rect.top - boundary();
+        const height = clampHeight(Math.min(start.rect.height + sign * dy, start.rect.height + Math.max(0, room)));
+        setHeight(height);
+        if (vertical === "top") shiftY = start.offset.dy - (height - start.rect.height);
+      }
+      if (mode() === "floating") setOffset(shiftX, shiftY);
+    }
+    const snapshot = () => ({ rect: panel.getBoundingClientRect(), offset: offset(), width: panel.style.getPropertyValue("--_user-width"), height: panel.style.getPropertyValue("--_user-height") });
+    const restore = (start) => {
+      for (const [name, value] of [["--_user-width", start.width], ["--_user-height", start.height]]) {
+        if (value) panel.style.setProperty(name, value);
+        else panel.style.removeProperty(name);
+      }
+      setOffset(start.offset.dx, start.offset.dy);
+    };
+    const snapRects = () => {
+      const space = gap();
+      const half = Math.round((view.innerWidth - space * 3) / 2);
+      const height = Math.max(0, view.innerHeight - boundary() - space * 2);
+      const top = boundary() + space;
+      return {
+        left: { left: space, top, width: half, height },
+        right: { left: view.innerWidth - space - half, top, width: half, height }
+      };
+    };
+    const zoneAt = (x) => x <= SNAP_ZONE ? "left" : x >= view.innerWidth - SNAP_ZONE ? "right" : null;
+    function ghost() {
+      let node = document2.querySelector("body > .ds-side-panel-snap");
+      if (!node) {
+        node = document2.createElement("div");
+        node.className = "ds-side-panel-snap";
+        node.setAttribute("aria-hidden", "true");
+        document2.body.append(node);
+      }
+      return node;
+    }
+    function showGhost(rect) {
+      const node = ghost();
+      Object.assign(node.style, { left: `${rect.left}px`, top: `${rect.top}px`, width: `${rect.width}px`, height: `${rect.height}px` });
+      node.classList.add("is-visible");
+    }
+    const hideGhost = () => document2.querySelector("body > .ds-side-panel-snap")?.classList.remove("is-visible");
+    function applyRect(rect) {
+      setWidth(rect.width);
+      setHeight(rect.height);
+      const at = rest();
+      setOffset(rect.left - at.left, rect.top - at.top);
+    }
+    const gesture = attachPointerGesture(panel, {
+      threshold: 3,
+      signal,
+      handle: (event) => {
+        if (phone() || !panel.classList.contains("is-open")) return null;
+        const target = event.target?.closest ? event.target : null;
+        const grip = target?.closest(".ds-side-panel-grip");
+        if (grip && grip.parentElement === panel) return { kind: "resize", grip, edge: grip.dataset.edge };
+        if (mode() !== "floating" || !target || !head.contains(target)) return null;
+        if (target.closest('button, a, input, select, textarea, [role="menu"]')) return null;
+        return { kind: "move" };
+      },
+      onStart: (moved) => {
+        moved.start = snapshot();
+        moved.zone = null;
+        if (moved.context.kind === "resize") {
+          panel.classList.add("is-resizing");
+          moved.context.grip.classList.add("is-active");
+        } else {
+          panel.classList.add("is-dragging");
+        }
+      },
+      onMove: (moved) => {
+        if (moved.context.kind === "resize") {
+          resizeFrom(moved.context.edge, moved.dx, moved.dy, moved.start);
+          return;
+        }
+        const next = clampOffset(moved.start.offset.dx + moved.dx, moved.start.offset.dy + moved.dy);
+        setOffset(next.dx, next.dy);
+        const zone = zoneAt(moved.x);
+        if (zone !== moved.zone) {
+          moved.zone = zone;
+          if (zone) showGhost(snapRects()[zone]);
+          else hideGhost();
+        }
+      },
+      onEnd: (moved) => {
+        finishGesture(moved);
+        if (moved.context.kind === "resize") storeSize();
+        else if (moved.zone) {
+          applyRect(snapRects()[moved.zone]);
+          storeSize();
+        }
+      },
+      onCancel: (moved) => {
+        finishGesture(moved);
+        restore(moved.start);
+      }
+    });
+    cleanups.push(() => gesture.destroy());
+    function finishGesture(moved) {
+      panel.classList.remove("is-resizing", "is-dragging");
+      moved.context.grip?.classList.remove("is-active");
+      hideGhost();
+    }
+    for (const grip of grips) {
+      grip.addEventListener("dblclick", () => resetSize(), { signal });
+    }
+    for (const grip of separators) {
+      grip.addEventListener("keydown", (event) => {
+        const edge = grip.dataset.edge;
+        const step = { ArrowLeft: [-KEY_STEP, 0], ArrowRight: [KEY_STEP, 0], ArrowUp: [0, -KEY_STEP], ArrowDown: [0, KEY_STEP] }[event.key];
+        if (!step || event.altKey || event.ctrlKey || event.metaKey || phone()) return;
+        const vertical = edge === "left" || edge === "right";
+        if (vertical && step[0] === 0 || !vertical && step[1] === 0) return;
+        event.preventDefault();
+        resizeFrom(edge, step[0], step[1], snapshot());
+        storeSize();
+      }, { signal });
+    }
+    head.addEventListener("dblclick", (event) => {
+      if (mode() !== "floating" || event.target.closest("button, a")) return;
+      setOffset(0, 0);
+    }, { signal });
+    let lastBoundary = -1;
+    const syncBoundary = () => {
+      const nextBoundary = boundary();
+      if (nextBoundary === lastBoundary) return;
+      lastBoundary = nextBoundary;
+      const value = `${nextBoundary}px`;
+      panel.style.setProperty("--_boundary-top", value);
+      scrim.style.setProperty("--_boundary-top", value);
+      if (!panel.classList.contains("is-open")) return;
+      const height = parseFloat(panel.style.getPropertyValue("--_user-height"));
+      if (height > 0 && mode() === "floating") setHeight(height);
+      syncLimits();
+      if (mode() === "floating") {
+        const next = clampOffset(offset().dx, offset().dy);
+        setOffset(next.dx, next.dy);
+      }
+    };
+    view.addEventListener("resize", () => {
+      syncBoundary();
+      if (!panel.classList.contains("is-open")) return;
+      applyStoredSize();
+      syncLimits();
+      syncScrim();
+      if (mode() === "floating") {
+        const next = clampOffset(offset().dx, offset().dy);
+        setOffset(next.dx, next.dy);
+      }
+    }, { signal, passive: true });
+    const scrim = document2.createElement("div");
+    scrim.className = "ds-side-panel-scrim";
+    scrim.setAttribute("aria-hidden", "true");
+    panel.before(scrim);
+    cleanups.push(() => scrim.remove());
+    syncBoundary();
+    if (topBoundary) {
+      const boundaryObserver = new view.ResizeObserver(syncBoundary);
+      boundaryObserver.observe(topBoundary);
+      cleanups.push(() => boundaryObserver.disconnect());
+      view.addEventListener("scroll", (event) => {
+        if (!panel.contains(event.target)) syncBoundary();
+      }, { signal, passive: true, capture: true });
+    }
+    function syncScrim() {
+      scrim.style.setProperty("--_room", `${panel.offsetWidth + gap()}px`);
+      if (mode() !== "floating" || phone() || panel.hidden) return;
+      const x = rtl() ? panel.offsetLeft + panel.offsetWidth + 8 : panel.offsetLeft - 8;
+      let node = x >= 0 && x < view.innerWidth ? document2.elementFromPoint(x, view.innerHeight / 2) : null;
+      for (; node; node = node.parentElement) {
+        const ground = view.getComputedStyle(node).backgroundColor;
+        if (ground && ground !== "transparent" && !/[,/]\s*0\)$/.test(ground)) {
+          scrim.style.setProperty("--_under", ground);
+          return;
+        }
+      }
+      scrim.style.removeProperty("--_under");
+    }
+    new view.ResizeObserver(() => {
+      syncDock(document2);
+      syncScrim();
+    }).observe(panel);
+    panel.addEventListener("side-panel-limits", () => {
+      if (panel.classList.contains("is-open")) syncLimits();
+    }, { signal });
+    function syncMenu() {
+      for (const item of panel.ownerDocument.querySelectorAll(`#${panel.id}-layout-menu [role="menuitemradio"]`)) {
+        item.setAttribute("aria-checked", String(item.value === mode()));
+      }
+    }
+    function applyMode(next) {
+      panel.dataset.mode = next;
+      if (next === "docked") setOffset(0, 0);
+      applyStoredSize();
+      syncMenu();
+      const wider = widerItem();
+      if (wider) wider.hidden = phone();
+      if (panel.classList.contains("is-open")) {
+        syncLimits();
+        syncNeighbours();
+        syncDock(document2);
+        syncScrim();
+      }
+    }
+    function setMode(next) {
+      if (!MODES.includes(next)) throw new TypeError(`Side-panel mode must be ${MODES.join(" or ")}.`);
+      remember(key(`mode:${platform()}`), next);
+      const undocking = next === "floating" && panel.dataset.mode === "docked" && panel.classList.contains("is-open") && !phone() && !prefersReducedMotion(document2);
+      const from = panel.getBoundingClientRect();
+      if (undocking) copyToLeave(panel);
+      applyMode(next);
+      if (!undocking) return;
+      const to = panel.getBoundingClientRect(), edge = view.getComputedStyle(panel).direction === "rtl" ? from.left - to.left : from.right - to.right;
+      panel.animate({ transform: [`translate(${edge}px, ${from.top - to.top}px)`, "none"] }, { duration: 180, easing: "cubic-bezier(.2, .8, .3, 1)" });
+    }
+    const firstMode = mode();
+    const settledMode = () => [remembered(key(`mode:${platform()}`)), asked(), firstMode].find((choice) => MODES.includes(choice));
+    applyMode(settledMode());
+    for (const line of [PHONE, WIDE]) view.matchMedia(line).addEventListener("change", () => applyMode(settledMode()), { signal });
+    if (full) cleanups.push(() => {
+      full.hidden = true;
+    });
+    cleanups.push(enhanceMenuButton(layout2, {
+      onSelect: (item) => {
+        if (item.name === "layout") setMode(item.value);
+        else if (item.value === "reset-size") resetSize();
+        else if (item.value === "wider") widen();
+      }
+    }));
+    function ask() {
+      state.asking?.(false);
+      const before = document2.activeElement;
+      question.hidden = false;
+      question.querySelector(`#${panel.id}-discard-no`)?.focus();
+      return new Promise((resolve) => {
+        state.asking = (discard) => {
+          state.asking = null;
+          question.hidden = true;
+          if (!discard && before?.isConnected && before.getClientRects().length) before.focus({ preventScroll: true });
+          resolve(discard);
+        };
+      });
+    }
+    const dirty = () => {
+      try {
+        return Boolean(state.view?.isDirty?.());
+      } catch {
+        return false;
+      }
+    };
+    const guarded = (run) => dirty() ? ask().then((discard) => discard ? run() : false) : Promise.resolve(run());
+    cleanups.push(enhanceButton(question.querySelector(`#${panel.id}-discard-yes`), { onAction: () => state.asking?.(true) }));
+    cleanups.push(enhanceButton(question.querySelector(`#${panel.id}-discard-no`), { onAction: () => state.asking?.(false) }));
+    const teardown = () => panel.dispatchEvent(new view.CustomEvent("side-panel-before-render"));
+    function writeTitle({ title: name, section }) {
+      title.textContent = section || name;
+      if (section && section !== name) title.setAttribute("aria-label", `${section}: ${name}`);
+      else title.removeAttribute("aria-label");
+    }
+    function write2(content, shown = null) {
+      teardown();
+      if (typeof content === "string") body.textContent = content;
+      else if (content) body.replaceChildren(content);
+      else body.replaceChildren();
+      foot.replaceChildren();
+      if (!shown?.foot) return;
+      const row = typeof shown.foot === "function" ? shown.foot(body) : shown.foot;
+      if (row instanceof view.Node) foot.append(row);
+    }
+    function reveal() {
+      panel.hidden = false;
+      applyStoredSize();
+      const others = openIn(document2).filter((other) => other !== panel && other.dataset.mode === "floating").length;
+      setOffset(0, 0);
+      if (mode() === "floating" && others) {
+        const step = others * CASCADE;
+        const next = clampOffset(rtl() ? step : -step, step);
+        setOffset(next.dx, next.dy);
+      }
+      void panel.offsetWidth;
+      syncScrim();
+      panel.classList.add("is-open");
+      const list = openIn(document2);
+      if (!list.includes(panel)) list.push(panel);
+      syncLimits();
+      syncNeighbours();
+      settle(panel).then(() => {
+        if (panel.classList.contains("is-open")) syncLimits();
+      });
+    }
+    async function show(shown, how) {
+      const ticket = ++state.ticket;
+      const isStale = () => ticket !== state.ticket || signal.aborted;
+      const focusBefore = document2.activeElement;
+      failed.hidden = true;
+      failedText.textContent = "";
+      if (how !== "reload") writeTitle(shown);
+      if (full) {
+        full.hidden = !shown.href;
+        if (shown.href) full.href = shown.href;
+      }
+      back.hidden = state.views.length === 0;
+      if (!panel.classList.contains("is-open")) reveal();
+      const replacing = body.hasChildNodes();
+      if (replacing) {
+        body.classList.add("is-loading");
+        body.inert = true;
+        foot.inert = true;
+      }
+      const keepScroll = how === "reload" ? body.scrollTop : 0;
+      let content;
+      let broke = false;
+      try {
+        content = typeof shown.content === "function" ? await shown.content(isStale) : shown.content;
+        const Node2 = view.Node;
+        if (content !== void 0 && content !== null && typeof content !== "string" && !(content instanceof Node2)) {
+          throw new TypeError("Side-panel content returned something other than text or a node.");
+        }
+      } catch (error) {
+        broke = true;
+        if (!isStale()) view.console?.error?.("side panel: the view could not be loaded", error);
+      }
+      if (isStale()) return false;
+      body.classList.remove("is-loading");
+      body.inert = false;
+      foot.inert = false;
+      if (broke) {
+        write2(null);
+        failed.hidden = false;
+        failedText.textContent = failedText.dataset.text;
+      } else {
+        write2(content, shown);
+        body.scrollTop = keepScroll;
+      }
+      const active = document2.activeElement;
+      if (how !== "reload" || !panel.contains(active)) {
+        if (active === focusBefore || active === document2.body || !active || panel.contains(active)) title.focus({ preventScroll: true });
+      }
+      return !broke;
+    }
+    function open(next, { push = false, ...rest2 } = {}) {
+      checkView(next);
+      if (Object.keys(rest2).length) throw new TypeError(`Unknown side-panel open option: ${Object.keys(rest2).join(", ")}. Options: push.`);
+      if (typeof push !== "boolean") throw new TypeError("Side-panel open push must be a boolean.");
+      const from = document2.activeElement;
+      return guarded(() => {
+        if (asked() === "page" && next.href) {
+          view.location.assign(safeHref(next.href));
+          return true;
+        }
+        if (!panel.contains(from) && from && from !== document2.body) state.opener = from;
+        if (push && state.view && panel.classList.contains("is-open")) state.views.push(state.view);
+        else state.views = [];
+        state.view = next;
+        return show(next, "open");
+      });
+    }
+    function goBack() {
+      if (!state.views.length) return Promise.resolve(false);
+      return guarded(() => {
+        state.view = state.views.pop();
+        return show(state.view, "swap");
+      });
+    }
+    function reload() {
+      if (!state.view || !panel.classList.contains("is-open")) return Promise.resolve(false);
+      const shown = state.view;
+      return guarded(() => state.view === shown ? show(shown, "reload") : false);
+    }
+    function forceClose() {
+      if (!panel.classList.contains("is-open")) return false;
+      state.ticket += 1;
+      state.asking?.(false);
+      panel.dispatchEvent(new view.CustomEvent("side-panel-closing"));
+      const focusInside = panel.contains(document2.activeElement);
+      const list = openIn(document2);
+      list.splice(list.indexOf(panel), 1);
+      state.views = [];
+      body.classList.remove("is-loading");
+      body.inert = false;
+      panel.classList.remove("is-open", "is-dragging", "is-resizing");
+      hideGhost();
+      syncNeighbours();
+      const opener = state.opener;
+      state.opener = null;
+      if (focusInside && opener?.isConnected && opener.getClientRects().length) opener.focus({ preventScroll: true });
+      settle(panel).then(() => {
+        if (panel.classList.contains("is-open")) return;
+        panel.hidden = true;
+        write2(null);
+        state.view = null;
+        panel.dispatchEvent(new view.CustomEvent("side-panel-closed"));
+      });
+      onClose?.();
+      return true;
+    }
+    const closePanel = () => guarded(forceClose);
+    const copies = /* @__PURE__ */ new Map();
+    let made = 0;
+    function beside({ onClose: closed, ...rest2 } = {}) {
+      if (Object.keys(rest2).length) throw new TypeError(`Unknown side-panel beside option: ${Object.keys(rest2).join(", ")}. Options: onClose.`);
+      if (phone()) return null;
+      const box = document2.createElement("template");
+      box.innerHTML = blank.replaceAll(panel.id, `${panel.id}-${++made}`);
+      const node = box.content.firstElementChild;
+      node.dataset.home = home;
+      panel.parentElement.append(node);
+      const copy = enhanceSidePanel(node, { topBoundary, onClose() {
+        settle(node).then(() => {
+          if (node.classList.contains("is-open")) return;
+          closed?.();
+          gone(copy);
+        });
+      } });
+      copies.set(copy, node);
+      return copy;
+    }
+    function gone(copy) {
+      copy.dispose();
+      copies.get(copy)?.remove();
+      copies.delete(copy);
+    }
+    cleanups.push(enhanceButton(close, { onAction: () => {
+      closePanel();
+    } }));
+    cleanups.push(enhanceButton(back, { onAction: () => {
+      goBack();
+    } }));
+    cleanups.push(enhanceButton(failed.querySelector(`#${panel.id}-retry`), { onAction: () => {
+      if (state.view) show(state.view, "swap");
+    } }));
+    if (!escapeHeard.has(document2)) {
+      escapeHeard.add(document2);
+      document2.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || event.defaultPrevented) return;
+        if (document2.querySelector("dialog:modal, :popover-open")) return;
+        const newest = openIn(document2).at(-1);
+        newest?.dispatchEvent(new view.CustomEvent("side-panel-escape", { cancelable: true }));
+      });
+    }
+    panel.addEventListener("side-panel-escape", () => {
+      if (state.asking) state.asking(false);
+      else closePanel();
+    }, { signal });
+    return {
+      open,
+      back: goBack,
+      reload,
+      close: closePanel,
+      // `section` as for a view; null gives the head back to the name.
+      setTitle(text, section = state.view?.section) {
+        if (typeof text !== "string" || !text.trim()) throw new TypeError("A side-panel title is non-empty plain text.");
+        if (state.view) state.view = { ...state.view, title: text, section: section ?? void 0 };
+        writeTitle(state.view ?? { title: text });
+      },
+      setMode,
+      beside,
+      get mode() {
+        return mode();
+      },
+      get isOpen() {
+        return panel.classList.contains("is-open");
+      },
+      body,
+      foot,
+      dispose() {
+        if (signal.aborted) return;
+        for (const copy of [...copies.keys()]) gone(copy);
+        controller.abort();
+        for (const dispose2 of cleanups.splice(0)) dispose2();
+        state.ticket += 1;
+        state.asking?.(false);
+        const list = openIn(document2);
+        if (list.includes(panel)) list.splice(list.indexOf(panel), 1);
+        mounted2.delete(panel);
+      }
+    };
+  }
+
+  // src/vendor/ui/side-panel-markup.ts
+  var sidePanelMarkup = '<aside class="ds-side-panel" id="device-side-panel" data-mode="floating" aria-labelledby="device-side-panel-title" style="--ds-side-panel-width: 40rem" hidden><div class="ds-side-panel-grip" data-edge="left" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize width"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="right" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize width"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="top" role="separator" tabindex="0" aria-orientation="horizontal" aria-label="Resize height"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="bottom" role="separator" tabindex="0" aria-orientation="horizontal" aria-label="Resize height"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="top-left" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="top-right" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="bottom-left" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="bottom-right" aria-hidden="true"></div><header class="ds-side-panel-head"><button hidden class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-back" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="chevron-left" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5303 4.21967C15.8232 4.51256 15.8232 4.98744 15.5303 5.28033L8.81066 12L15.5303 18.7197C15.8232 19.0126 15.8232 19.4874 15.5303 19.7803C15.2374 20.0732 14.7626 20.0732 14.4697 19.7803L7.21967 12.5303C6.92678 12.2374 6.92678 11.7626 7.21967 11.4697L14.4697 4.21967C14.7626 3.92678 15.2374 3.92678 15.5303 4.21967Z"/></svg><span data-ds-button-label>Back</span></button><h2 class="ds-side-panel-title" id="device-side-panel-title" tabindex="-1">Device details</h2><div class="ds-side-panel-actions"><button aria-haspopup="menu" aria-expanded="false" aria-controls="device-side-panel-layout-menu" class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-layout" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="more-horizontal" viewBox="0 0 24 24" fill="currentColor"><path d="M7.75 12C7.75 12.9665 6.9665 13.75 6 13.75C5.0335 13.75 4.25 12.9665 4.25 12C4.25 11.0335 5.0335 10.25 6 10.25C6.9665 10.25 7.75 11.0335 7.75 12ZM13.75 12C13.75 12.9665 12.9665 13.75 12 13.75C11.0335 13.75 10.25 12.9665 10.25 12C10.25 11.0335 11.0335 10.25 12 10.25C12.9665 10.25 13.75 11.0335 13.75 12ZM18 13.75C18.9665 13.75 19.75 12.9665 19.75 12C19.75 11.0335 18.9665 10.25 18 10.25C17.0335 10.25 16.25 11.0335 16.25 12C16.25 12.9665 17.0335 13.75 18 13.75Z"/></svg><span data-ds-button-label>Panel layout</span></button><div class="ds-menu" id="device-side-panel-layout-menu" role="menu" popover="manual" aria-labelledby="device-side-panel-layout" data-size="s" data-ds-check><div class="ds-menu-group" role="group" aria-label="Panel layout"><button type="button" class="ds-menu-item" role="menuitemradio" tabindex="-1" name="layout" value="floating" aria-checked="true"><svg data-ds-menu-check aria-hidden="true" data-icon="checkmark" viewBox="0 0 24 24" fill="currentColor"><path d="M4.53033 12.9697C4.23744 12.6768 3.76256 12.6768 3.46967 12.9697C3.17678 13.2626 3.17678 13.7374 3.46967 14.0303L7.96967 18.5303C8.26256 18.8232 8.73744 18.8232 9.03033 18.5303L20.0303 7.53033C20.3232 7.23744 20.3232 6.76256 20.0303 6.46967C19.7374 6.17678 19.2626 6.17678 18.9697 6.46967L8.5 16.9393L4.53033 12.9697Z"/></svg><span data-ds-menu-label>Floating</span></button><button type="button" class="ds-menu-item" role="menuitemradio" tabindex="-1" name="layout" value="docked" aria-checked="false"><svg data-ds-menu-check aria-hidden="true" data-icon="checkmark" viewBox="0 0 24 24" fill="currentColor"><path d="M4.53033 12.9697C4.23744 12.6768 3.76256 12.6768 3.46967 12.9697C3.17678 13.2626 3.17678 13.7374 3.46967 14.0303L7.96967 18.5303C8.26256 18.8232 8.73744 18.8232 9.03033 18.5303L20.0303 7.53033C20.3232 7.23744 20.3232 6.76256 20.0303 6.46967C19.7374 6.17678 19.2626 6.17678 18.9697 6.46967L8.5 16.9393L4.53033 12.9697Z"/></svg><span data-ds-menu-label>Docked</span></button></div><hr class="ds-menu-separator"><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" value="wider"><span data-ds-menu-label>Wider</span></button><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" value="reset-size"><span data-ds-menu-label>Reset size</span></button><hr class="ds-menu-separator" data-ds-menu-cancel hidden><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" data-ds-menu-cancel hidden><span data-ds-menu-label>Cancel</span></button></div><a hidden class="ds-button" data-variant="tertiary" data-size="s" id="device-side-panel-full" data-icon-only="true" href="/"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="open" viewBox="0 0 24 24" fill="currentColor"><path d="M6.24992 4.5C5.28344 4.5 4.49996 5.2835 4.49996 6.25V17.75C4.49996 18.7165 5.28344 19.5 6.24992 19.5H17.7496C18.7161 19.5 19.4996 18.7165 19.4996 17.75V13.75C19.4996 13.3358 19.8354 13 20.2496 13C20.6638 13 20.9995 13.3358 20.9995 13.75V17.75C20.9995 19.5449 19.5445 21 17.7496 21H6.24992C4.45504 21 3 19.5449 3 17.75V6.25C3 4.45507 4.45504 3 6.24992 3H10.2498C10.664 3 10.9998 3.33579 10.9998 3.75C10.9998 4.16421 10.664 4.5 10.2498 4.5H6.24992ZM12.9997 3.75C12.9997 3.33579 13.3355 3 13.7497 3H20.25C20.6642 3 21 3.33579 21 3.75V10.25C21 10.6642 20.6642 11 20.25 11C19.8358 11 19.5 10.6642 19.5 10.25V5.56074L14.28 10.7804C13.9871 11.0732 13.5123 11.0732 13.2194 10.7803C12.9265 10.4874 12.9265 10.0125 13.2194 9.71964L18.4395 4.5H13.7497C13.3355 4.5 12.9997 4.16421 12.9997 3.75Z"/></svg><span data-ds-button-label>Open the full page</span></a><button class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-close" data-ds-shortcut="Escape" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="panel-right-contract" viewBox="0 0 24 24" fill="currentColor"><path d="M9.19253 9.24894C9.46962 8.94112 9.94384 8.91617 10.2517 9.1932L12.7517 11.4427C12.9098 11.5849 13 11.7874 13 12C13 12.2126 12.9098 12.4152 12.7517 12.5574L10.2517 14.8068C9.94384 15.0839 9.46962 15.0589 9.19253 14.7511C8.91543 14.4433 8.94039 13.9692 9.24827 13.6922L10.2955 12.7499H6.75C6.33579 12.7499 6 12.4141 6 12C6 11.5859 6.33579 11.2502 6.75 11.2502H10.2955L9.24828 10.3079C8.94039 10.0309 8.91543 9.55675 9.19253 9.24894ZM22 17.2506C22 18.7691 20.7688 20 19.25 20L4.75 20C3.23122 20 2 18.7691 2 17.2506V6.74937C2 5.23093 3.23122 4 4.75 4H19.25C20.7688 4 22 5.23094 22 6.74937L22 17.2506ZM19.25 18.5003C19.9404 18.5003 20.5 17.9408 20.5 17.2506L20.5 6.74937C20.5 6.05917 19.9404 5.49966 19.25 5.49966L15.9958 5.49966L15.9958 18.5003H19.25ZM14.4958 18.5003L14.4958 5.49966L4.75 5.49965C4.05965 5.49965 3.5 6.05917 3.5 6.74937L3.5 17.2506C3.5 17.9408 4.05964 18.5003 4.75 18.5003L14.4958 18.5003Z"/></svg><span data-ds-button-label>Close device details<span data-ds-keys="Esc" data-ds-keys-apple="Esc" aria-hidden="true"></span></span></button></div></header><div class="ds-side-panel-discard" role="group" aria-labelledby="device-side-panel-discard" hidden><p class="ds-side-panel-discard-question" id="device-side-panel-discard">Discard unsaved changes?</p><div class="ds-side-panel-discard-actions"><button class="ds-button" data-variant="primary" data-tone="danger" data-size="s" type="button" id="device-side-panel-discard-yes"><span data-ds-button-label>Discard</span></button><button class="ds-button" data-variant="secondary" data-size="s" type="button" id="device-side-panel-discard-no" aria-describedby="device-side-panel-discard"><span data-ds-button-label>Keep editing</span></button></div></div><div class="ds-side-panel-failed" hidden><p class="ds-side-panel-failed-text" role="alert" data-text="This could not be loaded."></p><button class="ds-button" data-variant="secondary" data-size="s" type="button" id="device-side-panel-retry"><span data-ds-button-label>Try again</span></button></div><div class="ds-side-panel-body"></div><footer class="ds-side-panel-foot"></footer></aside>';
+
   // src/ion-ui/widget-header.ts
+  function decorateWidgetTitleBar(header) {
+    header.classList.add("widget-titlebar");
+    header.querySelector(".widget-title, .ds-side-panel-title")?.classList.add("widget-titlebar-title");
+    header.querySelector(".widget-header-actions, .ds-side-panel-actions")?.classList.add("widget-titlebar-actions");
+  }
   function createWidgetHeader(options) {
     const header = document.createElement("div");
     header.className = "card-heading";
@@ -6780,12 +8286,14 @@ h3 {
     const heading = document.createElement("h2");
     heading.className = "widget-title";
     heading.textContent = options.title;
+    heading.title = options.title;
     if (options.headingId) heading.id = options.headingId;
     text.append(heading);
     if (options.caption !== void 0 || options.captionId) {
       const caption = document.createElement("p");
-      caption.className = "muted";
+      caption.className = "muted widget-caption";
       caption.textContent = options.caption ?? "";
+      if (options.caption) caption.title = options.caption;
       if (options.captionId) caption.id = options.captionId;
       text.append(caption);
     }
@@ -6796,7 +8304,29 @@ h3 {
       actions.append(options.action);
       header.append(actions);
     }
+    decorateWidgetTitleBar(header);
     return header;
+  }
+
+  // src/platform/hash-state.ts
+  function splitHash(hash) {
+    const at = hash.indexOf("?");
+    return { path: at < 0 ? hash : hash.slice(0, at), params: new URLSearchParams(at < 0 ? "" : hash.slice(at + 1)) };
+  }
+  function hashWithValues(hash, key, values, defaultPath = "#/devices") {
+    const { path, params } = splitHash(hash);
+    params.delete(key);
+    for (const value of values) params.append(key, value);
+    const query = params.toString();
+    return (path && path !== "#" ? path : defaultPath) + (query ? "?" + query : "");
+  }
+  function setHashValues(key, values, defaultPath = "#/devices") {
+    const next = hashWithValues(location.hash, key, values, defaultPath);
+    if (next !== location.hash) location.hash = next;
+  }
+  function onHashStateChange(listener2) {
+    window.addEventListener("hashchange", listener2);
+    return () => window.removeEventListener("hashchange", listener2);
   }
 
   // src/vendor/ui/components/app-shell/app-shell.js
@@ -6819,7 +8349,7 @@ h3 {
   }
 
   // src/vendor/ui/components/app-shell/app-shell.js
-  var mounted2 = /* @__PURE__ */ new WeakSet();
+  var mounted3 = /* @__PURE__ */ new WeakSet();
   var isApple2 = (view) => /Mac|iPhone|iPad/.test(view.navigator.platform || view.navigator.userAgent || "");
   var normalizeText = (text) => (text || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ß/g, "ss").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").trim();
   function editDistance(a, b) {
@@ -6857,9 +8387,9 @@ h3 {
   }
   function enhanceAppShell(shell, { storage = defaultStorage(shell), onPreference } = {}) {
     if (!shell?.matches?.("[data-ds-app-shell]")) throw new TypeError("enhanceAppShell needs the shell renderAppShell wrote ([data-ds-app-shell]).");
-    if (mounted2.has(shell)) throw new Error("This app shell is already enhanced; call its dispose() first.");
+    if (mounted3.has(shell)) throw new Error("This app shell is already enhanced; call its dispose() first.");
     if (onPreference !== void 0 && typeof onPreference !== "function") throw new TypeError("onPreference is a function.");
-    mounted2.add(shell);
+    mounted3.add(shell);
     const controller = new AbortController();
     const { signal } = controller;
     const doc = shell.ownerDocument, view = doc.defaultView;
@@ -6882,7 +8412,7 @@ h3 {
         return void 0;
       }
     };
-    const remember = (name, value) => {
+    const remember2 = (name, value) => {
       try {
         storage?.setItem(key(name), JSON.stringify(value));
       } catch {
@@ -6941,7 +8471,7 @@ h3 {
       set(shell, "data-ds-collapsed", value ? "" : null);
       set(toggle, "aria-expanded", String(!value));
       setButtonLabel(toggle, value ? toggle.dataset.dsExpand : toggle.dataset.dsCollapse);
-      if (store) remember("collapsed", value);
+      if (store) remember2("collapsed", value);
     };
     if (toggle) {
       const rendered = collapsed();
@@ -6956,7 +8486,7 @@ h3 {
       set(shell, "data-ds-mode", mode === "all" ? "all" : null);
       for (const option of shell.querySelectorAll('[role="menuitemradio"][name="mode"]')) set(option, "aria-checked", String(option.value === mode));
       if (mode === "all") shell.querySelector(".ds-app-shell-pages [aria-current]")?.scrollIntoView?.({ block: "nearest" });
-      if (store) remember("mode", mode);
+      if (store) remember2("mode", mode);
     };
     if (viewTrigger) {
       const menu = doc.getElementById(viewTrigger.getAttribute("aria-controls"));
@@ -7047,7 +8577,7 @@ h3 {
         best?.removeAttribute("data-ds-best");
       });
     }
-    const remembered = (() => {
+    const remembered2 = (() => {
       const value = recall("open");
       return value && typeof value === "object" ? { ...value } : {};
     })();
@@ -7076,7 +8606,7 @@ h3 {
     for (const fold of shell.querySelectorAll(".ds-app-shell-fold")) {
       set(fold, "hidden", null);
       const holds = fold.closest("li").querySelector("[aria-current]");
-      const stored = remembered[fold.dataset.dsKey];
+      const stored = remembered2[fold.dataset.dsKey];
       if (!holds && typeof stored === "boolean") setOpen(fold, stored);
     }
     listen(shell, "click", (event) => {
@@ -7086,9 +8616,9 @@ h3 {
       const scope = event.altKey ? fold.closest(".ds-app-shell-pages, .ds-app-shell-flyout, .ds-app-shell-sheet") : null;
       for (const each of scope ? scope.querySelectorAll(".ds-app-shell-fold") : [fold]) {
         for (const twin of shell.querySelectorAll(`.ds-app-shell-fold[data-ds-key="${CSS.escape(each.dataset.dsKey)}"]`)) setOpen(twin, open, twin === fold);
-        remembered[each.dataset.dsKey] = open;
+        remembered2[each.dataset.dsKey] = open;
       }
-      remember("open", { ...remembered });
+      remember2("open", { ...remembered2 });
     });
     for (const link of shell.querySelectorAll(".ds-app-shell-section-link")) {
       listen(link, "click", (event) => {
@@ -7139,7 +8669,7 @@ h3 {
           else element2.setAttribute(name, value);
         }
       }
-      mounted2.delete(shell);
+      mounted3.delete(shell);
     };
   }
   function defaultStorage(shell) {
@@ -7165,8 +8695,9 @@ h3 {
     return route;
   }
   function resolveRoute(hash) {
-    if (hash === "" || hash === "#") return routeById(DEFAULT_ROUTE);
-    return ROUTES.find((candidate) => candidate.hash === hash);
+    const path = splitHash(hash).path;
+    if (path === "" || path === "#") return routeById(DEFAULT_ROUTE);
+    return ROUTES.find((candidate) => candidate.hash === path);
   }
   function navigationDirection(from, to) {
     if (to.parent === from.id) return "deeper";
@@ -7267,14 +8798,14 @@ h3 {
   var CONTROLS = 'button, a[href], input:not([type="hidden"]), select, textarea';
   var OWNERS = '[role="toolbar"], [popover], dialog, [role="dialog"], [role="menu"], [role="listbox"]';
   var OWN_KEYS = 'input:not([type="button"], [type="submit"], [type="reset"], [type="checkbox"], [type="image"], [type="file"], [type="color"]), select, textarea';
-  var mounted3 = /* @__PURE__ */ new WeakSet();
+  var mounted4 = /* @__PURE__ */ new WeakSet();
   function enhanceToolbar(toolbar) {
     const view = toolbar?.ownerDocument?.defaultView;
     if (!view || !(toolbar instanceof view.Element) || toolbar.getAttribute("role") !== "toolbar") {
       throw new TypeError('enhanceToolbar needs the role="toolbar" element from renderToolbar.');
     }
-    if (mounted3.has(toolbar)) throw new Error("This toolbar is already enhanced; dispose before remounting.");
-    mounted3.add(toolbar);
+    if (mounted4.has(toolbar)) throw new Error("This toolbar is already enhanced; dispose before remounting.");
+    mounted4.add(toolbar);
     const doc = toolbar.ownerDocument;
     const controller = new AbortController();
     const { signal } = controller;
@@ -7369,12 +8900,12 @@ h3 {
         if (value === null) control.removeAttribute("tabindex");
         else control.setAttribute("tabindex", value);
       }
-      mounted3.delete(toolbar);
+      mounted4.delete(toolbar);
     };
   }
 
   // src/vendor/ui/components/batch-bar/batch-bar.js
-  var mounted4 = /* @__PURE__ */ new WeakSet();
+  var mounted5 = /* @__PURE__ */ new WeakSet();
   var STATE_KEYS = ["count", "verbs", "narrow"];
   var KEBAB = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
   var MORPH = ["ds-batch-bar-travel", "ds-batch-bar-open", "ds-batch-bar-word"];
@@ -7396,8 +8927,8 @@ h3 {
     if (text !== void 0 && (!text || typeof text !== "object" || Object.entries(text).some(([key, value]) => !["count", "reach"].includes(key) || typeof value !== "function"))) {
       throw new TypeError("Batch bar text takes count(count) and reach(applies, count) functions.");
     }
-    if (mounted4.has(bar)) throw new Error("This batch bar is already enhanced; dispose before remounting.");
-    mounted4.add(bar);
+    if (mounted5.has(bar)) throw new Error("This batch bar is already enhanced; dispose before remounting.");
+    mounted5.add(bar);
     const doc = bar.ownerDocument;
     const controller = new AbortController();
     const { signal } = controller;
@@ -7648,7 +9179,7 @@ h3 {
         endEntering();
         controller.abort();
         for (const dispose2 of disposers.reverse()) dispose2();
-        mounted4.delete(bar);
+        mounted5.delete(bar);
       }
     };
   }
@@ -7659,7 +9190,7 @@ h3 {
   // src/vendor/ui/components/scroll-steering/scroll-steering.js
   init_pointer_gesture();
   init_click_burst();
-  var mounted5 = /* @__PURE__ */ new WeakSet();
+  var mounted6 = /* @__PURE__ */ new WeakSet();
   var STEP = 0.75;
   var HOLD_MS = 320;
   var HOLD_PX = 14;
@@ -7669,9 +9200,9 @@ h3 {
   function mountScrollSteering(scroller, host, { label = "Scroll horizontally", backLabel = "Scroll backward", forwardLabel = "Scroll forward" } = {}) {
     const view = scroller?.ownerDocument?.defaultView;
     if (!view || !(scroller instanceof view.HTMLElement) || !(host instanceof view.HTMLElement) || host.ownerDocument !== scroller.ownerDocument) throw new TypeError("mountScrollSteering needs a scroll region and host in the same document.");
-    if (mounted5.has(scroller)) throw new Error("This scroll region already has a steering control.");
+    if (mounted6.has(scroller)) throw new Error("This scroll region already has a steering control.");
     if ([label, backLabel, forwardLabel].some((value) => typeof value !== "string" || !value.trim())) throw new TypeError("Scroll steering labels must be non-empty text.");
-    mounted5.add(scroller);
+    mounted6.add(scroller);
     const controller = new view.AbortController(), { signal } = controller;
     const originalTabindex = scroller.getAttribute("tabindex");
     const control = view.document.createElement("div");
@@ -7812,7 +9343,7 @@ h3 {
         release();
         restoreTabindex();
         control.remove();
-        mounted5.delete(scroller);
+        mounted6.delete(scroller);
       }
     };
   }
@@ -7901,7 +9432,7 @@ h3 {
         if (link.hash === route?.hash) link.setAttribute("aria-current", "page");
         else link.removeAttribute("aria-current");
       });
-      if (focusHeading) {
+      if (focusHeading && previous?.id !== route?.id) {
         root2.querySelector("#" + (route?.headingId ?? "missing-title"))?.focus();
         if (previous && route && previous.id !== route.id) transition.enter(views.pages[route.id], navigationDirection(previous, route));
       }
@@ -8047,13 +9578,14 @@ h3 {
       const other = devices.length - online - offline;
       const chart = document.createElement("div");
       chart.className = "overview-ring";
-      chart.setAttribute("role", "img");
+      chart.setAttribute("role", "group");
       chart.setAttribute("aria-label", `${devices.length} configured devices`);
       if (!devices.length) chart.classList.add("overview-ring--empty");
       const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("viewBox", "0 0 100 100");
-      svg.setAttribute("aria-hidden", "true");
-      const segments = [[online, "online"], [offline, "offline"], [other, "other"]];
+      svg.setAttribute("role", "group");
+      svg.setAttribute("aria-label", "Reported device status chart");
+      const segments = [[online, "online", "Online"], [offline, "offline", "Offline"], [other, "other", "Other statuses"]];
       const nonzero = segments.filter(([value]) => value > 0);
       if (!nonzero.length) {
         const track = document.createElementNS(svg.namespaceURI, "circle");
@@ -8063,9 +9595,53 @@ h3 {
         track.setAttribute("class", "overview-ring-track");
         svg.append(track);
       }
-      const paths = nonzero.map(([, name]) => {
+      const tooltip = document.createElement("div");
+      tooltip.id = "device-status-tooltip";
+      tooltip.className = "overview-chart-tooltip";
+      tooltip.setAttribute("role", "tooltip");
+      tooltip.hidden = true;
+      let hideTimer = 0;
+      tooltip.addEventListener("pointerenter", () => window.clearTimeout(hideTimer));
+      tooltip.addEventListener("pointerleave", () => {
+        if (!svg.contains(document.activeElement)) tooltip.hidden = true;
+      });
+      const paths = nonzero.map(([count, name, label]) => {
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         path.setAttribute("class", `overview-slice overview-slice--${name}`);
+        path.setAttribute("tabindex", "0");
+        path.setAttribute("role", "img");
+        const percent = (count / devices.length * 100).toFixed(1).replace(/\.0$/, "");
+        const detail = name === "other" ? ["Unavailable", "Unknown", "Stale", "Permission denied"].map((status) => [status, devices.filter((device) => device.status === status).length]).filter(([, amount]) => amount > 0).map(([status, amount]) => `${status}: ${amount}`).join(" \xB7 ") : "";
+        const description = `${label}: ${count} ${count === 1 ? "device" : "devices"} \xB7 ${percent}%${detail ? ` \xB7 ${detail}` : ""}`;
+        path.setAttribute("aria-label", description);
+        const show = () => {
+          window.clearTimeout(hideTimer);
+          tooltip.textContent = description;
+          tooltip.hidden = false;
+          path.setAttribute("aria-describedby", tooltip.id);
+        };
+        const hide = () => {
+          window.clearTimeout(hideTimer);
+          tooltip.hidden = true;
+          path.removeAttribute("aria-describedby");
+        };
+        const hideSoon = () => {
+          window.clearTimeout(hideTimer);
+          hideTimer = window.setTimeout(hide, 180);
+        };
+        path.addEventListener("pointerenter", show);
+        path.addEventListener("pointerleave", () => {
+          if (document.activeElement !== path) hideSoon();
+        });
+        path.addEventListener("focus", show);
+        path.addEventListener("blur", hideSoon);
+        path.addEventListener("click", show);
+        path.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            hide();
+            event.stopPropagation();
+          }
+        });
         svg.append(path);
         return path;
       });
@@ -8073,10 +9649,11 @@ h3 {
       layout(paths, values, [47, 36, 4.6, statusRingGap(values)]);
       chart.append(svg);
       const ringCenter = document.createElement("div");
+      ringCenter.className = "overview-ring-center";
       const total = text("strong", "", String(devices.length));
       total.dataset.count = "total";
       ringCenter.append(total, text("span", "", "devices"));
-      chart.append(ringCenter);
+      chart.append(ringCenter, tooltip);
       const breakdown = document.createElement("dl");
       breakdown.className = "overview-breakdown";
       const stateBreakdown = [
@@ -8229,13 +9806,18 @@ h3 {
     let activeDialog = null;
     let alive = true;
     let mutationPending = false;
-    let registerRequest = 0;
     const sample = site.getState().kind === "sample";
     const { shell, dispose: disposeShell } = mountShell(root2, site.getState().kind);
     root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div id="inventory-header"></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll" role="region" aria-label="Device inventory table, scroll horizontally for more columns"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
     root2.querySelector("#inventory-header").replaceWith(createWidgetHeader({ title: "Inventory", captionId: "device-count" }));
     const infrastructure = createInfrastructureView(site, (device, opener) => open(device, opener));
     root2.querySelector("#app-content").prepend(infrastructure.element);
+    for (const [selector, label] of [["#infrastructure-overview .page-content", "Infrastructure content"], ["#devices-page .page-content", "Device inventory content"], ["#route-missing .page-content", "Page not found content"]]) {
+      const region = root2.querySelector(selector);
+      region.tabIndex = 0;
+      region.setAttribute("role", "region");
+      region.setAttribute("aria-label", label);
+    }
     root2.querySelector("#missing-header").append(createPageHeader({ title: "Page not found", headingId: "missing-title" }));
     root2.querySelector("#devices-header").append(createPageHeader({
       title: "Devices",
@@ -8266,7 +9848,6 @@ h3 {
           status.textContent = "Finish or cancel this dialog before leaving.";
           return false;
         }
-        if (host.firstChild) close();
         if (next?.id !== "devices" && selected.size) {
           selected.clear();
           renderInventory();
@@ -8284,57 +9865,97 @@ h3 {
       location.hash = routeById("devices").hash;
     });
     const body = root2.querySelector("#devices-body");
-    let lastOpener = null;
     const host = root2.querySelector("#panel-host");
-    const close = () => {
-      registerRequest++;
-      host.replaceChildren();
-      shell.inert = false;
-      const key = lastOpener?.dataset.overviewFocus;
-      const replacement = key ? [...root2.querySelectorAll("[data-overview-focus]")].find((node) => node.dataset.overviewFocus === key && node.checkVisibility()) : void 0;
-      if (lastOpener?.isConnected && lastOpener.checkVisibility()) lastOpener.focus();
-      else if (replacement) replacement.focus();
-      else if (overview.checkVisibility()) root2.querySelector("#infrastructure-title")?.focus();
-      else focusNewDevice();
-      lastOpener = null;
+    host.innerHTML = sidePanelMarkup;
+    const panels = /* @__PURE__ */ new Map();
+    const openPanels2 = [];
+    let applyingUrl = false;
+    const panelValues = () => splitHash(location.hash).params.getAll("panel");
+    const readDeviceIds = () => panelValues().filter((value) => value.startsWith("device:")).map((value) => value.slice(7)).filter(Boolean);
+    const writeDeviceIds = (ids) => {
+      const otherPanels = panelValues().filter((value) => !value.startsWith("device:"));
+      setHashValues("panel", [...otherPanels, ...ids.map((id) => `device:${id}`)]);
     };
-    const keydown = (event) => {
-      if (event.key !== "Escape") return;
-      if (activeDialog) return;
-      if (host.firstChild) close();
+    const writePanelState = () => {
+      const devices = openPanels2.map((controller) => panels.get(controller)?.requested).filter((id) => Boolean(id));
+      writeDeviceIds(devices);
     };
-    document.addEventListener("keydown", keydown);
+    const primaryPanel = enhanceSidePanel(host.querySelector("#device-side-panel"), { topBoundary: root2.querySelector(".ds-app-shell-header") });
+    const trackPanel = (controller) => {
+      const panel = controller.body.parentElement;
+      decorateWidgetTitleBar(panel.querySelector(".ds-side-panel-head"));
+      const compare = button("Compare device", "ion-button ion-button--widget-s compare-device");
+      compare.hidden = true;
+      const record = { ticket: 0, opener: null, device: null, requested: null, compare };
+      panels.set(controller, record);
+      panel.querySelector(".ds-side-panel-actions").prepend(compare);
+      compare.addEventListener("click", () => {
+        if (!record.device) return;
+        let copy = null;
+        copy = controller.beside({ onClose: () => {
+          if (copy) panels.delete(copy);
+        } });
+        if (!copy) return;
+        trackPanel(copy);
+        openPanels2.push(copy);
+        void showDevice(copy, record.device, compare, site.getDevices().map((item) => item.id));
+        writePanelState();
+      });
+      panel.addEventListener("side-panel-closing", () => {
+        record.ticket++;
+        const index = openPanels2.indexOf(controller);
+        const intended = readDeviceIds();
+        if (index >= 0) openPanels2.splice(index, 1);
+        if (!applyingUrl && alive) {
+          if (index >= 0 && intended.length > openPanels2.length + 1) {
+            intended.splice(index, 1);
+            writeDeviceIds(intended);
+          } else writePanelState();
+        }
+        const wasInside = panel.contains(document.activeElement);
+        if (!wasInside) return;
+        queueMicrotask(() => {
+          if (!alive) return;
+          const opener = record.opener;
+          const key = opener?.dataset.overviewFocus;
+          const replacement = key ? [...root2.querySelectorAll("[data-overview-focus]")].find((node) => node.dataset.overviewFocus === key && node.checkVisibility()) : void 0;
+          if (opener?.isConnected && opener.checkVisibility()) opener.focus();
+          else if (replacement) replacement.focus();
+          else if (overview.checkVisibility()) root2.querySelector("#infrastructure-title")?.focus();
+          else focusNewDevice();
+        });
+      });
+      return record;
+    };
+    trackPanel(primaryPanel);
     function open(device, opener, candidates = []) {
-      lastOpener = opener;
-      ++registerRequest;
+      if (!openPanels2.includes(primaryPanel)) openPanels2.push(primaryPanel);
+      void showDevice(primaryPanel, device, opener, candidates);
+      writePanelState();
+    }
+    async function showDevice(controller, device, opener, candidates = []) {
+      const record = panels.get(controller);
+      if (!record) return;
+      record.opener = opener;
+      record.device = device;
+      record.requested = device.id;
+      record.compare.hidden = false;
+      const ticket = ++record.ticket;
+      const panel = controller.body.parentElement;
+      const prefix = panel.id;
       let registers = [];
       let status = "all";
-      host.replaceChildren();
-      const backdrop = element("div", "backdrop");
-      backdrop.addEventListener("click", close);
-      let panel = element("aside", "panel");
-      panel.setAttribute("role", "dialog");
-      panel.setAttribute("aria-modal", "true");
-      panel.setAttribute("aria-labelledby", "panel-title");
-      panel.innerHTML = '<div class="panel-content"><p class="sample-note" id="reading-source"></p><section><h3>Device information</h3><dl class="metadata"></dl></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" id="register-summary"></p></div></div><label for="register-search">Search registers</label><input id="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p id="result-count" class="muted" aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section></div>';
-      const sourceNote = panel.querySelector("#reading-source");
+      const content = element("div", "device-detail");
+      content.innerHTML = `<p class="sample-note" data-reading-source></p><section><h3>Device information</h3><dl class="metadata"></dl></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" data-register-summary role="status"></p></div></div><label for="${prefix}-register-search">Search registers</label><input id="${prefix}-register-search" class="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p class="muted" data-result-count aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section>`;
+      const sourceNote = content.querySelector("[data-reading-source]");
       sourceNote.hidden = !sample;
       sourceNote.textContent = sample ? "Sample readings \xB7 no live device connection" : "";
-      const titleBar = createTitleBar({
-        title: device.name,
-        subtitle: [device.vendor, device.model, device.id].filter(Boolean).join(" \xB7 "),
-        headingId: "panel-title",
-        closeLabel: "Close device details",
-        onClose: close
-      });
-      panel.prepend(titleBar);
-      const closeButton = titleBar.querySelector("button");
-      const metadata = panel.querySelector("dl");
+      const metadata = content.querySelector("dl");
       const details = [["Status", device.status + (sample ? " (sample)" : "")], ["IP address", device.ipAddress ?? "\u2014"], ["Port", String(device.port ?? "\u2014")], ["Unit ID", String(device.unitId ?? "\u2014")], ["Type", device.nodeType ?? device.type], ["Capabilities", device.capabilities ?? "\u2014"], ["In use", device.inUse ? "Yes" : "No"], ["Connected links", String(site.getConnections().filter((c) => c.fromId === device.id || c.toId === device.id).length)]];
       for (const [label, value] of details) {
         metadata.append(element("dt", "", label), element("dd", "", value));
       }
-      const summary = panel.querySelector("#register-summary");
+      const summary = content.querySelector("[data-register-summary]");
       summary.textContent = "Loading registers\u2026";
       if (candidates.length > 1) {
         const label = element("label", "device-switch-label", "Inspect selected device");
@@ -8352,22 +9973,21 @@ h3 {
         select.addEventListener("change", () => {
           const next = site.getDevices().find((item) => item.id === select.value);
           if (next) {
-            open(next, opener, candidates);
-            panel = host.querySelector("aside");
-            panel.querySelector(".device-switch")?.focus();
+            void showDevice(controller, next, opener, candidates).then(() => controller.body.querySelector(".device-switch")?.focus());
+            writePanelState();
           }
         });
         label.append(select);
-        panel.querySelector(".panel-content").prepend(label);
+        content.prepend(label);
       }
-      const input = panel.querySelector("#register-search");
-      const rows = panel.querySelector(".register-table tbody");
-      const filters = panel.querySelector(".filters");
+      const input = content.querySelector(".register-search");
+      const rows = content.querySelector(".register-table tbody");
+      const filters = content.querySelector(".filters");
       const options = [["all", "All"], ["verified", "Verified"], ["error", "Error"], ["no status", "No status"]];
       const render = () => {
         const query = input.value.trim().toLowerCase();
         const filtered = registers.filter((r) => (status === "all" || r.status === status) && (!query || [String(r.register), r.description, r.status].some((value) => value.toLowerCase().includes(query))));
-        panel.querySelector("#result-count").textContent = filtered.length + " of " + registers.length + " registers";
+        content.querySelector("[data-result-count]").textContent = filtered.length + " of " + registers.length + " registers";
         rows.replaceChildren();
         for (const register of filtered) {
           const row = element("tr");
@@ -8397,12 +10017,9 @@ h3 {
       input.addEventListener("input", render);
       const retry = button("Retry", "ion-button ion-button--primary");
       retry.hidden = true;
-      retry.addEventListener("click", () => {
-        void loadRegisters();
-      });
-      panel.querySelector(".register-section").append(retry);
+      content.querySelector(".register-section").append(retry);
+      const valid = () => alive && record.ticket === ticket && controller.isOpen && content.isConnected;
       const loadRegisters = async () => {
-        const attempt = ++registerRequest;
         retry.hidden = true;
         input.disabled = true;
         filters.querySelectorAll("button").forEach((control) => {
@@ -8410,10 +10027,10 @@ h3 {
         });
         rows.replaceChildren();
         summary.textContent = "Loading registers\u2026";
-        panel.querySelector("#result-count").textContent = "";
+        content.querySelector("[data-result-count]").textContent = "";
         try {
           const result = await site.readRegisters(device.id);
-          if (!alive || attempt !== registerRequest || !panel.isConnected) return;
+          if (!valid()) return;
           registers = result;
           input.disabled = false;
           filters.querySelectorAll("button").forEach((control) => {
@@ -8422,28 +10039,68 @@ h3 {
           summary.textContent = registers.length + " total \xB7 " + registers.filter((r) => r.status === "error").length + " errors \xB7 " + registers.filter((r) => r.status === "verified").length + " verified";
           render();
         } catch {
-          if (!alive || attempt !== registerRequest || !panel.isConnected) return;
+          if (!valid()) return;
           summary.textContent = "Could not load registers.";
           retry.hidden = false;
         }
       };
-      panel.addEventListener("keydown", (event) => {
-        if (event.key !== "Tab") return;
-        const focusable2 = Array.from(panel.querySelectorAll("button,input,select,a[href]")).filter((control) => control.checkVisibility() && !control.matches(":disabled") && control.tabIndex >= 0);
-        const first = focusable2[0], last = focusable2[focusable2.length - 1];
-        if (event.shiftKey && document.activeElement === first) {
-          event.preventDefault();
-          last.focus();
-        } else if (!event.shiftKey && document.activeElement === last) {
-          event.preventDefault();
-          first.focus();
-        }
+      retry.addEventListener("click", () => {
+        void loadRegisters();
       });
-      shell.inert = true;
-      host.append(backdrop, panel);
-      void loadRegisters();
-      closeButton.focus();
+      const opened = await controller.open({ title: device.name, content });
+      if (opened && valid()) void loadRegisters();
     }
+    function showMissing(controller, id) {
+      const record = panels.get(controller);
+      if (!record) return;
+      record.ticket++;
+      record.device = null;
+      record.requested = id;
+      record.compare.hidden = true;
+      const content = element("p", "device-detail", "This device is not available in the current data source.");
+      void controller.open({ title: "Device not found", content });
+    }
+    function syncPanelsFromUrl() {
+      if (!alive) return;
+      const desired = resolveRoute(location.hash) ? readDeviceIds() : [];
+      if (site.getState().status !== "ready" && desired.length) return;
+      applyingUrl = true;
+      try {
+        while (openPanels2.length > desired.length) {
+          const controller = openPanels2[openPanels2.length - 1];
+          if (!controller.isOpen) {
+            openPanels2.pop();
+            continue;
+          }
+          void controller.close();
+        }
+        for (const [index, id] of desired.entries()) {
+          let controller = openPanels2[index];
+          if (!controller) {
+            if (!primaryPanel.isOpen && !openPanels2.includes(primaryPanel)) controller = primaryPanel;
+            else {
+              let copy = null;
+              copy = primaryPanel.beside({ onClose: () => {
+                if (copy) panels.delete(copy);
+              } });
+              if (!copy) break;
+              trackPanel(copy);
+              controller = copy;
+            }
+            openPanels2.push(controller);
+          }
+          const record = panels.get(controller);
+          const device = site.getDevices().find((item) => item.id === id);
+          if (record.requested !== id || !controller.isOpen || Boolean(device) !== Boolean(record.device)) {
+            if (device) void showDevice(controller, device, record.opener, site.getDevices().map((item) => item.id));
+            else showMissing(controller, id);
+          }
+        }
+      } finally {
+        applyingUrl = false;
+      }
+    }
+    const stopPanelUrlListener = onHashStateChange(syncPanelsFromUrl);
     const bulkHost = root2.querySelector("#bulk-host");
     bulkHost.innerHTML = batchMarkup;
     const bulk = bulkHost.querySelector(".ds-batch-bar");
@@ -8509,6 +10166,7 @@ h3 {
         row.append(selectionCell);
         const nameCell = element("td");
         const openButton = button(device.name, "device-link");
+        openButton.dataset.overviewFocus = `device:${device.id}`;
         openButton.addEventListener("click", () => open(device, openButton));
         nameCell.append(openButton);
         row.append(nameCell);
@@ -8750,20 +10408,28 @@ h3 {
     });
     newButton.addEventListener("click", createDevice);
     const unsubscribe = site.subscribe(() => {
-      if (alive) renderInventory();
+      if (alive) {
+        renderInventory();
+        syncPanelsFromUrl();
+      }
     });
     renderInventory();
+    syncPanelsFromUrl();
     void site.load().catch(() => {
     });
     return () => {
       alive = false;
-      registerRequest++;
+      stopPanelUrlListener();
       unsubscribe();
+      for (const panel of panels.keys()) {
+        void panel.close();
+        panel.dispose();
+      }
+      panels.clear();
       disposeShell();
       batch.dispose();
       disposeRouter();
       tableSteering.dispose();
-      document.removeEventListener("keydown", keydown);
       activeDialog?.close();
       activeDialog?.remove();
       activeDialog = null;
