@@ -7503,6 +7503,7 @@ h3 {
           retry.type = "button";
           retry.className = "ion-button ion-button--primary";
           retry.textContent = "Retry";
+          retry.disabled = state.pending;
           retry.addEventListener("click", () => {
             void site.load().catch(() => {
             });
@@ -7540,7 +7541,7 @@ h3 {
     let registerRequest = 0;
     const sample = site.getState().kind === "sample";
     const { shell, dispose: disposeShell } = mountShell(root2, site.getState().kind);
-    root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div class="card-heading"><div><h2 class="widget-title">Inventory</h2><p class="muted" id="device-count"></p></div></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
+    root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div class="card-heading"><div><h2 class="widget-title">Inventory</h2><p class="muted" id="device-count"></p></div></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll" role="region" aria-label="Device inventory table, scroll horizontally for more columns"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
     const infrastructure = createInfrastructureView(site);
     root2.querySelector("#app-content").prepend(infrastructure.element);
     root2.querySelector("#missing-header").append(createPageHeader({ title: "Page not found", headingId: "missing-title" }));
