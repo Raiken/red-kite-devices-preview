@@ -4413,6 +4413,17 @@ h3 {
     display: none;
   }
 }
+.ds-app-shell .ds-app-shell-row > .ds-icon {
+  color: inherit;
+}
+@container ds-app-shell (width >= 48rem) {
+  .ds-app-shell-panel:not(:popover-open) {
+    padding-block-start: 12.5px;
+  }
+  .shell-sidebar-header {
+    margin-bottom: 19.5px;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
