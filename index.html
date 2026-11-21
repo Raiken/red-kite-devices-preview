@@ -740,6 +740,177 @@ h3 {
 [data-theme=dark] .ion-button--primary {
   color: var(--color-neutral-600);
 }
+.layout {
+  grid-template-columns: 250px minmax(0, 1fr);
+}
+.layout.collapsed {
+  grid-template-columns: 64px minmax(0, 1fr);
+}
+.nav {
+  background: var(--color-black);
+  color: var(--color-white);
+  padding: 0;
+  min-width: 0;
+}
+.nav-header {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+.nav-toggle,
+.mobile-menu,
+.theme-toggle {
+  border: 0;
+  background: transparent;
+  color: var(--color-white);
+  height: 40px;
+  min-width: 40px;
+  border-radius: 6px;
+  font-size: 19px;
+  cursor: pointer;
+}
+.nav-toggle:hover,
+.mobile-menu:hover,
+.theme-toggle:hover {
+  background: #ffffff1a;
+}
+.nav-logo {
+  object-fit: contain;
+  display: block;
+}
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 12px;
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 39px;
+  padding: 9px 16px;
+  color: #f0f0f4;
+  font-size: 15px;
+  line-height: 1.25;
+}
+.nav-item.current {
+  background: #272731;
+  font-weight: 700;
+}
+.nav-item.current .nav-icon {
+  color: var(--color-accent-accent);
+}
+.nav-item.unavailable {
+  color: #bcbcc9;
+}
+.nav-icon {
+  width: 20px;
+  flex: none;
+  text-align: center;
+  font-size: 20px;
+  line-height: 20px;
+}
+.nav-text {
+  flex: 1;
+  white-space: nowrap;
+}
+.nav-soon {
+  font-size: 11px;
+  color: #bcbcc9;
+}
+.collapsed .nav-logo,
+.collapsed .nav-text,
+.collapsed .nav-soon {
+  display: none;
+}
+.collapsed .nav-header {
+  justify-content: center;
+  padding: 0;
+}
+.collapsed .nav-item {
+  justify-content: center;
+  padding: 9px;
+}
+.topbar {
+  background: var(--color-black);
+  color: var(--color-white);
+  border: 0;
+  padding: 0 16px;
+  justify-content: flex-end;
+}
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.environment {
+  background: var(--color-accent-dark);
+  color: var(--color-white);
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 16px;
+  padding: 5px 10px;
+}
+.demo {
+  color: #dddde8;
+  font-size: 12px;
+}
+.theme-toggle {
+  font-size: 16px;
+  padding: 0 8px;
+}
+.theme-toggle span {
+  font-size: 13px;
+}
+.mobile-menu {
+  display: none;
+}
+@media (max-width: 700px) {
+  .layout,
+  .layout.collapsed {
+    display: block;
+  }
+  .nav {
+    position: fixed;
+    z-index: 20;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 250px;
+    transform: translateX(-100%);
+    transition: transform .2s ease;
+  }
+  .layout.mobile-open .nav {
+    transform: translateX(0);
+  }
+  .layout.collapsed .nav-logo,
+  .layout.collapsed .nav-text,
+  .layout.collapsed .nav-soon {
+    display: block;
+  }
+  .layout.collapsed .nav-header {
+    justify-content: space-between;
+    padding: 0 16px;
+  }
+  .layout.collapsed .nav-item {
+    justify-content: flex-start;
+    padding: 9px 16px;
+  }
+  .topbar {
+    justify-content: space-between;
+  }
+  .mobile-menu {
+    display: block;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav {
+    transition: none;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   // src/features/devices/api/devices.ts
@@ -1194,7 +1365,43 @@ h3 {
   function mountDevices(root2, site) {
     const selected = /* @__PURE__ */ new Set();
     let activeDialog = null;
-    root2.innerHTML = '<div class="layout"><aside class="nav"><div class="brand">RED KITE <span>Satellite</span></div><div class="nav-label">WORKSPACE</div><div class="nav-active">Devices</div></aside><div class="workspace"><header class="topbar"><span>Satellite controller</span><span class="demo">Sample data \xB7 offline prototype</span></header><main><div class="page-heading"><div><p class="eyebrow">CONFIGURATION</p><h1>Devices</h1><p class="subtitle">Inspect devices and their Modbus registers.</p><p class="muted">Changes are temporary and reset when this page reloads.</p></div><button type="button" id="new-device" class="ion-button ion-button--cta">+ New Device</button></div><section class="card" aria-labelledby="inventory-heading"><div class="card-heading"><div><h2 id="inventory-heading">Device inventory</h2><p class="muted" id="device-count"></p></div></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-actions" class="bulk-actions" hidden></div><p id="notice" class="notice" role="status" aria-live="polite"></p></main></div></div><div id="panel-host"></div>';
+    root2.innerHTML = '<div class="layout" id="shell"><aside class="nav" id="sidebar" aria-label="Main navigation"><div class="nav-header"><button type="button" class="nav-toggle" id="nav-toggle" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar-menu"><span aria-hidden="true">\u2630</span></button><img class="nav-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="Red Kite" width="56" height="24"></div><nav id="sidebar-menu" class="nav-menu" aria-label="Satellite"><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u25A6</span><span class="nav-text">Dashboard</span><span class="nav-soon">Soon</span></div><div class="nav-item current" aria-current="page"><span class="nav-icon" aria-hidden="true">\u25A3</span><span class="nav-text">Devices</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u2301</span><span class="nav-text">Power Management</span><span class="nav-soon">Soon</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u25C9</span><span class="nav-text">Breaker Control</span><span class="nav-soon">Soon</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u25A5</span><span class="nav-text">Analytics</span><span class="nav-soon">Soon</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u2261</span><span class="nav-text">Logging</span><span class="nav-soon">Soon</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u2699</span><span class="nav-text">Settings</span><span class="nav-soon">Soon</span></div></nav></aside><div class="workspace"><header class="topbar"><button type="button" class="mobile-menu" id="mobile-menu" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation">\u2630</button><div class="header-actions"><span class="environment">SATELLITE LOCAL</span><span class="demo">Sample data</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme">\u25D0 <span>Theme</span></button></div></header><main><div class="page-heading"><div><p class="eyebrow">CONFIGURATION</p><h1>Devices</h1><p class="subtitle">Inspect devices and their Modbus registers.</p><p class="muted">Changes are temporary and reset when this page reloads.</p></div><button type="button" id="new-device" class="ion-button ion-button--cta">+ New Device</button></div><section class="card" aria-labelledby="inventory-heading"><div class="card-heading"><div><h2 id="inventory-heading">Device inventory</h2><p class="muted" id="device-count"></p></div></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-actions" class="bulk-actions" hidden></div><p id="notice" class="notice" role="status" aria-live="polite"></p></main></div></div><div id="panel-host"></div>';
+    const shell = root2.querySelector("#shell");
+    const navToggle = root2.querySelector("#nav-toggle");
+    const mobileMenu = root2.querySelector("#mobile-menu");
+    const themeToggle = root2.querySelector("#theme-toggle");
+    navToggle.addEventListener("click", () => {
+      if (window.matchMedia("(max-width: 700px)").matches) {
+        shell.classList.remove("mobile-open");
+        mobileMenu.setAttribute("aria-expanded", "false");
+        mobileMenu.focus();
+        return;
+      }
+      const collapsed = shell.classList.toggle("collapsed");
+      navToggle.setAttribute("aria-expanded", String(!collapsed));
+      navToggle.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+    });
+    mobileMenu.addEventListener("click", () => {
+      const open2 = shell.classList.toggle("mobile-open");
+      mobileMenu.setAttribute("aria-expanded", String(open2));
+      if (open2) navToggle.focus();
+    });
+    themeToggle.addEventListener("click", () => {
+      const dark = document.documentElement.dataset.theme !== "dark";
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+      themeToggle.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+      try {
+        localStorage.setItem("rxui-theme", dark ? "dark" : "light");
+      } catch {
+      }
+    });
+    try {
+      if (localStorage.getItem("rxui-theme") === "dark") {
+        document.documentElement.dataset.theme = "dark";
+        themeToggle.setAttribute("aria-label", "Switch to light theme");
+      }
+    } catch {
+    }
     const body = root2.querySelector("#devices-body");
     let lastOpener = null;
     const host = root2.querySelector("#panel-host");
