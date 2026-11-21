@@ -4489,6 +4489,127 @@ h3 {
     flex-basis: 100%;
   }
 }
+.page-header-mobile-actions {
+  display: none;
+  position: relative;
+  flex: none;
+}
+.page-header-mobile-actions > summary {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  background: var(--color-neutral-000);
+  color: var(--color-primary-dark);
+  cursor: pointer;
+  list-style: none;
+}
+.page-header-mobile-actions > summary::-webkit-details-marker {
+  display: none;
+}
+.page-header-mobile-actions > summary span {
+  font-size: 24px;
+  line-height: 1;
+}
+.page-header-mobile-actions > summary:focus-visible {
+  outline: 3px solid var(--color-info-info);
+  outline-offset: 2px;
+}
+.page-header-action-menu {
+  position: absolute;
+  z-index: 8;
+  right: 0;
+  top: calc(100% + 8px);
+  min-width: 168px;
+  padding: 4px;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 6px;
+  background: var(--color-neutral-000);
+  box-shadow: 0 4px 14px #1e1e3d24;
+}
+.page-header-action-menu button {
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-neutral-600);
+  text-align: left;
+  white-space: nowrap;
+}
+.page-header-action-menu button:hover,
+.page-header-action-menu button:focus-visible {
+  background: var(--color-neutral-100);
+}
+@media (max-width: 768px) {
+  .page-header {
+    flex-wrap: nowrap;
+  }
+  .page-header-action {
+    display: none;
+  }
+  .page-header-mobile-actions {
+    display: block;
+  }
+}
+@container ds-app-shell (width < 48rem) {
+  .ds-app-shell-tabbar:not([data-ds-layout=split]) {
+    width: min(330px, calc(100% - 24px));
+    max-width: calc(100% - 24px);
+    padding: 6px;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: 16px;
+    background: var(--color-neutral-000);
+    box-shadow: 0 4px 14px #1e1e3d1a, 0 1px 2px #340d3e1c;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .ds-app-shell-tabbar:not([data-ds-layout=split]) > ul {
+    display: flex;
+    overflow: visible;
+  }
+  .ds-app-shell-tabbar:not([data-ds-layout=split]) > ul > li {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+  .ds-app-shell-tabbar:not([data-ds-layout=split]) > ul > li:last-child {
+    flex: 0 0 52px;
+  }
+  .ds-app-shell-tabbar .ds-app-shell-tab {
+    color: var(--color-neutral-500);
+    font-size: 11px;
+  }
+  .ds-app-shell-tabbar .ds-app-shell-tab[aria-current] {
+    color: var(--color-primary-dark);
+  }
+  .ds-app-shell-tabbar .ds-app-shell-tab[aria-current] > .ds-icon {
+    background: var(--color-primary-lighter);
+  }
+  .ds-app-shell-tabbar button.ds-app-shell-tab {
+    align-content: center;
+    min-height: 48px;
+  }
+  .ds-app-shell-tabbar button.ds-app-shell-tab > .ds-truncate {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+@media (forced-colors: active) {
+  .ds-app-shell-tabbar:not([data-ds-layout=split]) {
+    background: Canvas;
+    border-color: CanvasText;
+  }
+  .ds-app-shell-tabbar .ds-app-shell-tab {
+    color: CanvasText;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -6187,6 +6308,37 @@ h3 {
       action.className = "ion-button ion-button--cta page-header-action";
       action.textContent = options.action.label;
       header.append(action);
+      const mobile = document.createElement("details");
+      mobile.className = "page-header-mobile-actions";
+      const summary = document.createElement("summary");
+      summary.setAttribute("aria-label", "Page actions");
+      const glyph = document.createElement("span");
+      glyph.setAttribute("aria-hidden", "true");
+      glyph.textContent = "\u22EE";
+      summary.append(glyph);
+      const menu = document.createElement("div");
+      menu.className = "page-header-action-menu";
+      const mobileAction = document.createElement("button");
+      mobileAction.type = "button";
+      mobileAction.textContent = options.action.label;
+      mobileAction.addEventListener("click", () => {
+        mobile.open = false;
+        action.click();
+      });
+      mobile.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && mobile.open) {
+          event.preventDefault();
+          event.stopPropagation();
+          mobile.open = false;
+          summary.focus();
+        }
+      });
+      mobile.addEventListener("focusout", (event) => {
+        if (event.relatedTarget instanceof Node && !mobile.contains(event.relatedTarget)) mobile.open = false;
+      });
+      menu.append(mobileAction);
+      mobile.append(summary, menu);
+      header.append(mobile);
     }
     return header;
   }
@@ -7143,6 +7295,7 @@ h3 {
     navPanel.prepend(sidebarHeader);
     const disposeShell = enhanceAppShell(shell);
     const tabbar = root2.querySelector(".ds-app-shell-tabbar");
+    tabbar.querySelector("button.ds-app-shell-tab")?.setAttribute("aria-label", "More");
     const onBatchToggle = (event) => {
       const shown = event.detail.shown;
       tabbar.inert = shown;
@@ -7315,6 +7468,7 @@ h3 {
     bulkHost.innerHTML = batchMarkup;
     const bulk = bulkHost.querySelector(".ds-batch-bar");
     const newButton = root2.querySelector("#new-device");
+    const focusNewDevice = () => (newButton.checkVisibility() ? newButton : root2.querySelector("#devices-header .page-header-mobile-actions summary"))?.focus();
     const selectAll = root2.querySelector("#select-all");
     const notice = root2.querySelector("#notice");
     const announce2 = (message) => {
@@ -7415,7 +7569,8 @@ h3 {
       cancel.focus();
     }
     function createDevice() {
-      const { box, close: dismiss } = dialog("Add device", newButton);
+      const opener = newButton.checkVisibility() ? newButton : root2.querySelector("#devices-header .page-header-mobile-actions summary");
+      const { box, close: dismiss } = dialog("Add device", opener);
       const form = element("form", "device-form");
       form.noValidate = true;
       form.innerHTML = '<div class="field"><label for="device-name">Name</label><input id="device-name" name="name" required><span class="field-error" id="name-error"></span></div><div class="form-grid"><div class="field"><label for="device-vendor">Vendor (optional)</label><select id="device-vendor" name="vendor"><option value="">Select vendor</option></select><span class="field-error" id="vendor-error"></span></div><div class="field"><label for="device-model">Model (optional)</label><select id="device-model" name="model" disabled><option value="">Select vendor first</option></select><span class="field-error" id="model-error"></span></div></div><div class="field"><label for="device-ip">IP address</label><input id="device-ip" name="ip" inputmode="decimal" placeholder="192.168.1.10" required aria-describedby="ip-error"><span class="field-error" id="ip-error"></span></div><div class="form-grid"><div class="field"><label for="device-port">Port</label><input id="device-port" name="port" type="number" value="502" required><span class="field-error" id="port-error"></span></div><div class="field"><label for="device-unit">Unit ID</label><input id="device-unit" name="unit" type="number" value="-1" required><span class="field-error" id="unit-error"></span></div></div><div class="modal-actions"><button class="ion-button ion-button--primary" type="button" id="cancel-create">Cancel</button><button class="ion-button ion-button--cta" type="submit">Add device</button></div>';
@@ -7478,7 +7633,7 @@ h3 {
       onClear: () => {
         selected.clear();
         renderInventory();
-        newButton.focus();
+        focusNewDevice();
         announce2("Selection cleared.");
       },
       onAction: (action, opener) => {
