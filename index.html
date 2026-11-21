@@ -911,6 +911,139 @@ h3 {
     transition: none;
   }
 }
+.nav-menu {
+  padding: 8px 0;
+  gap: 3px;
+}
+.menu-group {
+  font-size: 15px;
+  color: #f0f0f4;
+}
+.menu-parent {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 9.5px 16px;
+  min-height: 40px;
+  text-align: left;
+  font: inherit;
+}
+.menu-parent:hover,
+.menu-parent:focus-visible {
+  background: #ffffff14;
+}
+.menu-group.is-active > .menu-parent {
+  background: #292933;
+  font-weight: 700;
+}
+.menu-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  color: var(--color-accent-accent);
+}
+.menu-label {
+  flex: 1;
+}
+.menu-chevron {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+.menu-parent[aria-expanded=false] .menu-chevron {
+  transform: rotate(-90deg);
+}
+.menu-children[hidden] {
+  display: none;
+}
+.menu-child {
+  display: block;
+  padding: 8px 16px 8px 44px;
+  font-size: 13px;
+  color: #f0f0f4;
+  text-decoration: none;
+}
+.menu-child.is-active {
+  background: #292933;
+  font-weight: 600;
+}
+.menu-child:hover {
+  background: #ffffff14;
+}
+.collapsed .menu-label,
+.collapsed .menu-chevron,
+.collapsed .menu-children {
+  display: none;
+}
+.collapsed .menu-parent {
+  justify-content: center;
+  padding: 9.5px;
+}
+.page-heading h1 {
+  margin: 0;
+}
+.title-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.info {
+  position: relative;
+}
+.info summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--color-neutral-400);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-neutral-500);
+  list-style: none;
+}
+.info summary::-webkit-details-marker {
+  display: none;
+}
+.info summary:focus-visible {
+  outline: 3px solid var(--color-info-info);
+  outline-offset: 2px;
+}
+.info-content {
+  position: absolute;
+  z-index: 5;
+  top: 30px;
+  left: 0;
+  width: 240px;
+  padding: 12px;
+  background: var(--color-neutral-000);
+  color: var(--color-neutral-600);
+  box-shadow: 0 4px 18px #0003;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+@media (max-width: 700px) {
+  .layout.collapsed .menu-label,
+  .layout.collapsed .menu-chevron,
+  .layout.collapsed .menu-children:not([hidden]) {
+    display: block;
+  }
+  .layout.collapsed .menu-parent {
+    justify-content: flex-start;
+    padding: 9.5px 16px;
+  }
+}
+[data-theme=dark] .topbar {
+  background: var(--color-black);
+  color: var(--color-white);
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   // src/features/devices/api/devices.ts
@@ -1365,10 +1498,24 @@ h3 {
   function mountDevices(root2, site) {
     const selected = /* @__PURE__ */ new Set();
     let activeDialog = null;
-    root2.innerHTML = '<div class="layout" id="shell"><aside class="nav" id="sidebar" aria-label="Main navigation"><div class="nav-header"><button type="button" class="nav-toggle" id="nav-toggle" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar-menu"><span aria-hidden="true">\u2630</span></button><img class="nav-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="Red Kite" width="56" height="24"></div><nav id="sidebar-menu" class="nav-menu" aria-label="Satellite"><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u25A6</span><span class="nav-text">Dashboard</span><span class="nav-soon">Soon</span></div><div class="nav-item current" aria-current="page"><span class="nav-icon" aria-hidden="true">\u25A3</span><span class="nav-text">Devices</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u2301</span><span class="nav-text">Power Management</span><span class="nav-soon">Soon</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u25C9</span><span class="nav-text">Breaker Control</span><span class="nav-soon">Soon</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u25A5</span><span class="nav-text">Analytics</span><span class="nav-soon">Soon</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u2261</span><span class="nav-text">Logging</span><span class="nav-soon">Soon</span></div><div class="nav-item unavailable"><span class="nav-icon" aria-hidden="true">\u2699</span><span class="nav-text">Settings</span><span class="nav-soon">Soon</span></div></nav></aside><div class="workspace"><header class="topbar"><button type="button" class="mobile-menu" id="mobile-menu" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation">\u2630</button><div class="header-actions"><span class="environment">SATELLITE LOCAL</span><span class="demo">Sample data</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme">\u25D0 <span>Theme</span></button></div></header><main><div class="page-heading"><div><p class="eyebrow">CONFIGURATION</p><h1>Devices</h1><p class="subtitle">Inspect devices and their Modbus registers.</p><p class="muted">Changes are temporary and reset when this page reloads.</p></div><button type="button" id="new-device" class="ion-button ion-button--cta">+ New Device</button></div><section class="card" aria-labelledby="inventory-heading"><div class="card-heading"><div><h2 id="inventory-heading">Device inventory</h2><p class="muted" id="device-count"></p></div></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-actions" class="bulk-actions" hidden></div><p id="notice" class="notice" role="status" aria-live="polite"></p></main></div></div><div id="panel-host"></div>';
+    root2.innerHTML = '<div class="layout" id="shell"><aside class="nav" id="sidebar" aria-label="Main navigation"><div class="nav-header"><button type="button" class="nav-toggle" id="nav-toggle" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar-menu"><span aria-hidden="true">\u2630</span></button><img class="nav-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="Red Kite" width="56" height="24"></div><nav id="sidebar-menu" class="nav-menu" aria-label="Main navigation"><div class="menu-group is-active"><button type="button" class="menu-link menu-parent" id="infrastructure-toggle" aria-expanded="true" aria-controls="infrastructure-items"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="3" width="11" height="18" rx="1.5"/><path d="M7 7h5M7 10h5M15 7h2l2 2v7a2 2 0 0 1-4 0"/></svg><span class="menu-label">Infrastructure</span><svg class="menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="menu-children" id="infrastructure-items"><a href="#/devices" class="menu-child is-active" aria-current="page">Devices</a></div></div></nav></aside><div class="workspace"><header class="topbar"><button type="button" class="mobile-menu" id="mobile-menu" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation">\u2630</button><div class="header-actions"><span class="environment">SATELLITE LOCAL</span><span class="demo">Sample data</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme">\u25D0 <span>Theme</span></button></div></header><main><div class="page-heading"><div><div class="title-line"><h1>Devices</h1><details class="info"><summary aria-label="About sample data">i</summary><div class="info-content">This preview uses sample data. Changes reset when the page reloads.</div></details></div></div><button type="button" id="new-device" class="ion-button ion-button--cta">+ New Device</button></div><section class="card" aria-label="Device inventory"><div class="card-heading"><p class="muted" id="device-count"></p></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-actions" class="bulk-actions" hidden></div><p id="notice" class="notice" role="status" aria-live="polite"></p></main></div></div><div id="panel-host"></div>';
     const shell = root2.querySelector("#shell");
     const navToggle = root2.querySelector("#nav-toggle");
     const mobileMenu = root2.querySelector("#mobile-menu");
+    const groupToggle = root2.querySelector("#infrastructure-toggle");
+    const groupItems = root2.querySelector("#infrastructure-items");
+    groupToggle.addEventListener("click", () => {
+      if (shell.classList.contains("collapsed") && !window.matchMedia("(max-width: 700px)").matches) {
+        shell.classList.remove("collapsed");
+        navToggle.setAttribute("aria-expanded", "true");
+        navToggle.setAttribute("aria-label", "Collapse sidebar");
+        groupItems.hidden = false;
+        groupToggle.setAttribute("aria-expanded", "true");
+        return;
+      }
+      groupItems.hidden = !groupItems.hidden;
+      groupToggle.setAttribute("aria-expanded", String(!groupItems.hidden));
+    });
     const themeToggle = root2.querySelector("#theme-toggle");
     navToggle.addEventListener("click", () => {
       if (window.matchMedia("(max-width: 700px)").matches) {
@@ -1524,7 +1671,7 @@ h3 {
     };
     function renderInventory() {
       const devices = site.getDevices();
-      root2.querySelector("#device-count").textContent = devices.length + " devices \xB7 Sample status";
+      root2.querySelector("#device-count").textContent = devices.length + (devices.length === 1 ? " device" : " devices");
       selectAll.checked = devices.length > 0 && selected.size === devices.length;
       selectAll.indeterminate = selected.size > 0 && selected.size < devices.length;
       selectAll.disabled = devices.length === 0;
@@ -1641,7 +1788,7 @@ h3 {
       const { box, close: dismiss } = dialog("Add device", newButton);
       const form = element("form", "device-form");
       form.noValidate = true;
-      form.innerHTML = '<p class="modal-copy">Sample changes are temporary and reset on reload.</p><div class="field"><label for="device-name">Name</label><input id="device-name" name="name" required><span class="field-error" id="name-error"></span></div><div class="form-grid"><div class="field"><label for="device-vendor">Vendor (optional)</label><select id="device-vendor" name="vendor"><option value="">Select vendor</option></select><span class="field-error" id="vendor-error"></span></div><div class="field"><label for="device-model">Model (optional)</label><select id="device-model" name="model" disabled><option value="">Select vendor first</option></select><span class="field-error" id="model-error"></span></div></div><div class="field"><label for="device-ip">IP address</label><input id="device-ip" name="ip" inputmode="decimal" placeholder="192.168.1.10" required aria-describedby="ip-error"><span class="field-error" id="ip-error"></span></div><div class="form-grid"><div class="field"><label for="device-port">Port</label><input id="device-port" name="port" type="number" value="502" required><span class="field-error" id="port-error"></span></div><div class="field"><label for="device-unit">Unit ID</label><input id="device-unit" name="unit" type="number" value="-1" required><span class="field-error" id="unit-error"></span></div></div><div class="modal-actions"><button class="ion-button ion-button--primary" type="button" id="cancel-create">Cancel</button><button class="ion-button ion-button--cta" type="submit">Add device</button></div>';
+      form.innerHTML = '<div class="field"><label for="device-name">Name</label><input id="device-name" name="name" required><span class="field-error" id="name-error"></span></div><div class="form-grid"><div class="field"><label for="device-vendor">Vendor (optional)</label><select id="device-vendor" name="vendor"><option value="">Select vendor</option></select><span class="field-error" id="vendor-error"></span></div><div class="field"><label for="device-model">Model (optional)</label><select id="device-model" name="model" disabled><option value="">Select vendor first</option></select><span class="field-error" id="model-error"></span></div></div><div class="field"><label for="device-ip">IP address</label><input id="device-ip" name="ip" inputmode="decimal" placeholder="192.168.1.10" required aria-describedby="ip-error"><span class="field-error" id="ip-error"></span></div><div class="form-grid"><div class="field"><label for="device-port">Port</label><input id="device-port" name="port" type="number" value="502" required><span class="field-error" id="port-error"></span></div><div class="field"><label for="device-unit">Unit ID</label><input id="device-unit" name="unit" type="number" value="-1" required><span class="field-error" id="unit-error"></span></div></div><div class="modal-actions"><button class="ion-button ion-button--primary" type="button" id="cancel-create">Cancel</button><button class="ion-button ion-button--cta" type="submit">Add device</button></div>';
       const vendor = form.querySelector("#device-vendor");
       const model = form.querySelector("#device-model");
       for (const item of VENDORS) {
