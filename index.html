@@ -1,4 +1,1248 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Devices · Red Kite Satellite</title><style>/* src/ion-ui/colors.css */
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Devices · Red Kite Satellite</title><style>/* src/vendor/ui/tokens/tokens.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.tokens {
+  :root {
+    color-scheme: light dark;
+    --ds-neutral-0: #ffffff;
+    --ds-neutral-1000: #000000;
+    --ds-brand-primary: #1d4ed8;
+    --ds-brand-primary-dark: #91b4ff;
+    --ds-brand-secondary: #6d42b0;
+    --ds-brand-secondary-dark: #c8acf4;
+    --ds-space-1: 0.25rem;
+    --ds-space-2: 0.5rem;
+    --ds-space-3: 0.75rem;
+    --ds-space-4: 1.25rem;
+    --ds-space-5: 2rem;
+    --ds-radius: 0.75rem;
+    --ds-radius-control: 0.5rem;
+    --ds-font:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
+    --ds-type-control-size: 1rem;
+    --ds-type-control-weight: 600;
+    --ds-type-label-weight: 500;
+    --ds-type-wrap: pretty;
+    --ds-control-min-size: 2.75rem;
+    --ds-control-size-m: 2.25rem;
+    --ds-control-size-2xs: 1.5rem;
+    --ds-control-size-xs: 1.75rem;
+    --ds-control-size-s: 2rem;
+    --ds-control-size-l: 2.5rem;
+    --ds-type-control-xs: .75rem;
+    --ds-type-control-small: .875rem;
+    --ds-type-control-large: 1.125rem;
+    --ds-type-page-title-size: 1.75rem;
+    --ds-type-section-title-size: 1.125rem;
+    --ds-icon-size-s: 1rem;
+    --ds-icon-size-m: 1.25rem;
+    --ds-icon-size-l: 1.5rem;
+    --ds-choice-size: 1.125rem;
+    --ds-control-gap-small: .375rem;
+    --ds-spinner-stroke: 2px;
+    --ds-focus-width: 3px;
+    --ds-focus-offset: 3px;
+    --ds-motion-duration-state: 150ms;
+    --ds-motion-duration-spin: 900ms;
+    --ds-tooltip-delay: 400ms;
+    --ds-motion-ease-standard: cubic-bezier(.2, .7, .2, 1);
+    --ds-reveal-radius: 10rem;
+    --ds-reveal-strength: 10%;
+    --ds-reveal-allowed: 1;
+    --ds-contrast-amount: 0%;
+    --ds-contrast-edge: 0px;
+  }
+  :root,
+  [data-ds-scope] {
+    --ds-space-field-gap: var(--ds-space-2);
+    --ds-space-field-gap-compact: var(--ds-space-1);
+    --ds-space-related-gap: var(--ds-space-3);
+    --ds-space-group-gap: var(--ds-space-4);
+    --ds-space-section-gap: var(--ds-space-5);
+    --ds-space-inset: var(--ds-space-4);
+    --ds-space-inset-compact: var(--ds-space-3);
+    --ds-type-summary-weight: var(--ds-type-label-weight);
+    --ds-type-button-weight: var(--ds-type-label-weight);
+    --ds-type-title-weight: var(--ds-type-label-weight);
+    --ds-type-field-size: var(--ds-type-control-small);
+    --ds-control-size-field: var(--ds-control-size-m);
+    --ds-type-button-size: var(--ds-type-control-small);
+    --ds-type-button-small: var(--ds-type-control-small);
+    --ds-space-button-inset: 1rem;
+    --ds-radius-button: var(--ds-radius-control);
+    --ds-radius-field: var(--ds-radius-control);
+    --ds-radius-well: var(--ds-radius-control);
+    --ds-radius-choice: calc(var(--ds-radius-control) * .625);
+    --ds-radius-chip: var(--ds-radius-control);
+  }
+  @media (pointer: coarse) {
+    :root,
+    [data-ds-scope] {
+      --ds-type-field-size: var(--ds-type-control-size);
+    }
+  }
+  [data-ds-theme=light] {
+    color-scheme: light;
+  }
+  [data-ds-theme=dark] {
+    color-scheme: dark;
+  }
+  @media (prefers-contrast: more) {
+    :root {
+      --ds-contrast-amount: 100%;
+      --ds-contrast-edge: 1px;
+      --ds-reveal-allowed: 0;
+    }
+  }
+  [data-ds-contrast=standard] {
+    --ds-contrast-amount: 0%;
+    --ds-contrast-edge: 0px;
+    --ds-reveal-allowed: 1;
+  }
+  [data-ds-contrast=more] {
+    --ds-contrast-amount: 100%;
+    --ds-contrast-edge: 1px;
+    --ds-reveal-allowed: 0;
+  }
+  [data-ds-tooltip-delay=instant] {
+    --ds-tooltip-delay: 0ms;
+  }
+  [data-ds-tooltip-delay=fast] {
+    --ds-tooltip-delay: 120ms;
+  }
+  [data-ds-tooltip-delay=normal] {
+    --ds-tooltip-delay: 400ms;
+  }
+  [data-ds-tooltip-delay=slow] {
+    --ds-tooltip-delay: 700ms;
+  }
+  :root,
+  [data-ds-scope],
+  [data-ds-theme],
+  [data-ds-contrast] {
+    --ds-neutral-50: color-mix(in oklab, #f6f7f9, var(--ds-color-primary) 3%);
+    --ds-neutral-100: color-mix(in oklab, #f3f4f6, var(--ds-color-primary) 3%);
+    --ds-neutral-300: color-mix(in oklab, #b9bec8, var(--ds-color-primary) 4%);
+    --ds-neutral-500: color-mix(in oklab, #858992, var(--ds-color-primary) 4%);
+    --ds-neutral-600: color-mix(in oklab, #5e626b, var(--ds-color-primary) 4%);
+    --ds-neutral-800: color-mix(in oklab, #22252b, var(--ds-color-primary) 3%);
+    --ds-neutral-900: color-mix(in oklab, #202226, var(--ds-color-primary) 3%);
+    --ds-neutral-950: color-mix(in oklab, #17191d, var(--ds-color-primary) 3%);
+    --ds-color-canvas: color-mix(in srgb, light-dark(var(--ds-neutral-50), var(--ds-neutral-950)), light-dark(var(--ds-neutral-0), var(--ds-neutral-1000)) var(--ds-contrast-amount));
+    --ds-color-surface: color-mix(in srgb, light-dark(color-mix(in oklab, var(--ds-neutral-0), var(--ds-color-primary) 1.5%), var(--ds-neutral-800)), light-dark(var(--ds-neutral-0), var(--ds-neutral-1000)) var(--ds-contrast-amount));
+    --ds-color-text: color-mix(in srgb, light-dark(var(--ds-neutral-900), var(--ds-neutral-100)), light-dark(var(--ds-neutral-1000), var(--ds-neutral-0)) var(--ds-contrast-amount));
+    --ds-color-veil: var(--ds-color-text);
+    --ds-color-text-strong: var(--ds-color-text);
+    --ds-color-text-body: color-mix(in srgb, var(--ds-color-text-strong) calc(94% + var(--ds-contrast-amount) * .06), var(--ds-color-surface));
+    --ds-color-text-label: color-mix(in srgb, var(--ds-color-text-strong) calc(82% + var(--ds-contrast-amount) * .18), var(--ds-color-surface));
+    --ds-color-text-muted: color-mix(in srgb, light-dark(var(--ds-neutral-600), var(--ds-neutral-300)), light-dark(var(--ds-neutral-1000), var(--ds-neutral-0)) var(--ds-contrast-amount));
+    --ds-color-placeholder: color-mix(in srgb, var(--ds-color-text-muted), var(--ds-color-surface) calc(3% + var(--ds-contrast-amount) * .25));
+    --ds-color-border: color-mix(in srgb, var(--ds-neutral-500), var(--ds-color-text) var(--ds-contrast-amount));
+    --ds-color-control-edge: color-mix(in srgb, var(--ds-color-veil) calc(18% + var(--ds-contrast-amount) * .82), var(--ds-color-surface));
+    --ds-color-divider: color-mix(in srgb, var(--ds-color-veil) calc(15% + var(--ds-contrast-amount) * .35), var(--ds-color-surface));
+    --ds-color-card-edge: color-mix(in srgb, var(--ds-color-veil) calc(10% + var(--ds-contrast-amount) * .4), var(--ds-color-surface));
+    --ds-color-primary: light-dark(var(--ds-brand-primary), var(--ds-brand-primary-dark));
+    --ds-color-on-primary: light-dark(var(--ds-neutral-0), var(--ds-neutral-950));
+    --ds-color-state: var(--ds-color-primary);
+    --ds-color-on-state: var(--ds-color-on-primary);
+    --ds-color-state-text: var(--ds-color-state);
+    --ds-color-state-tint: color-mix(in srgb, var(--ds-color-state) 12%, var(--ds-color-surface));
+    --ds-color-secondary: light-dark(var(--ds-brand-secondary), var(--ds-brand-secondary-dark));
+    --ds-color-focus: light-dark(var(--ds-brand-primary), var(--ds-brand-primary-dark));
+    --ds-color-success: light-dark(#236b42, #88d7a5);
+    --ds-color-warning: light-dark(#875000, #f1c375);
+    --ds-color-danger: light-dark(#b52636, #ff9ba6);
+    --ds-color-danger-fill: var(--ds-color-danger);
+    --ds-color-on-danger: light-dark(var(--ds-neutral-0), var(--ds-neutral-1000));
+    --ds-color-info: light-dark(#1d5b9f, #99c9f6);
+    --ds-color-action-hover: color-mix(in srgb, var(--ds-color-primary), var(--ds-color-on-primary) 8%);
+    --ds-color-action-pressed: color-mix(in srgb, var(--ds-color-primary), light-dark(var(--ds-neutral-1000), var(--ds-neutral-0)) 16%);
+    --ds-color-soft: color-mix(in srgb, var(--ds-color-veil) 7%, transparent);
+    --ds-color-button-fill: var(--ds-color-surface);
+    --ds-color-field: var(--ds-color-surface);
+    --ds-color-neutral-hover: color-mix(in srgb, var(--ds-color-surface), var(--ds-color-veil) 6%);
+    --ds-color-chip: var(--ds-color-neutral-hover);
+    --ds-color-hairline: var(--ds-color-divider);
+    --ds-color-rim: color-mix(in srgb, var(--ds-color-veil) calc(9% + var(--ds-contrast-amount) * .91), transparent);
+    --ds-color-neutral-pressed: color-mix(in srgb, var(--ds-color-surface), var(--ds-color-veil) 12%);
+    --ds-color-ghost-hover: color-mix(in srgb, var(--ds-color-veil) 8%, transparent);
+    --ds-color-ghost-pressed: color-mix(in srgb, var(--ds-color-veil) 14%, transparent);
+    --ds-color-disabled-surface: color-mix(in srgb, var(--ds-color-surface), var(--ds-color-veil) 5%);
+    --ds-color-disabled-text: var(--ds-color-text-muted);
+    --ds-color-reveal: light-dark(var(--ds-neutral-0), var(--ds-neutral-1000));
+    --ds-control-border-width: calc(1px + var(--ds-contrast-edge));
+    --ds-color-shadow: light-dark(color-mix(in oklab, color-mix(in oklab, var(--ds-neutral-1000), var(--ds-color-primary) 15%) 40%, transparent), color-mix(in oklab, var(--ds-neutral-1000), var(--ds-color-primary) 15%));
+    --ds-color-shade: var(--ds-color-shadow);
+    --ds-color-shade-lit: light-dark(color-mix(in srgb, var(--ds-color-shade) calc(100% - var(--ds-contrast-amount)), transparent), transparent);
+    --ds-color-shade-deep: light-dark(transparent, color-mix(in srgb, var(--ds-color-shade) calc(100% - var(--ds-contrast-amount)), transparent));
+    --ds-shadow-control: 0 .0625rem .125rem color-mix(in srgb, var(--ds-color-shade-lit) 14%, transparent), 0 .0625rem .0625rem color-mix(in srgb, var(--ds-color-shade-deep) 50%, transparent);
+    --ds-shadow-raised:
+      0 .0625rem .125rem color-mix(in srgb, var(--ds-color-shade-lit) 12%, transparent),
+      0 .125rem .375rem -.0625rem color-mix(in srgb, var(--ds-color-shade-lit) 12%, transparent),
+      0 0 0 .03125rem color-mix(in srgb, var(--ds-color-shade-deep) 50%, transparent),
+      0 .25rem .625rem -.125rem color-mix(in srgb, var(--ds-color-shade-deep) 60%, transparent);
+    --ds-shadow-popup:
+      0 .0625rem .125rem color-mix(in srgb, var(--ds-color-shade-lit) 8%, transparent),
+      0 .25rem .75rem -.125rem color-mix(in srgb, var(--ds-color-shade-lit) 11%, transparent),
+      0 .75rem 1.75rem -.375rem color-mix(in srgb, var(--ds-color-shade-lit) 15%, transparent),
+      0 0 0 .03125rem color-mix(in srgb, var(--ds-color-shade-deep) 60%, transparent),
+      0 .0625rem .0625rem color-mix(in srgb, var(--ds-color-shade-deep) 50%, transparent),
+      0 .625rem 1.75rem -.375rem color-mix(in srgb, var(--ds-color-shade-deep) 75%, transparent);
+    --_ds-shadow-float-dark:
+      0 0 0 .03125rem color-mix(in srgb, var(--ds-color-shade-deep) 60%, transparent),
+      0 .0625rem .0625rem color-mix(in srgb, var(--ds-color-shade-deep) 50%, transparent),
+      0 .875rem 2.25rem -.5rem color-mix(in srgb, var(--ds-color-shade-deep) 80%, transparent);
+    --ds-shadow-float:
+      0 .0625rem .1875rem color-mix(in srgb, var(--ds-color-shade-lit) 8%, transparent),
+      0 .375rem 1.125rem -.25rem color-mix(in srgb, var(--ds-color-shade-lit) 11%, transparent),
+      0 1.25rem 3.5rem -.625rem color-mix(in srgb, var(--ds-color-shade-lit) 16%, transparent),
+      var(--_ds-shadow-float-dark);
+    --ds-shadow-float-left:
+      -.0625rem .0625rem .1875rem color-mix(in srgb, var(--ds-color-shade-lit) 8%, transparent),
+      -.375rem .25rem 1.125rem -.25rem color-mix(in srgb, var(--ds-color-shade-lit) 11%, transparent),
+      -1.25rem .5rem 3.5rem -.625rem color-mix(in srgb, var(--ds-color-shade-lit) 16%, transparent),
+      var(--_ds-shadow-float-dark);
+    --ds-shadow-float-right:
+      .0625rem .0625rem .1875rem color-mix(in srgb, var(--ds-color-shade-lit) 8%, transparent),
+      .375rem .25rem 1.125rem -.25rem color-mix(in srgb, var(--ds-color-shade-lit) 11%, transparent),
+      1.25rem .5rem 3.5rem -.625rem color-mix(in srgb, var(--ds-color-shade-lit) 16%, transparent),
+      var(--_ds-shadow-float-dark);
+  }
+  @supports (color: oklch(from red l c h)) {
+    :root,
+    [data-ds-scope],
+    [data-ds-theme],
+    [data-ds-contrast] {
+      --ds-color-shade: light-dark(oklch(from var(--ds-color-primary) .48 .13 h), oklch(from var(--ds-color-primary) .1 .04 h));
+      --ds-neutral-50: color-mix(in oklab, color-mix(in oklab, #f6f7f9, var(--ds-color-primary) 3%), oklch(from var(--ds-color-primary) .9613 c h) 3%);
+      --ds-neutral-100: color-mix(in oklab, color-mix(in oklab, #f3f4f6, var(--ds-color-primary) 3%), oklch(from var(--ds-color-primary) .9526 c h) 3%);
+      --ds-neutral-300: color-mix(in oklab, color-mix(in oklab, #b9bec8, var(--ds-color-primary) 4%), oklch(from var(--ds-color-primary) .7881 c h) 12%);
+      --ds-neutral-500: color-mix(in oklab, color-mix(in oklab, #858992, var(--ds-color-primary) 4%), oklch(from var(--ds-color-primary) .624 c h) 12%);
+      --ds-neutral-600: color-mix(in oklab, color-mix(in oklab, #5e626b, var(--ds-color-primary) 4%), oklch(from var(--ds-color-primary) .4955 c h) 12%);
+      --ds-neutral-800: color-mix(in oklab, color-mix(in oklab, #22252b, var(--ds-color-primary) 3%), oklch(from var(--ds-color-primary) .2707 c h) 12%);
+      --ds-neutral-900: color-mix(in oklab, color-mix(in oklab, #202226, var(--ds-color-primary) 3%), oklch(from var(--ds-color-primary) .2586 c h) 12%);
+      --ds-neutral-950: color-mix(in oklab, color-mix(in oklab, #17191d, var(--ds-color-primary) 3%), oklch(from var(--ds-color-primary) .2213 c h) 3%);
+      --ds-color-veil: color-mix(in srgb, oklch(from color-mix(in oklch, var(--ds-color-text), var(--ds-color-primary) 1%) l min(calc(c * 8), .12, calc((1 - l) / 3)) h), var(--ds-color-text) var(--ds-contrast-amount));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :root {
+      --ds-motion-duration-state: 0ms;
+    }
+  }
+}
+@layer ds.components {
+  :where([class^=ds-], [class*=" ds-"])[hidden]:not([hidden=until-found]) {
+    display: none;
+  }
+}
+@layer ds.base.reset {
+  :where([class^=ds-], [class*=" ds-"]) {
+    text-indent: 0;
+    text-transform: none;
+    letter-spacing: normal;
+    word-spacing: normal;
+    hyphens: manual;
+  }
+  :where([class^=ds-], [class*=" ds-"]) :where([class^=ds-], [class*=" ds-"]),
+  :where([class^=ds-truncate], [class*=" ds-truncate"]) {
+    text-transform: inherit;
+    letter-spacing: inherit;
+    word-spacing: inherit;
+    hyphens: inherit;
+  }
+}
+@layer ds.components {
+  :where(.ds-section-label) {
+    margin: 0;
+    color: var(--ds-color-text-muted);
+    font: 600 var(--ds-type-control-xs)/1.6 var(--ds-font);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  :where(.ds-visually-hidden) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+/* src/vendor/ui/components/icon/icon.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  :where(.ds-icon) {
+    inline-size: 1em;
+    block-size: 1em;
+    flex: none;
+    vertical-align: -0.125em;
+  }
+  :where(.ds-icon-circle) {
+    display: grid;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    border-radius: 50%;
+    background: var(--ds-color-soft);
+    color: var(--ds-color-text-muted);
+    font-size: var(--ds-icon-size-m);
+    & > svg {
+      inline-size: var(--ds-icon-size-m);
+      block-size: var(--ds-icon-size-m);
+    }
+  }
+  @media (forced-colors: active) {
+    :where(.ds-icon-circle) {
+      border: var(--ds-control-border-width) solid CanvasText;
+    }
+  }
+}
+
+/* src/vendor/ui/components/button/button.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  :where(.ds-button, [data-ds-ui] button:not([role=menuitem], [role=menuitemcheckbox], [role=menuitemradio], .ds-data-table-sort, .ds-data-table-step)) {
+    --_size: var(--ds-control-size-m);
+    --_font: var(--ds-type-button-size);
+    --_inset: var(--ds-space-button-inset);
+    --_icon: var(--ds-icon-size-m);
+    --_gap: var(--ds-space-2);
+    --_reveal-color: var(--ds-color-text);
+    box-sizing: border-box;
+    appearance: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--_gap);
+    min-block-size: var(--_size);
+    min-inline-size: var(--_size);
+    max-inline-size: 100%;
+    padding: max(0px, calc((var(--_size) - var(--_font) * 1.4) / 2 - var(--ds-control-border-width))) var(--_inset);
+    border: var(--ds-control-border-width) solid var(--ds-color-control-edge);
+    border-radius: var(--ds-radius-button);
+    background: var(--ds-color-button-fill);
+    color: var(--ds-color-text);
+    font: var(--ds-type-button-weight) var(--_font)/1.4 var(--ds-font);
+    text-align: center;
+    text-decoration: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    touch-action: manipulation;
+    &[data-size="2xs"] {
+      --_size: var(--ds-control-size-2xs);
+      --_font: var(--ds-type-control-xs);
+      --_inset: var(--ds-space-2);
+      --_icon: var(--ds-icon-size-s);
+      --_gap: var(--ds-space-1);
+    }
+    &[data-size=xs] {
+      --_size: var(--ds-control-size-xs);
+      --_font: var(--ds-type-control-xs);
+      --_inset: var(--ds-space-2);
+      --_icon: var(--ds-icon-size-s);
+      --_gap: var(--ds-control-gap-small);
+    }
+    &[data-size=s] {
+      --_size: var(--ds-control-size-s);
+      --_font: var(--ds-type-button-small);
+      --_inset: var(--ds-space-3);
+      --_icon: var(--ds-icon-size-s);
+      --_gap: var(--ds-control-gap-small);
+    }
+    &[data-size=l] {
+      --_size: var(--ds-control-size-l);
+      --_font: var(--ds-type-control-large);
+      --_inset: var(--ds-space-4);
+      --_icon: var(--ds-icon-size-l);
+    }
+    & > :is(svg, [data-ds-button-spinner]) {
+      inline-size: var(--_icon);
+      block-size: var(--_icon);
+      flex: none;
+      pointer-events: none;
+    }
+    & > [data-ds-button-label] {
+      min-inline-size: 0;
+    }
+    @supports (text-box: trim-both cap alphabetic) {
+      &:not([data-icon-only=true]) > [data-ds-button-label] {
+        text-box: trim-both cap alphabetic;
+        margin-block: calc((1lh - 1cap) / 2);
+      }
+      &:not([data-icon-only=true]) > [data-ds-button-label] .ds-truncate:not([data-lines], [data-inline]) {
+        overflow-y: visible;
+      }
+    }
+    & > [data-ds-button-spinner] {
+      display: none;
+      box-sizing: border-box;
+      border: var(--ds-spinner-stroke) solid currentColor;
+      border-inline-end-color: transparent;
+      border-radius: 50%;
+    }
+    &:is([data-icon-only=true], [data-ds-shortcut]) {
+      position: relative;
+      --_tooltip-gap: calc(var(--ds-focus-offset) + var(--ds-focus-width) + var(--ds-space-1));
+      --_tooltip-wait: calc(var(--ds-tooltip-delay) * (1 - var(--_ds-tooltip-warm, 0)));
+    }
+    &[data-icon-only=true] {
+      padding: 0;
+    }
+    &[data-icon-only=true] > [data-ds-button-label],
+    &:not([data-icon-only=true]) > [data-ds-button-label] > [data-ds-keys] {
+      position: absolute;
+      inline-size: 1px;
+      block-size: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+    }
+    &:is([data-icon-only=true], [data-ds-shortcut]):is(:hover, :focus-visible) {
+      z-index: 1;
+    }
+    &:is(:hover, :focus-visible):not([data-ds-tooltip], :where([aria-haspopup=menu][aria-expanded=true])) {
+      &[data-icon-only=true] > [data-ds-button-label],
+      &:not([data-icon-only=true]):is([data-ds-platform], [data-ds-platform] *) > [data-ds-button-label] > [data-ds-keys] {
+        inset-block-end: calc(100% + var(--_tooltip-gap) + var(--ds-control-border-width));
+        left: 50%;
+        translate: calc(-50% + var(--_tooltip-shift, 0px)) 0;
+        inline-size: max-content;
+        max-inline-size: min(16rem, calc(100vw - 2 * var(--ds-space-3)));
+        block-size: auto;
+        overflow: visible;
+        clip-path: none;
+        white-space: normal;
+        padding: var(--ds-space-1) var(--ds-space-2);
+        border: var(--ds-control-border-width) solid transparent;
+        border-radius: var(--ds-radius-control);
+        background: var(--ds-color-text);
+        color: var(--ds-color-canvas);
+        font: 400 var(--ds-type-control-small)/1.4 var(--ds-font);
+        opacity: 1;
+        pointer-events: auto;
+        transition: opacity calc(var(--ds-motion-duration-state) / 2) ease var(--_tooltip-wait), pointer-events 0s var(--_tooltip-wait);
+        transition-behavior: allow-discrete;
+      }
+      &[data-icon-only=true] > [data-ds-button-label]::after,
+      &:not([data-icon-only=true]) > [data-ds-button-label] > [data-ds-keys]::after {
+        content: "";
+        position: absolute;
+        inset-inline: 0;
+        inset-block-start: 100%;
+        block-size: calc(var(--_tooltip-gap) + 2 * var(--ds-control-border-width));
+      }
+      &[data-ds-tooltip-side=below][data-icon-only=true] > [data-ds-button-label],
+      &[data-ds-tooltip-side=below]:not([data-icon-only=true]) > [data-ds-button-label] > [data-ds-keys] {
+        inset-block-end: auto;
+        inset-block-start: calc(100% + var(--_tooltip-gap) + var(--ds-control-border-width));
+        &::after {
+          inset-block-start: auto;
+          inset-block-end: 100%;
+        }
+      }
+    }
+    &[data-icon-only=true]:focus-visible:not([data-ds-tooltip]) > [data-ds-button-label],
+    &:not([data-icon-only=true])[data-ds-shortcut]:focus-visible:not([data-ds-tooltip]) > [data-ds-button-label] > [data-ds-keys] {
+      transition-delay: calc(var(--_tooltip-wait) / 4);
+    }
+    &[data-icon-only=true] > [data-ds-button-label] > [data-ds-keys]:where([data-ds-platform] *) {
+      margin-inline-start: var(--ds-space-2);
+      color: color-mix(in srgb, var(--ds-color-canvas) calc(72% + var(--ds-contrast-amount) * .28), var(--ds-color-text));
+    }
+    @media (hover: none) {
+      &[data-icon-only=true]:hover:not(:focus-visible) > [data-ds-button-label],
+      &:not([data-icon-only=true])[data-ds-shortcut]:hover:not(:focus-visible) > [data-ds-button-label] > [data-ds-keys] {
+        opacity: 0;
+        pointer-events: none;
+        transition: none;
+      }
+    }
+    &[aria-busy=true] {
+      cursor: progress;
+    }
+    &[aria-busy=true] > [data-ds-button-spinner] {
+      display: block;
+      animation: ds-button-busy-wait .15s step-end;
+    }
+    &[aria-busy=true]:has(> [data-ds-button-spinner=leading]) > [data-ds-button-icon=leading],
+    &[aria-busy=true]:has(> [data-ds-button-spinner=trailing]) > [data-ds-button-icon=trailing] {
+      animation: ds-button-busy-swap 1ms .15s forwards;
+    }
+    &[data-variant=primary] {
+      --_reveal-color: var(--ds-color-reveal);
+      background: var(--ds-color-primary);
+      border-color: var(--ds-color-primary);
+      color: var(--ds-color-on-primary);
+    }
+    &[data-variant=soft] {
+      background: var(--ds-color-soft);
+      border-color: color-mix(in srgb, var(--ds-color-control-edge) var(--ds-contrast-amount), transparent);
+    }
+    &[data-variant=tertiary] {
+      background: transparent;
+      border-color: transparent;
+    }
+    &:not([data-variant=primary], [data-variant=soft], [data-variant=tertiary]):enabled:not([aria-disabled=true]) {
+      box-shadow: var(--ds-shadow-control);
+    }
+    &[data-tone=danger]:not([data-variant=primary]) {
+      color: var(--ds-color-danger);
+    }
+    &[data-tone=danger][data-variant=primary] {
+      --_reveal-color: color-mix(in srgb, var(--ds-color-danger-fill) 70%, var(--ds-color-surface));
+      background: var(--ds-color-danger-fill);
+      border-color: var(--ds-color-danger-fill);
+      color: var(--ds-color-on-danger);
+    }
+    &[aria-expanded=true]:not([data-variant=primary]) {
+      background: var(--ds-color-neutral-pressed);
+      border-color: var(--ds-color-text);
+    }
+    &[aria-expanded=true][data-variant=primary] {
+      background: var(--ds-color-action-pressed);
+    }
+    @media (hover: hover) {
+      &:enabled:not([aria-disabled=true]):hover {
+        background: var(--ds-color-neutral-hover);
+      }
+      &[data-variant=soft]:enabled:not([aria-disabled=true]):hover {
+        background: color-mix(in srgb, var(--ds-color-soft), var(--ds-color-veil) 6%);
+      }
+      &[data-variant=tertiary]:enabled:not([aria-disabled=true]):hover {
+        background: var(--ds-color-ghost-hover);
+      }
+      &[data-variant=primary]:enabled:not([aria-disabled=true], [aria-expanded=true]):hover {
+        background: var(--ds-color-action-hover);
+      }
+      &[data-tone=danger][data-variant=primary]:enabled:not([aria-disabled=true], [aria-expanded=true]):hover {
+        background: color-mix(in srgb, var(--ds-color-danger-fill) 86%, var(--ds-color-text));
+      }
+      &[aria-expanded=true]:not([data-variant=primary]):enabled:not([aria-disabled=true]):hover {
+        background: var(--ds-color-neutral-pressed);
+      }
+      &[aria-expanded=true][data-variant=primary]:enabled:not([aria-disabled=true]):hover {
+        background: var(--ds-color-action-pressed);
+      }
+    }
+    &:enabled:not([aria-disabled=true]):active {
+      background: var(--ds-color-neutral-pressed);
+    }
+    &[data-variant=soft]:enabled:not([aria-disabled=true]):active {
+      background: color-mix(in srgb, var(--ds-color-soft), var(--ds-color-veil) 12%);
+    }
+    &[data-variant=tertiary]:enabled:not([aria-disabled=true]):active {
+      background: var(--ds-color-ghost-pressed);
+    }
+    &[data-variant=primary]:enabled:not([aria-disabled=true]):active {
+      background: var(--ds-color-action-pressed);
+    }
+    &[data-tone=danger][data-variant=primary]:enabled:not([aria-disabled=true]):active {
+      background: color-mix(in srgb, var(--ds-color-danger-fill) 74%, var(--ds-color-text));
+    }
+    &[aria-pressed=true]:enabled:not([aria-disabled=true]) {
+      background: var(--ds-color-state-tint);
+      border-color: var(--ds-color-state-text);
+      color: var(--ds-color-state-text);
+    }
+    @media (hover: hover) {
+      &[aria-pressed=true]:enabled:not([aria-disabled=true]):hover {
+        background: color-mix(in srgb, var(--ds-color-state) 18%, var(--ds-color-surface));
+      }
+    }
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: var(--ds-focus-offset);
+    }
+    &:is(:disabled, [aria-disabled=true]):not([aria-busy=true]) {
+      background: var(--ds-color-disabled-surface);
+      border-color: var(--ds-color-control-edge);
+      color: var(--ds-color-disabled-text);
+      border-style: dashed;
+      cursor: not-allowed;
+    }
+    &[aria-disabled=true]:not(:disabled):not([aria-busy=true]) {
+      cursor: help;
+    }
+    &[data-reveal=true] {
+      position: relative;
+      isolation: isolate;
+    }
+    &[data-reveal=true]::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      border-radius: inherit;
+      pointer-events: none;
+      background:
+        radial-gradient(
+          circle var(--ds-reveal-radius) at var(--ds-reveal-x, 50%) var(--ds-reveal-y, 50%),
+          color-mix(in srgb, var(--_reveal-color) var(--ds-reveal-strength), transparent),
+          transparent 70%);
+      opacity: 0;
+    }
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none) {
+      &[data-reveal=true][data-reveal-active=true]:enabled:not([aria-disabled=true]):hover::after {
+        opacity: var(--ds-reveal-allowed);
+      }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      &[aria-busy=true] > [data-ds-button-spinner] {
+        animation: ds-button-busy-wait .15s step-end, ds-button-spin var(--ds-motion-duration-spin) linear infinite;
+      }
+      & {
+        transition:
+          background-color var(--ds-motion-duration-state) var(--ds-motion-ease-standard),
+          border-color var(--ds-motion-duration-state) var(--ds-motion-ease-standard),
+          color var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+      }
+      &[data-reveal=true]::after {
+        transition: opacity var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+      }
+    }
+    @media (forced-colors: active) {
+      & > [data-ds-button-spinner] {
+        forced-color-adjust: none;
+      }
+      & {
+        background: ButtonFace;
+        color: ButtonText;
+        border-color: ButtonText;
+      }
+      &:is([data-variant=primary], [data-variant=soft], [data-variant=tertiary]) {
+        background: ButtonFace;
+        color: ButtonText;
+        border-color: ButtonText;
+      }
+      &:enabled:not([aria-disabled=true]):is(:hover, :active),
+      &:is([data-variant=primary], [data-variant=soft], [data-variant=tertiary]):enabled:not([aria-disabled=true]):is(:hover, :active) {
+        background: Highlight;
+        color: HighlightText;
+        border-color: Highlight;
+        forced-color-adjust: none;
+      }
+      &[data-icon-only=true] > [data-ds-button-label],
+      &:not([data-icon-only=true]) > [data-ds-button-label] > [data-ds-keys] {
+        forced-color-adjust: auto;
+      }
+      &:focus-visible {
+        outline-color: Highlight;
+      }
+      &[aria-expanded=true] {
+        border-color: Highlight;
+      }
+      &[aria-pressed=true]:enabled:not([aria-disabled=true]) {
+        background: Highlight;
+        color: HighlightText;
+        border-color: Highlight;
+        forced-color-adjust: none;
+      }
+      &:is(:disabled, [aria-disabled=true]):not([aria-busy=true]) {
+        color: GrayText;
+        border-color: GrayText;
+        background: ButtonFace;
+      }
+    }
+  }
+  :where([data-ds-platform]) [data-ds-keys]::before {
+    content: attr(data-ds-keys);
+    white-space: nowrap;
+    direction: ltr;
+    unicode-bidi: isolate;
+    font-variant-numeric: tabular-nums;
+  }
+  :where([data-ds-platform=apple]) [data-ds-keys]::before {
+    content: attr(data-ds-keys-apple);
+  }
+  @property --_ds-tooltip-warm { syntax: "<number>"; inherits: true; initial-value: 0; }
+  :where(.ds-button-group:not([role=toolbar] *), [role=toolbar]):where(:has(:is([data-icon-only=true], [data-ds-shortcut]))) {
+    --_ds-tooltip-warm: 0;
+    transition: --_ds-tooltip-warm 0s 350ms;
+  }
+  :where(.ds-button-group:not([role=toolbar] *), [role=toolbar]):where(:has(:is([data-icon-only=true], [data-ds-shortcut]):hover)) {
+    --_ds-tooltip-warm: 1;
+    transition-delay: var(--ds-tooltip-delay);
+  }
+  :where(.ds-button-group:not([role=toolbar] *), [role=toolbar]):where(:has(:is([data-icon-only=true], [data-ds-shortcut]):focus-visible)) {
+    --_ds-tooltip-warm: 1;
+    transition-delay: calc(var(--ds-tooltip-delay) / 4);
+  }
+  @keyframes ds-button-spin {
+    to {
+      transform: rotate(1turn);
+    }
+  }
+  @keyframes ds-button-busy-wait {
+    from, to {
+      display: none;
+    }
+  }
+  @keyframes ds-button-busy-swap {
+    to {
+      display: none;
+    }
+  }
+  :where(.ds-button-status) {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* src/vendor/ui/components/toolbar/toolbar.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  .ds-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ds-space-1);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    &[aria-orientation=vertical] {
+      display: inline-flex;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: stretch;
+    }
+    & > .ds-button-group:not([data-layout=joined]) {
+      gap: inherit;
+    }
+    &[aria-orientation=vertical] > .ds-button-group:not([data-layout=joined]) {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    & > .ds-toolbar-separator {
+      flex: none;
+      align-self: stretch;
+      box-sizing: border-box;
+      inline-size: 0;
+      block-size: auto;
+      margin: var(--ds-space-1);
+      border: 0;
+      border-inline-start: var(--ds-control-border-width) solid var(--ds-color-divider);
+    }
+    &[aria-orientation=vertical] > .ds-toolbar-separator {
+      inline-size: auto;
+      block-size: 0;
+      border-inline-start: 0;
+      border-block-start: var(--ds-control-border-width) solid var(--ds-color-divider);
+    }
+  }
+}
+
+/* src/vendor/ui/components/menu/menu.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  .ds-menu {
+    --_row: var(--ds-control-size-m);
+    --_font: var(--ds-type-control-size);
+    --_small: var(--ds-type-control-small);
+    --_glyph: var(--ds-icon-size-m);
+    --_gap: var(--ds-space-2);
+    --_inset: calc(var(--ds-space-4) - var(--ds-space-1) - var(--ds-control-border-width));
+    --_check-column: 0px;
+    --_icon-column: 0px;
+    box-sizing: border-box;
+    inset: auto;
+    margin: 0;
+    min-inline-size: 12rem;
+    max-inline-size: min(20rem, calc(100vw - 2 * var(--ds-space-2)));
+    max-block-size: calc(100dvh - 2 * var(--ds-space-2));
+    overflow-y: auto;
+    padding: var(--ds-space-1);
+    border: var(--ds-control-border-width) solid var(--ds-color-rim);
+    border-radius: var(--ds-radius);
+    background: var(--ds-color-surface);
+    color: var(--ds-color-text);
+    box-shadow: var(--ds-shadow-popup);
+    font: 400 var(--_font)/1.4 var(--ds-font);
+    letter-spacing: normal;
+    text-align: start;
+    text-transform: none;
+    white-space: normal;
+    &:is([data-size="2xs"], [data-size=xs], [data-size=s]) {
+      --_row: var(--ds-control-size-s);
+      --_font: var(--ds-type-control-small);
+      --_small: var(--ds-type-control-xs);
+      --_glyph: var(--ds-icon-size-s);
+      --_inset: calc(var(--ds-space-3) - var(--ds-space-1) - var(--ds-control-border-width));
+    }
+    &[data-ds-check] {
+      --_check-column: calc(var(--_glyph) + var(--_gap));
+    }
+    &[data-ds-icons] {
+      --_icon-column: calc(var(--_glyph) + var(--_gap));
+    }
+  }
+  .ds-menu-item {
+    box-sizing: border-box;
+    appearance: none;
+    display: grid;
+    grid-template-columns: var(--_check-column) var(--_icon-column) minmax(0, 1fr) auto;
+    align-content: center;
+    align-items: baseline;
+    inline-size: 100%;
+    min-block-size: var(--_row);
+    margin: 0;
+    padding: var(--ds-space-1) var(--_inset);
+    border: var(--ds-control-border-width) solid transparent;
+    border-radius: var(--ds-radius-control);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    & > [data-ds-menu-label] {
+      grid-area: 1 / 3;
+    }
+    & > [data-ds-menu-reason] {
+      grid-area: 2 / 3;
+      font-size: var(--_small);
+      line-height: 1.4;
+    }
+    & > :is([data-ds-menu-check], [data-ds-menu-icon]) {
+      align-self: start;
+      inline-size: var(--_glyph);
+      block-size: var(--_glyph);
+      margin-block: calc((1lh - var(--_glyph)) / 2);
+    }
+    & > [data-ds-menu-check] {
+      grid-area: 1 / 1;
+    }
+    & > [data-ds-menu-icon] {
+      grid-area: 1 / 2;
+      color: var(--ds-color-text-muted);
+    }
+    &:is([data-destructive=true], [aria-disabled=true]) > [data-ds-menu-icon] {
+      color: inherit;
+    }
+    &[aria-checked=false] > [data-ds-menu-check] {
+      visibility: hidden;
+    }
+    &:not([aria-disabled=true]):focus {
+      background: var(--ds-color-neutral-hover);
+    }
+    &:not([aria-disabled=true]):active {
+      background: var(--ds-color-neutral-pressed);
+    }
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: calc(-1 * var(--ds-focus-width));
+    }
+    &[data-destructive=true]:not([aria-disabled=true]) {
+      color: var(--ds-color-danger);
+    }
+    &[aria-disabled=true] {
+      border-color: var(--ds-color-control-edge);
+      border-style: dashed;
+      background: var(--ds-color-disabled-surface);
+      color: var(--ds-color-disabled-text);
+      cursor: not-allowed;
+    }
+    &[aria-disabled=true]:focus-visible {
+      outline-offset: calc(-1 * (var(--ds-focus-width) + var(--ds-control-border-width) + 1px));
+    }
+    & > [data-ds-keys] {
+      grid-area: 1 / 4;
+    }
+    & > [data-ds-keys]:where([data-ds-platform] *) {
+      padding-inline-start: var(--ds-space-4);
+      color: var(--ds-color-text-muted);
+    }
+    &[aria-disabled=true] > [data-ds-keys] {
+      color: inherit;
+    }
+  }
+  @media (hover: none) {
+    .ds-menu-item > [data-ds-keys] {
+      display: none;
+    }
+  }
+  .ds-split-button > [aria-busy=true]:not(:has(> [data-ds-button-icon=leading])) {
+    padding-inline: max(0px, calc(var(--_inset) - (var(--_icon) + var(--_gap)) / 2));
+  }
+  .ds-menu-separator {
+    block-size: 0;
+    margin: var(--ds-space-1) var(--ds-space-2);
+    border: 0;
+    border-block-start: var(--ds-control-border-width) solid var(--ds-color-divider);
+  }
+  .ds-menu[data-ds-sheet] {
+    --_row: calc(var(--ds-control-min-size) + var(--ds-space-1));
+    --_font: var(--ds-type-control-size);
+    --_small: var(--ds-type-control-small);
+    --_glyph: var(--ds-icon-size-s);
+    --_gap: var(--ds-space-3);
+    --_inset: calc(var(--ds-space-4) - var(--ds-space-1) - var(--ds-control-border-width));
+    inset: auto 0 0;
+    margin-inline: auto;
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 32rem;
+    max-block-size: 80dvh;
+    padding: var(--ds-space-5) var(--ds-space-2) calc(var(--ds-space-2) + env(safe-area-inset-bottom, 0px));
+    border-block-end: 0;
+    border-end-start-radius: 0;
+    border-end-end-radius: 0;
+    overscroll-behavior: contain;
+    &::before {
+      content: "";
+      position: absolute;
+      inset-block-start: var(--ds-space-3);
+      inset-inline: 0;
+      margin-inline: auto;
+      inline-size: 2.5rem;
+      block-size: .25rem;
+      border-radius: .125rem;
+      background: color-mix(in srgb, var(--ds-color-veil) calc(25% + var(--ds-contrast-amount) * .75), transparent);
+    }
+  }
+  .ds-menu-scrim {
+    inset: 0;
+    inline-size: auto;
+    block-size: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: color-mix(in srgb, var(--ds-neutral-1000) 45%, transparent);
+    touch-action: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ds-menu-item {
+      transition: background-color var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+    }
+    .ds-menu[data-ds-sheet]:not([data-ds-dragging]) {
+      transition: translate var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+    }
+    .ds-menu-scrim {
+      transition: opacity var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+    }
+    @starting-style {
+      .ds-menu[data-ds-sheet]:popover-open {
+        translate: 0 100%;
+      }
+      .ds-menu-scrim:popover-open {
+        opacity: 0;
+      }
+    }
+  }
+  .ds-menu[data-ds-sheet].is-leaving {
+    animation: ds-menu-sheet-out .12s ease-in forwards;
+    pointer-events: none;
+  }
+  .ds-menu-scrim.is-leaving {
+    animation: ds-menu-scrim-out .12s ease-in forwards;
+    pointer-events: none;
+  }
+  @keyframes ds-menu-sheet-out {
+    to {
+      translate: 0 100%;
+    }
+  }
+  @keyframes ds-menu-scrim-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @media (forced-colors: active) {
+    .ds-menu {
+      border-color: CanvasText;
+    }
+    .ds-menu-item {
+      border-color: Canvas;
+    }
+    .ds-menu-item:not([aria-disabled=true]):focus {
+      forced-color-adjust: none;
+      background: Highlight;
+      color: HighlightText;
+      border-color: Highlight;
+    }
+    .ds-menu-item:focus-visible {
+      outline-color: CanvasText;
+    }
+    .ds-menu-item[aria-disabled=true] {
+      color: GrayText;
+      border-color: GrayText;
+    }
+    .ds-menu-item > :is([data-ds-keys], [data-ds-menu-icon], [data-ds-menu-check]) {
+      color: inherit;
+    }
+    .ds-menu-separator {
+      border-color: CanvasText;
+    }
+    .ds-menu[data-ds-sheet] {
+      border-block-end: 0;
+    }
+    .ds-menu[data-ds-sheet]::before {
+      background: CanvasText;
+    }
+  }
+}
+
+/* src/vendor/ui/components/batch-bar/batch-bar.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  :where(:root) {
+    --ds-batch-bar-room: calc(2 * var(--ds-control-size-m) + 3 * var(--ds-space-1) + 2 * var(--ds-control-border-width) + var(--ds-batch-bar-offset, var(--ds-space-4)) + env(safe-area-inset-bottom, 0px) + var(--ds-space-3));
+  }
+  .ds-batch-bar {
+    --_offset: calc(var(--ds-batch-bar-offset, var(--ds-space-4)) + env(safe-area-inset-bottom, 0px));
+    --_width: calc(100vw - 2 * var(--ds-space-3) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+    position: fixed;
+    left: 50%;
+    bottom: var(--_offset);
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    inline-size: max-content;
+    max-inline-size: var(--_width);
+    display: flex;
+    justify-content: center;
+    &[hidden] {
+      display: none;
+    }
+    & > .ds-toolbar {
+      --_solid: var(--ds-contrast-amount);
+      --_glass: color-mix(in oklab, light-dark(var(--ds-color-surface), var(--ds-color-canvas)) 90%, transparent);
+      --_backdrop: blur(var(--ds-space-4)) saturate(1.5);
+      --_hairline: color-mix(in oklab, var(--ds-color-divider) 70%, transparent);
+      box-sizing: border-box;
+      min-inline-size: 0;
+      justify-content: center;
+      padding: var(--ds-space-1);
+      column-gap: var(--ds-space-5);
+      border: var(--ds-control-border-width) solid color-mix(in oklab, var(--ds-color-control-edge) var(--_solid), var(--_hairline));
+      border-radius: var(--_radius);
+      background: color-mix(in oklab, var(--ds-color-surface) var(--_solid), var(--_glass));
+      -webkit-backdrop-filter: var(--_backdrop);
+      backdrop-filter: var(--_backdrop);
+      box-shadow: inset 0 1px 0 color-mix(in oklab, light-dark(var(--ds-neutral-0), color-mix(in oklab, var(--ds-neutral-0) 12%, transparent)), transparent var(--_solid)), var(--ds-shadow-popup);
+      color: var(--ds-color-text-body);
+      font-family: var(--ds-font);
+      --_enter: 850ms;
+      --_exit: 250ms;
+      --_spring: linear(0, .029, .103, .204, .318, .435, .548, .652, .744, .822, .886, .937, .976, 1.005, 1.025, 1.037, 1.044, 1.046, 1.045, 1.042, 1.037, 1.032, 1.027, 1.021, 1.017, 1.012, 1.009, 1.006, 1.003, 1.001, 1, .999, 1);
+      --_radius: calc(var(--ds-control-size-m) / 2 + var(--ds-space-1));
+      --_half: calc(var(--_radius) + var(--ds-control-border-width));
+      --_edge: calc(100% + var(--_offset));
+      --_compact: inset(0 calc(50% - var(--_half)) round var(--_radius));
+      --_full: inset(0 0 round var(--_radius));
+      --_bloom: inset(calc(var(--ds-space-5) * -1.75) round calc(var(--_radius) + var(--ds-space-5) * 1.75));
+      --_reach: calc(var(--ds-space-3) * 1.5);
+      position: relative;
+      &::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        inset: calc(-1 * (var(--ds-control-border-width) + var(--_reach)));
+        border: var(--ds-control-border-width) solid color-mix(in oklab, var(--ds-color-state) 60%, transparent);
+        border-radius: calc(var(--_radius) + var(--_reach));
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
+    & .ds-batch-bar-verbs > :nth-child(2) {
+      --_n: 1;
+    }
+    & .ds-batch-bar-verbs > :nth-child(3) {
+      --_n: 2;
+    }
+    & .ds-batch-bar-verbs > :nth-child(4) {
+      --_n: 3;
+    }
+    & .ds-batch-bar-verbs > :nth-child(n+5) {
+      --_n: 4;
+    }
+    & .ds-button {
+      border-radius: calc(var(--_radius) - var(--ds-space-1));
+      font-weight: var(--ds-type-label-weight);
+      outline-offset: calc(var(--ds-space-1) - var(--ds-focus-width));
+    }
+    & .ds-batch-bar-selection {
+      display: flex;
+      align-items: center;
+      gap: var(--ds-space-1);
+    }
+    & .ds-batch-bar-count {
+      flex: none;
+      padding-inline: var(--ds-space-2) var(--ds-space-1);
+      font-size: var(--ds-type-control-size);
+      font-weight: var(--ds-type-label-weight);
+      line-height: 1.4;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      color: var(--ds-color-text-strong);
+    }
+    & .ds-batch-bar-verbs {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: var(--ds-space-1);
+      min-inline-size: 0;
+    }
+    & [data-ds-batch-verb] > [data-ds-button-label] {
+      white-space: nowrap;
+    }
+    & .ds-batch-bar-reach {
+      font-size: var(--ds-type-control-xs);
+      font-weight: var(--ds-type-label-weight);
+      font-variant-numeric: tabular-nums;
+      color: var(--ds-color-text-muted);
+      &[hidden] {
+        display: none;
+      }
+    }
+    & [data-ds-destructive]:not([hidden]):not([data-ds-destructive]:not([hidden]) ~ *) {
+      margin-inline-start: var(--ds-space-3);
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .ds-batch-bar[data-ds-entering] > .ds-toolbar {
+      animation: ds-batch-bar-travel calc(var(--_enter) * .7) var(--_spring), ds-batch-bar-open calc(var(--_enter) * .5) var(--_spring) calc(var(--_enter) * .35) backwards;
+      & .ds-batch-bar-selection > :not(.ds-menu) {
+        animation: ds-batch-bar-word calc(var(--_enter) * .22) var(--ds-motion-ease-standard) calc(var(--_enter) * .5) backwards;
+      }
+      & :is(.ds-batch-bar-verbs, .ds-batch-bar-selection) {
+        pointer-events: none;
+      }
+      & .ds-batch-bar-verbs > * {
+        animation: ds-batch-bar-word calc(var(--_enter) * .22) var(--ds-motion-ease-standard) calc(var(--_enter) * (.62 + var(--_n, 0) * .05)) backwards;
+      }
+    }
+    .ds-batch-bar[data-ds-landed] > .ds-toolbar::after {
+      animation: ds-batch-bar-ghost 700ms var(--ds-motion-ease-standard);
+    }
+    .ds-batch-bar[data-ds-leaving] > .ds-toolbar {
+      animation: ds-batch-bar-close calc(var(--_exit) * .55) var(--ds-motion-ease-standard) forwards, ds-batch-bar-leave calc(var(--_exit) * .45) var(--ds-motion-ease-standard) calc(var(--_exit) * .55) forwards;
+      & > * {
+        animation: ds-batch-bar-word-out calc(var(--_exit) * .4) var(--ds-motion-ease-standard) forwards;
+      }
+    }
+  }
+  @keyframes ds-batch-bar-travel {
+    from {
+      translate: 0 var(--_edge);
+    }
+  }
+  @keyframes ds-batch-bar-open {
+    from {
+      clip-path: var(--_compact);
+    }
+    80% {
+      clip-path: var(--_full);
+    }
+    to {
+      clip-path: var(--_bloom);
+    }
+  }
+  @keyframes ds-batch-bar-word {
+    from {
+      opacity: 0;
+      translate: 0 var(--ds-space-1);
+    }
+  }
+  @keyframes ds-batch-bar-close {
+    from {
+      clip-path: var(--_bloom);
+    }
+    27% {
+      clip-path: var(--_full);
+    }
+    to {
+      clip-path: var(--_compact);
+    }
+  }
+  @keyframes ds-batch-bar-leave {
+    to {
+      translate: 0 var(--_edge);
+    }
+  }
+  @keyframes ds-batch-bar-ghost {
+    from {
+      scale: var(--_ghost, .95);
+      opacity: 1;
+    }
+  }
+  @keyframes ds-batch-bar-word-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @media (max-width: 768px) {
+    .ds-batch-bar {
+      inline-size: var(--_width);
+      & > .ds-toolbar {
+        flex: 1 1 auto;
+      }
+      & [data-ds-batch-verb] {
+        --_inset: var(--ds-space-3);
+      }
+      & [data-ds-batch-verb]:not(:has(> .ds-batch-bar-reach:not([hidden]))) {
+        padding-inline: 0;
+      }
+      & [data-ds-batch-verb][data-icon-only=true]:has(> .ds-batch-bar-reach:not([hidden])) {
+        padding-inline: var(--_inset);
+      }
+      & [data-ds-batch-verb] > [data-ds-button-label] {
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+    }
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .ds-batch-bar > .ds-toolbar {
+      --_solid: 100%;
+    }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .ds-batch-bar > .ds-toolbar {
+      --_solid: 100%;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+  @media (forced-colors: active) {
+    .ds-batch-bar > .ds-toolbar {
+      border-color: CanvasText;
+      background: Canvas;
+      box-shadow: none;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+    .ds-batch-bar .ds-batch-bar-reach {
+      color: inherit;
+    }
+    .ds-batch-bar > .ds-toolbar::after {
+      display: none;
+    }
+  }
+}
+
+/* src/ion-ui/batch-bar.css */
+
+/* src/ion-ui/colors.css */
 :root,
 :host {
   --color-primary-lighter: #f4e8f7;
@@ -1254,8 +2498,1223 @@ h3 {
     min-height: calc(100vh - 76px);
   }
 }
+.ds-batch-bar {
+  z-index: 9;
+  color-scheme: light;
+}
+[data-theme=dark] .ds-batch-bar {
+  color-scheme: dark;
+}
+#bulk-host:not(:has(.ds-batch-bar[hidden])) ~ #notice {
+  margin-bottom: var(--ds-batch-bar-room, 134px);
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
+  var __defProp = Object.defineProperty;
+  var __getOwnPropNames = Object.getOwnPropertyNames;
+  var __esm = (fn, res, err) => function __init() {
+    if (err) throw err[0];
+    try {
+      return fn && (res = (0, fn[__getOwnPropNames(fn)[0]])(fn = 0)), res;
+    } catch (e) {
+      throw err = [e], e;
+    }
+  };
+  var __export = (target, all) => {
+    for (var name in all)
+      __defProp(target, name, { get: all[name], enumerable: true });
+  };
+
+  // src/vendor/ui/components/pointer-gesture/click-burst.js
+  function swallowClickBurst(event) {
+    if (!((event?.detail ?? 0) >= 1)) return;
+    const view = event.view ?? event.target?.ownerDocument?.defaultView;
+    if (!view) return;
+    let burst = bursts.get(view);
+    if (!burst) {
+      const controller = new view.AbortController();
+      const options = { capture: true, signal: controller.signal };
+      const end = () => {
+        controller.abort();
+        view.clearTimeout(burst.timer);
+        bursts.delete(view);
+      };
+      const extend = () => {
+        view.clearTimeout(burst.timer);
+        burst.timer = view.setTimeout(end, BURST_LIMIT_MS);
+      };
+      const swallow = (repeat) => {
+        repeat.preventDefault();
+        repeat.stopImmediatePropagation();
+        extend();
+      };
+      const near = (press) => Math.hypot(press.screenX - burst.x, press.screenY - burst.y) <= BURST_REACH_PX;
+      burst = { timer: 0, extend, x: event.screenX, y: event.screenY };
+      bursts.set(view, burst);
+      view.addEventListener("mousedown", (press) => {
+        if (!isRepeatClick(press) || !near(press)) {
+          end();
+          return;
+        }
+        burst.x = press.screenX;
+        burst.y = press.screenY;
+        swallow(press);
+      }, options);
+      view.addEventListener("click", (click) => {
+        if (isRepeatClick(click)) swallow(click);
+      }, options);
+      view.addEventListener("dblclick", (click) => {
+        if (isRepeatClick(click)) swallow(click);
+      }, options);
+    }
+    burst.extend();
+  }
+  var isRepeatClick, BURST_LIMIT_MS, BURST_REACH_PX, bursts;
+  var init_click_burst = __esm({
+    "src/vendor/ui/components/pointer-gesture/click-burst.js"() {
+      "use strict";
+      isRepeatClick = (event) => (event?.detail ?? 0) > 1;
+      BURST_LIMIT_MS = 5e3;
+      BURST_REACH_PX = 16;
+      bursts = /* @__PURE__ */ new WeakMap();
+    }
+  });
+
+  // src/vendor/ui/components/button/button.js
+  function revealQuery(view) {
+    if (!revealQueries.has(view)) revealQueries.set(view, view.matchMedia("(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) and (forced-colors: none)"));
+    return revealQueries.get(view);
+  }
+  function requireButton(button2) {
+    const Button = button2?.ownerDocument?.defaultView?.HTMLButtonElement;
+    if (!Button || !(button2 instanceof Button)) {
+      throw new TypeError("A native button in a document is required.");
+    }
+  }
+  function showShortcuts(element2) {
+    const decided = element2.closest("[data-ds-platform]");
+    const apple = isApple(element2);
+    if (!decided) element2.dataset.dsPlatform = apple ? "apple" : "other";
+    const declared = [element2, ...element2.querySelectorAll("[data-ds-shortcut]")].filter((node) => node.dataset.dsShortcut);
+    for (const node of declared) node.setAttribute("aria-keyshortcuts", node.dataset.dsShortcut.replace(/^Mod\+/, apple ? "Meta+" : "Control+"));
+    return () => {
+      if (!decided) delete element2.dataset.dsPlatform;
+      for (const node of declared) node.removeAttribute("aria-keyshortcuts");
+    };
+  }
+  function enhanceButton(button2, { onAction, onUnavailable, repeat = false } = {}) {
+    requireButton(button2);
+    if (mounted.has(button2)) throw new Error("Button is already enhanced; dispose before remounting.");
+    for (const callback of [onAction, onUnavailable]) {
+      if (callback !== void 0 && typeof callback !== "function") throw new TypeError("Button callbacks must be functions.");
+    }
+    if (typeof repeat !== "boolean") throw new TypeError("Button repeat must be a boolean: true for a stepper, next or zoom that is pressed again and again.");
+    const controller = new AbortController();
+    const { signal } = controller;
+    const doc = button2.ownerDocument;
+    const view = doc.defaultView;
+    const preferences = revealQuery(view);
+    const unavailable = () => button2.ariaDisabled === "true";
+    const busy = () => button2.ariaBusy === "true";
+    const guard = (event) => {
+      if (!busy() && !unavailable() && !button2.matches(":disabled")) return false;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      if (!busy() && unavailable() && !button2.matches(":disabled")) onUnavailable?.(event);
+      return true;
+    };
+    const tooltip = () => {
+      const label = button2.querySelector(":scope > [data-ds-button-label]");
+      return button2.dataset.iconOnly === "true" ? label : label?.querySelector(":scope > [data-ds-keys]") ?? null;
+    };
+    const laidOut = (bubble) => bubble.getBoundingClientRect().width > 1;
+    button2.addEventListener("click", (event) => {
+      if (!repeat && isRepeatClick(event) || event.target !== button2 && tooltip()?.contains(event.target)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        return;
+      }
+      if (guard(event) || event.defaultPrevented) return;
+      if (!repeat) swallowClickBurst(event);
+      onAction?.(event);
+    }, { capture: true, signal });
+    button2.form?.addEventListener("submit", (event) => {
+      if (event.submitter === button2) guard(event);
+    }, { capture: true, signal });
+    const hideReveal = () => {
+      delete button2.dataset.revealActive;
+    };
+    const clearReveal = () => {
+      hideReveal();
+      button2.style.removeProperty("--ds-reveal-x");
+      button2.style.removeProperty("--ds-reveal-y");
+    };
+    button2.addEventListener("pointermove", (event) => {
+      if (button2.dataset.reveal !== "true" || event.pointerType !== "mouse" || !preferences.matches || busy() || unavailable() || button2.matches(":disabled") || view.getComputedStyle(button2).getPropertyValue("--ds-reveal-allowed").trim() !== "1") {
+        clearReveal();
+        return;
+      }
+      const rect = button2.getBoundingClientRect();
+      button2.style.setProperty("--ds-reveal-x", `${event.clientX - rect.left}px`);
+      button2.style.setProperty("--ds-reveal-y", `${event.clientY - rect.top}px`);
+      button2.dataset.revealActive = "true";
+    }, { passive: true, signal });
+    button2.addEventListener("pointercancel", hideReveal, { passive: true, signal });
+    const restoreTooltip = () => {
+      delete button2.dataset.dsTooltip;
+    };
+    const authoredSide = button2.dataset.dsTooltipSide;
+    const clearPlacement = () => {
+      button2.style.removeProperty("--_tooltip-shift");
+      if (authoredSide) button2.dataset.dsTooltipSide = authoredSide;
+      else delete button2.dataset.dsTooltipSide;
+    };
+    const place = () => {
+      const bubble = tooltip();
+      if (!bubble) return;
+      clearPlacement();
+      view.requestAnimationFrame(() => {
+        if (signal.aborted || !laidOut(bubble)) return;
+        const edge = 8;
+        const rect = bubble.getBoundingClientRect();
+        const width = button2.ownerDocument.documentElement.clientWidth;
+        const shift = Math.max(edge - rect.left, Math.min(0, width - edge - rect.right));
+        if (shift) button2.style.setProperty("--_tooltip-shift", `${shift}px`);
+        if (rect.top < edge) button2.dataset.dsTooltipSide = "below";
+      });
+    };
+    const onEscape = (event) => {
+      const bubble = event.key === "Escape" && tooltip();
+      if (!bubble || button2.dataset.dsTooltip || !laidOut(bubble)) return;
+      const visible = view.getComputedStyle(bubble).opacity !== "0";
+      button2.dataset.dsTooltip = "dismissed";
+      if (visible && button2.dataset.dsShortcut !== "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    };
+    let hovered = false, focused = false, listening = false;
+    const watchEscape = () => {
+      const wanted = (hovered || focused) && !signal.aborted && tooltip() !== null;
+      if (wanted === listening) return;
+      listening = wanted;
+      if (wanted) doc.addEventListener("keydown", onEscape, { capture: true });
+      else doc.removeEventListener("keydown", onEscape, { capture: true });
+    };
+    const yieldFocusBubble = () => {
+      const focusedButton = doc.activeElement;
+      if (!tooltip() || !focusedButton || focusedButton === button2 || focusedButton.dataset?.dsTooltip || !focusedButton.matches(BUBBLE) || !focusedButton.matches(":focus-visible")) return;
+      focusedButton.dataset.dsTooltip = "yielded";
+      button2.addEventListener("pointerleave", () => {
+        if (focusedButton.dataset.dsTooltip === "yielded") delete focusedButton.dataset.dsTooltip;
+      }, { once: true });
+    };
+    const bubbles = button2.matches(BUBBLE);
+    button2.addEventListener("pointerleave", () => {
+      hideReveal();
+      if (!bubbles) return;
+      hovered = false;
+      watchEscape();
+      restoreTooltip();
+    }, { passive: true, signal });
+    if (bubbles) {
+      button2.addEventListener("pointerenter", () => {
+        hovered = true;
+        watchEscape();
+        place();
+        yieldFocusBubble();
+      }, { passive: true, signal });
+      button2.addEventListener("focus", () => {
+        focused = true;
+        watchEscape();
+        place();
+        if (!tooltip() || !button2.matches(":focus-visible")) return;
+        for (const other of doc.querySelectorAll(`${BUBBLE}:hover`)) {
+          if (other === button2 || other.dataset.dsTooltip) continue;
+          other.dataset.dsTooltip = "dismissed";
+          other.addEventListener("pointerleave", () => {
+            delete other.dataset.dsTooltip;
+          }, { once: true });
+        }
+      }, { signal });
+      button2.addEventListener("blur", () => {
+        focused = false;
+        watchEscape();
+        restoreTooltip();
+      }, { signal });
+    }
+    const hideShortcuts = button2.dataset.dsShortcut ? showShortcuts(button2) : () => {
+    };
+    hovered = bubbles && button2.matches(":hover");
+    focused = bubbles && doc.activeElement === button2;
+    watchEscape();
+    mounted.add(button2);
+    if (button2.hasAttribute("data-ds-disabled-fallback")) {
+      button2.disabled = false;
+      button2.removeAttribute("data-ds-disabled-fallback");
+    }
+    return () => {
+      if (signal.aborted) return;
+      controller.abort();
+      watchEscape();
+      clearReveal();
+      restoreTooltip();
+      clearPlacement();
+      hideShortcuts();
+      if ((busy() || unavailable()) && !button2.disabled) {
+        button2.disabled = true;
+        button2.setAttribute("data-ds-disabled-fallback", "");
+      }
+      mounted.delete(button2);
+    };
+  }
+  var mounted, BUBBLE, revealQueries, apples, onApple, isApple;
+  var init_button = __esm({
+    "src/vendor/ui/components/button/button.js"() {
+      "use strict";
+      init_click_burst();
+      mounted = /* @__PURE__ */ new WeakSet();
+      BUBBLE = ':is([data-icon-only="true"], [data-ds-shortcut])';
+      revealQueries = /* @__PURE__ */ new WeakMap();
+      apples = /* @__PURE__ */ new WeakMap();
+      onApple = (view) => {
+        if (!apples.has(view)) {
+          apples.set(view, /Mac|iPhone|iPad|iPod/i.test(view.navigator.userAgentData?.platform || view.navigator.platform || ""));
+          queueMicrotask(() => apples.delete(view));
+        }
+        return apples.get(view);
+      };
+      isApple = (element2) => {
+        const decided = element2.closest("[data-ds-platform]");
+        return decided ? decided.dataset.dsPlatform === "apple" : onApple(element2.ownerDocument.defaultView);
+      };
+    }
+  });
+
+  // src/vendor/ui/components/pointer-gesture/leaving-copy.js
+  function copyToLeave(surface) {
+    const document2 = surface.ownerDocument, view = document2.defaultView;
+    if (!surface.isConnected || typeof surface.showPopover !== "function" || view.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const { left, top, width, height } = surface.getBoundingClientRect();
+    const copy = document2.createElement("div");
+    for (const { name, value } of surface.attributes) copy.setAttribute(name, value);
+    copy.append(...surface.cloneNode(true).childNodes);
+    const originals = [surface, ...surface.querySelectorAll("*")];
+    const scrolled = [copy, ...copy.querySelectorAll("*")].flatMap((node, index) => {
+      const from = originals[index];
+      if (from.localName === "select") node.selectedIndex = from.selectedIndex;
+      if (from.matches(":focus, :hover")) node.style.backgroundColor = view.getComputedStyle(from).backgroundColor;
+      node.removeAttribute("id");
+      node.removeAttribute("name");
+      return from.scrollTop ? [[node, from.scrollTop]] : [];
+    });
+    for (const node of copy.querySelectorAll("iframe, video, audio, embed, object, .ds-toast")) node.remove();
+    copy.inert = true;
+    copy.setAttribute("aria-hidden", "true");
+    copy.setAttribute("popover", "manual");
+    copy.classList.add("is-leaving");
+    Object.assign(copy.style, { position: "fixed", inset: "auto", left: `${left}px`, top: `${top}px`, width: `${width}px`, height: `${height}px`, margin: "0", maxWidth: "none", maxHeight: "none" });
+    surface.after(copy);
+    copy.showPopover();
+    for (const [node, top2] of scrolled) node.scrollTop = top2;
+    Promise.allSettled(copy.getAnimations().map((animation) => animation.finished)).then(() => copy.remove());
+  }
+  var init_leaving_copy = __esm({
+    "src/vendor/ui/components/pointer-gesture/leaving-copy.js"() {
+      "use strict";
+    }
+  });
+
+  // src/vendor/ui/components/pointer-gesture/pointer-gesture.js
+  var pointer_gesture_exports = {};
+  __export(pointer_gesture_exports, {
+    HOLD_TOLERANCE: () => HOLD_TOLERANCE,
+    INTERACTIVE_SELECTOR: () => INTERACTIVE_SELECTOR,
+    TOUCH_AXIS_RATIO: () => TOUCH_AXIS_RATIO,
+    TOUCH_THRESHOLD: () => TOUCH_THRESHOLD,
+    attachPointerGesture: () => attachPointerGesture,
+    createVelocitySampler: () => createVelocitySampler,
+    dragBlocked: () => dragBlocked,
+    edgeScrollStep: () => edgeScrollStep,
+    prefersReducedMotion: () => prefersReducedMotion,
+    resist: () => resist,
+    settle: () => settle
+  });
+  function resolveHandle(element2, handle, event) {
+    if (!handle) return true;
+    if (typeof handle === "function") return handle(event);
+    const target = event.target && event.target.closest ? event.target.closest(handle) : null;
+    return target && element2.contains(target) ? target : null;
+  }
+  function attachPointerGesture(element2, {
+    handle,
+    threshold = 6,
+    touchThreshold,
+    touchAxisRatio = TOUCH_AXIS_RATIO,
+    hold,
+    buttons = [0],
+    axis = "any",
+    multitouch = "cancel",
+    escape = "consume",
+    contextClick = "decline",
+    claimTouch,
+    signal,
+    onStart,
+    onMove,
+    onEnd,
+    onCancel
+  } = {}) {
+    if (!element2 || typeof element2.addEventListener !== "function" || !element2.ownerDocument?.defaultView) {
+      throw new TypeError("attachPointerGesture needs an element in a document.");
+    }
+    for (const [name, value] of Object.entries({ axis, multitouch, escape, contextClick })) {
+      if (!CHOICES[name].includes(value)) throw new TypeError(`attachPointerGesture ${name} must be ${CHOICES[name].map((choice) => `'${choice}'`).join(", ")} (the first is the default).`);
+    }
+    for (const [name, value] of Object.entries({ threshold, touchThreshold, touchAxisRatio })) {
+      if (value !== void 0 && !(Number.isFinite(value) && value >= 0)) throw new TypeError(`attachPointerGesture ${name} must be a number of at least 0.`);
+    }
+    const doc = element2.ownerDocument;
+    const view = doc.defaultView;
+    const touchStart = touchThreshold ?? Math.max(threshold, TOUCH_THRESHOLD);
+    const navigator = view.navigator ?? {};
+    const mac = /mac/i.test(navigator.userAgentData?.platform ?? "") || /Mac|iPhone|iPad|iPod/.test(navigator.platform ?? "");
+    const controller = new view.AbortController();
+    const listen = (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal: controller.signal });
+    let gesture = null;
+    let suppressClick = false;
+    let suppressMenu = false;
+    let pressReportsButtons = true;
+    let pressViewport = "";
+    const viewport = () => `${view.innerWidth}`;
+    let holdingSelection = false;
+    let selectionTimer = 0;
+    function letSelectionGoSoon() {
+      if (!holdingSelection) return;
+      view.clearTimeout(selectionTimer);
+      selectionTimer = view.setTimeout(() => {
+        holdingSelection = false;
+        settleListeners();
+      }, 300);
+    }
+    function track(state, event) {
+      state.x = event.clientX;
+      state.y = event.clientY;
+      state.dx = state.x - state.startX;
+      state.dy = state.y - state.startY;
+      state.inline = state.rtl ? -state.dx : state.dx;
+    }
+    function release(state) {
+      try {
+        if (element2.hasPointerCapture && element2.hasPointerCapture(state.pointerId)) element2.releasePointerCapture(state.pointerId);
+      } catch {
+      }
+    }
+    function forget(state) {
+      view.clearTimeout(state.holdTimer);
+      if (gesture === state) gesture = null;
+    }
+    let armed = null;
+    function settleListeners() {
+      if (!armed || gesture || suppressClick || suppressMenu || holdingSelection) return;
+      armed.abort();
+      armed = null;
+    }
+    function offAxis(state) {
+      if (state.hold || axis === "any" || axis === "lock") return false;
+      const along = Math.abs(axis === "x" ? state.dx : state.dy);
+      const across = Math.abs(axis === "x" ? state.dy : state.dx);
+      return state.pointerType === "touch" ? along < across * touchAxisRatio : across > along;
+    }
+    function start(state, event) {
+      if (offAxis(state)) {
+        forget(state);
+        settleListeners();
+        return false;
+      }
+      state.started = true;
+      state.locked = axis === "lock" ? Math.abs(state.dx) >= Math.abs(state.dy) ? "x" : "y" : axis === "any" ? null : axis;
+      state.rtl = view.getComputedStyle(element2).direction === "rtl";
+      state.inline = state.rtl ? -state.dx : state.dx;
+      if (onStart && onStart(state, event) === false) {
+        forget(state);
+        settleListeners();
+        return false;
+      }
+      if (gesture !== state) return false;
+      if (state.pointerType === "mouse") {
+        view.clearTimeout(selectionTimer);
+        holdingSelection = true;
+        dropPressSelection(state);
+      }
+      try {
+        element2.setPointerCapture(state.pointerId);
+      } catch {
+      }
+      return true;
+    }
+    const ends = (selection) => selection && !selection.isCollapsed ? [selection.anchorNode, selection.anchorOffset, selection.focusNode, selection.focusOffset] : null;
+    function dropPressSelection(state) {
+      if (state.pointerType !== "mouse") return;
+      const selection = view.getSelection(), now = ends(selection);
+      if (now && element2.contains(now[0]) && !now.every((end, i) => end === state.selected?.[i])) selection.removeAllRanges();
+    }
+    function cancel(reason = "cancel") {
+      const state = gesture;
+      if (!state) return;
+      forget(state);
+      if (state.started) {
+        release(state);
+        suppressClick = true;
+        suppressMenu = state.buttonBit === 2;
+        dropPressSelection(state);
+        letSelectionGoSoon();
+        if (onCancel) onCancel(state, reason);
+      }
+      settleListeners();
+    }
+    function destroy() {
+      const dragging = gesture && gesture.started ? gesture.pointerId : null;
+      cancel("destroy");
+      view.clearTimeout(selectionTimer);
+      holdingSelection = false;
+      controller.abort();
+      armed?.abort();
+      armed = null;
+      if (dragging === null) return;
+      const after = new view.AbortController();
+      const options = { capture: true, signal: after.signal };
+      const end = () => after.abort();
+      view.addEventListener("pointerup", (event) => {
+        if (event.pointerId === dragging) view.setTimeout(end, 0);
+      }, options);
+      view.addEventListener("pointercancel", (event) => {
+        if (event.pointerId === dragging) end();
+      }, options);
+      doc.addEventListener("click", (event) => {
+        end();
+        if (event.detail === 0) return;
+        event.preventDefault();
+        event.stopPropagation();
+      }, options);
+      doc.addEventListener("pointerdown", end, options);
+    }
+    const onPress = (event) => {
+      suppressClick = false;
+      suppressMenu = false;
+      view.clearTimeout(selectionTimer);
+      holdingSelection = false;
+      if (multitouch === "cancel" && gesture && gesture.pointerType === "touch" && event.pointerType === "touch" && event.pointerId !== gesture.pointerId) cancel("multitouch");
+      settleListeners();
+    };
+    const swallow = (event) => {
+      if (!suppressClick) return;
+      suppressClick = false;
+      settleListeners();
+      if (event.detail === 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+    const onMenu = (event) => {
+      if (!suppressMenu) return;
+      suppressMenu = false;
+      settleListeners();
+      event.preventDefault();
+    };
+    listen(element2, "pointerdown", (event) => {
+      if (gesture || event.isPrimary === false || !buttons.includes(event.button)) return;
+      if (contextClick === "decline" && mac && event.button === 0 && event.ctrlKey) return;
+      const context = resolveHandle(element2, handle, event);
+      if (!context) return;
+      pressReportsButtons = event.buttons !== 0;
+      pressViewport = viewport();
+      arm();
+      gesture = {
+        pointerId: event.pointerId,
+        pointerType: event.pointerType || "mouse",
+        startX: event.clientX,
+        startY: event.clientY,
+        x: event.clientX,
+        y: event.clientY,
+        dx: 0,
+        dy: 0,
+        inline: 0,
+        rtl: false,
+        locked: null,
+        context,
+        target: event.target,
+        started: false,
+        hold: 0,
+        holdTimer: 0,
+        lastEvent: event,
+        buttonBit: BUTTON_BITS[event.button] ?? 1,
+        selected: ends(view.getSelection())
+      };
+      const delay = hold ? Number(hold(event, context)) || 0 : 0;
+      if (delay > 0) {
+        const state = gesture;
+        state.hold = delay;
+        state.holdTimer = view.setTimeout(() => {
+          if (gesture === state && !state.started) start(state, state.lastEvent);
+        }, delay);
+      }
+    });
+    const onPointerMove = (event) => {
+      if (!gesture || event.pointerId !== gesture.pointerId) return;
+      if (gesture.pointerType === "mouse" && pressReportsButtons && (event.buttons & gesture.buttonBit) === 0) {
+        cancel("released");
+        return;
+      }
+      const state = gesture;
+      track(state, event);
+      state.lastEvent = event;
+      if (!state.started) {
+        if (state.hold) {
+          if (Math.hypot(state.dx, state.dy) >= HOLD_TOLERANCE) {
+            forget(state);
+            settleListeners();
+          }
+          return;
+        }
+        if (Math.hypot(state.dx, state.dy) < (state.pointerType === "touch" ? touchStart : threshold)) return;
+        if (!start(state, event)) return;
+      }
+      event.preventDefault();
+      if (onMove) onMove(state, event);
+    };
+    const onRelease = (event) => {
+      if (!gesture || event.pointerId !== gesture.pointerId) return;
+      const state = gesture;
+      forget(state);
+      if (state.started) {
+        track(state, event);
+        release(state);
+        suppressClick = true;
+        suppressMenu = state.buttonBit === 2;
+        dropPressSelection(state);
+        letSelectionGoSoon();
+        if (onEnd) onEnd(state, event);
+      }
+      settleListeners();
+    };
+    const onEscape = (event) => {
+      if (event.key !== "Escape" || !gesture) return;
+      if (gesture.started) {
+        event.preventDefault();
+        if (escape === "consume") event.stopImmediatePropagation();
+      }
+      cancel("escape");
+    };
+    function arm() {
+      if (armed) return;
+      armed = new view.AbortController();
+      const on = (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal: armed.signal });
+      on(doc, "pointerdown", onPress, { capture: true });
+      on(doc, "click", swallow, { capture: true });
+      on(doc, "auxclick", swallow, { capture: true });
+      on(doc, "contextmenu", onMenu, { capture: true });
+      on(view, "selectstart", (event) => {
+        if (holdingSelection) event.preventDefault();
+      }, { capture: true });
+      on(view, "pointermove", onPointerMove, { passive: false });
+      on(view, "pointerup", onRelease);
+      on(view, "pointercancel", (event) => {
+        if (gesture && event.pointerId === gesture.pointerId) cancel("pointercancel");
+      });
+      on(view, "keydown", onEscape, { capture: true });
+      on(view, "blur", () => cancel("blur"));
+      on(view, "resize", () => {
+        if (gesture && viewport() !== pressViewport) cancel("resize");
+      }, { passive: true });
+      on(doc, "visibilitychange", () => {
+        if (doc.hidden) cancel("visibilitychange");
+      });
+      on(view, "pagehide", () => cancel("pagehide"));
+    }
+    listen(element2, "mousedown", (event) => {
+      if (gesture && event.button === 1) event.preventDefault();
+    });
+    listen(element2, "lostpointercapture", (event) => {
+      if (gesture && event.target === element2 && event.pointerId === gesture.pointerId) cancel("lostpointercapture");
+    });
+    listen(element2, "dragstart", (event) => {
+      if (gesture) event.preventDefault();
+    });
+    listen(element2, "selectstart", (event) => {
+      if (gesture && (gesture.started || gesture.hold)) event.preventDefault();
+    });
+    listen(element2, "contextmenu", (event) => {
+      if (gesture && gesture.hold) event.preventDefault();
+    });
+    listen(element2, "touchmove", (event) => {
+      if (!gesture || !event.cancelable) return;
+      if (gesture.started || claimTouch && claimTouch(gesture, event)) event.preventDefault();
+    }, { passive: false });
+    if (signal) {
+      if (signal.aborted) destroy();
+      else signal.addEventListener("abort", destroy, { once: true, signal: controller.signal });
+    }
+    return {
+      cancel,
+      destroy,
+      get active() {
+        return Boolean(gesture && gesture.started);
+      },
+      get pressed() {
+        return Boolean(gesture);
+      }
+    };
+  }
+  function createVelocitySampler({ span = 100, stopped = 80 } = {}) {
+    let samples = [];
+    return {
+      reset() {
+        samples = [];
+      },
+      track(event) {
+        samples.push([event.timeStamp, event.clientX, event.clientY]);
+        while (samples.length > 2 && event.timeStamp - samples[0][0] > span) samples.shift();
+      },
+      at(event) {
+        if (samples.length < 2) return { x: 0, y: 0 };
+        const [t0, x0, y0] = samples[0];
+        const [t1, x1, y1] = samples[samples.length - 1];
+        if ((event?.timeStamp ?? t1) - t1 > stopped || t1 <= t0) return { x: 0, y: 0 };
+        return { x: (x1 - x0) / (t1 - t0), y: (y1 - y0) / (t1 - t0) };
+      }
+    };
+  }
+  function edgeScrollStep(bounds, point, { edge = 48, speed = 16, x = true, y = true } = {}) {
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const push = (position, low, high) => position < low + edge ? -clamp((low + edge - position) / edge, 0, 1) : position > high - edge ? clamp((position - high + edge) / edge, 0, 1) : 0;
+    return { x: x ? push(point.x, bounds.left, bounds.right) * speed : 0, y: y ? push(point.y, bounds.top, bounds.bottom) * speed : 0 };
+  }
+  function prefersReducedMotion(doc = document) {
+    const view = doc.defaultView;
+    return Boolean(view?.matchMedia?.("(prefers-reduced-motion: reduce)").matches || doc.documentElement?.dataset.reducedMotion === "true");
+  }
+  function resist(offset, limit, factor = 0.3) {
+    const size = Math.abs(offset);
+    if (!(size > limit)) return offset;
+    return Math.sign(offset) * (limit + (size - limit) * factor);
+  }
+  function dragBlocked(event, root2, { grip } = {}) {
+    const target = event && typeof event.composedPath === "function" && event.composedPath()[0] || event?.target;
+    if (!target || typeof target.closest !== "function") return true;
+    if (grip && target.closest(grip)) return false;
+    const up = (node) => node.parentNode ?? node.host ?? null;
+    const inside = (node) => {
+      for (let at = node; at; at = up(at)) if (at === root2) return true;
+      return false;
+    };
+    const interactive = target.closest(INTERACTIVE_SELECTOR);
+    if (interactive && interactive !== root2 && inside(interactive)) return true;
+    for (let node = target; node && node !== root2; node = up(node)) {
+      if (node.scrollTop > 0) return true;
+    }
+    return false;
+  }
+  function times(list) {
+    return String(list || "0s").split(",").map((value) => {
+      const number = parseFloat(value);
+      if (!Number.isFinite(number)) return 0;
+      return value.trim().endsWith("ms") ? number : number * 1e3;
+    });
+  }
+  function settle(element2, apply) {
+    const view = element2.ownerDocument.defaultView;
+    if (apply) apply();
+    const style = view.getComputedStyle(element2);
+    const durations = times(style.transitionDuration);
+    const delays = times(style.transitionDelay);
+    const longest = Math.max(0, ...durations.map((duration, index) => duration + (delays[index % delays.length] || 0)));
+    if (longest === 0) return Promise.resolve();
+    const longestDuration = Math.max(...durations);
+    return new Promise((resolve) => {
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        element2.removeEventListener("transitionend", onEnd);
+        view.clearTimeout(timer);
+        resolve();
+      };
+      const onEnd = (event) => {
+        if (event.target === element2 && event.elapsedTime * 1e3 >= longestDuration - 1) finish();
+      };
+      element2.addEventListener("transitionend", onEnd);
+      const timer = view.setTimeout(finish, longest + 50);
+    });
+  }
+  var HOLD_TOLERANCE, TOUCH_THRESHOLD, TOUCH_AXIS_RATIO, BUTTON_BITS, CHOICES, INTERACTIVE_SELECTOR;
+  var init_pointer_gesture = __esm({
+    "src/vendor/ui/components/pointer-gesture/pointer-gesture.js"() {
+      "use strict";
+      HOLD_TOLERANCE = 10;
+      TOUCH_THRESHOLD = 10;
+      TOUCH_AXIS_RATIO = 1.25;
+      BUTTON_BITS = Object.freeze([1, 4, 2, 8, 16]);
+      CHOICES = Object.freeze({
+        axis: ["any", "x", "y", "lock"],
+        multitouch: ["cancel", "ignore"],
+        escape: ["consume", "pass"],
+        contextClick: ["decline", "allow"]
+      });
+      INTERACTIVE_SELECTOR = 'button, a, input, textarea, select, option, label, summary, [contenteditable], [role="button"], [role="link"], [role="checkbox"], [role="switch"], [tabindex]';
+    }
+  });
+
+  // src/vendor/ui/components/menu/menu.js
+  var menu_exports = {};
+  __export(menu_exports, {
+    adoptMenu: () => adoptMenu,
+    adoptPopup: () => adoptPopup,
+    enhanceContextMenu: () => enhanceContextMenu,
+    enhanceMenuButton: () => enhanceMenuButton
+  });
+  function listener(signal) {
+    if (!(signal instanceof AbortSignal)) throw new TypeError("Pass { signal }: aborting it removes every listener.");
+    return (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal });
+  }
+  function hideOutside(node) {
+    const set = [], end = node.ownerDocument.body;
+    for (let current = node; current && current !== end && current.parentElement; current = current.parentElement) {
+      for (const sibling of current.parentElement.children) {
+        if (sibling !== current && sibling.getAttribute("aria-hidden") !== "true") {
+          sibling.setAttribute("aria-hidden", "true");
+          set.push(sibling);
+        }
+      }
+    }
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      for (const element2 of set) element2.removeAttribute("aria-hidden");
+    };
+  }
+  function adoptPopup(panel, { signal, opener = null, onClose, tabCloses = false, sheet = false } = {}) {
+    if (panel?.getAttribute?.("popover") !== "manual") throw new TypeError('adoptPopup needs a panel with popover="manual": the script, not the browser, dismisses it.');
+    const listen = listener(signal);
+    const doc = panel.ownerDocument, view = doc.defaultView;
+    let current = opener, shown = false, following = null, pointed = false, pointedAt = null, frame = 0;
+    let asSheet = false, release = null, scrim = null, drag = null, opening = 0;
+    let watching = null;
+    const inside = (node) => Boolean(node && (panel.contains(node) || current?.contains?.(node)));
+    const place = ({ point, anchor }) => {
+      panel.style.removeProperty("left");
+      panel.style.removeProperty("top");
+      if (!point && !anchor || asSheet) return;
+      const width = panel.offsetWidth, height = panel.offsetHeight;
+      const right = doc.documentElement.clientWidth - EDGE, bottom = doc.documentElement.clientHeight - EDGE;
+      let x, y;
+      if (point) {
+        if (view.getComputedStyle(panel).direction === "rtl") x = point.x - width < EDGE ? point.x : point.x - width;
+        else x = point.x + width > right ? point.x - width : point.x;
+        y = point.y + height > bottom ? point.y - height : point.y;
+      } else {
+        const box = anchor.getBoundingClientRect();
+        x = view.getComputedStyle(anchor).direction === "rtl" ? box.right - width : box.left;
+        y = box.bottom + GAP;
+        if (y + height > bottom && box.top - GAP - height >= EDGE) y = box.top - GAP - height;
+      }
+      panel.style.left = `${Math.round(Math.max(EDGE, Math.min(x, right - width)))}px`;
+      panel.style.top = `${Math.round(Math.max(EDGE, Math.min(y, bottom - height)))}px`;
+    };
+    const follow = (event) => {
+      if (!shown) return;
+      if (asSheet) {
+        if (event?.type === "resize" && !view.matchMedia(SHEET).matches) close({ focus: "auto" });
+        return;
+      }
+      if (pointed) {
+        if (event?.type !== "scroll" || panel.contains(event.target)) return;
+        if (!pointedAt) {
+          close({ focus: "auto" });
+          return;
+        }
+        const box = pointedAt.element.getBoundingClientRect();
+        if (Math.abs(box.top - pointedAt.top) > 2 || Math.abs(box.left - pointedAt.left) > 2) close({ focus: "auto" });
+        return;
+      }
+      if (!following || frame) return;
+      frame = view.requestAnimationFrame(() => {
+        frame = 0;
+        if (!shown || !following) return;
+        const box = following.getBoundingClientRect();
+        const gone = box.bottom <= 0 || box.right <= 0 || box.top >= doc.documentElement.clientHeight || box.left >= doc.documentElement.clientWidth;
+        if (gone) close({ focus: "auto" });
+        else place({ anchor: following });
+      });
+    };
+    const isOpen = () => shown && panel.matches(":popover-open");
+    const cancels = () => panel.querySelectorAll(':scope > [data-ds-menu-cancel], :scope > [role="menu"] > [data-ds-menu-cancel]');
+    const unSheet = () => {
+      if (!asSheet) return;
+      asSheet = false;
+      drag?.destroy();
+      drag = null;
+      delete panel.dataset.dsSheet;
+      delete panel.dataset.dsDragging;
+      panel.style.removeProperty("translate");
+      for (const cancel of cancels()) cancel.hidden = true;
+      release?.();
+      release = null;
+      scrim?.remove();
+      scrim = null;
+    };
+    const close = ({ focus = false } = {}) => {
+      if (!shown) return;
+      shown = false;
+      following = null;
+      pointed = false;
+      pointedAt = null;
+      watching?.abort();
+      watching = null;
+      view.cancelAnimationFrame(frame);
+      frame = 0;
+      if (asSheet && !panel.style.translate) {
+        for (const surface of [scrim, panel]) if (surface) copyToLeave(surface);
+      }
+      unSheet();
+      if (panel.matches(":popover-open")) panel.hidePopover();
+      const back = current;
+      if (expands(back)) back.setAttribute("aria-expanded", "false");
+      const active = doc.activeElement, lost = !active || active === doc.body || panel.contains(active);
+      if (back?.isConnected && (focus === true || focus === "auto" && lost)) back.focus({ preventScroll: true });
+      if (panel.contains(doc.activeElement)) doc.activeElement.blur();
+      onClose?.();
+    };
+    const dragClosed = async (ticket) => {
+      const { attachPointerGesture: attachPointerGesture2, createVelocitySampler: createVelocitySampler2, settle: settle2 } = await Promise.resolve().then(() => (init_pointer_gesture(), pointer_gesture_exports));
+      if (!asSheet || ticket !== opening || drag || signal.aborted) return;
+      const speed = createVelocitySampler2();
+      const back = () => settle2(panel, () => panel.style.removeProperty("translate"));
+      drag = attachPointerGesture2(panel, {
+        axis: "y",
+        handle: (event) => !event.target.closest?.(ITEM),
+        claimTouch: (gesture, event) => event.touches.length === 1 && panel.scrollTop <= 0 && event.touches[0].clientY > gesture.startY,
+        onStart: () => {
+          panel.dataset.dsDragging = "";
+          speed.reset();
+        },
+        onMove: (gesture, event) => {
+          speed.track(event);
+          panel.style.translate = `0 ${Math.max(0, gesture.dy)}px`;
+        },
+        onEnd: (gesture, event) => {
+          delete panel.dataset.dsDragging;
+          const far = gesture.dy > Math.min(84, panel.offsetHeight / 3), flick = speed.at(event).y > 0.5 && gesture.dy > 24;
+          if (!far && !flick) {
+            back();
+            return;
+          }
+          const closing = opening;
+          settle2(panel, () => {
+            panel.style.translate = "0 100%";
+          }).then(() => {
+            if (closing === opening) close({ focus: "auto" });
+          });
+        },
+        onCancel: () => {
+          delete panel.dataset.dsDragging;
+          back();
+        }
+      });
+    };
+    const watch = () => {
+      if (watching) return;
+      watching = new view.AbortController();
+      const listenWhileOpen = (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal: watching.signal });
+      listenWhileOpen(doc, "focusout", (event) => {
+        if (shown && current?.contains?.(event.target) && !inside(event.relatedTarget)) close();
+      });
+      listenWhileOpen(doc, "pointerdown", (event) => {
+        if (shown && !asSheet && !inside(event.target)) close();
+      }, { capture: true });
+      listenWhileOpen(doc, "click", (event) => {
+        if (!shown || !asSheet || panel.contains(event.target)) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        swallowClickBurst(event);
+        close({ focus: "auto" });
+      }, { capture: true });
+      listenWhileOpen(panel, "contextmenu", (event) => event.preventDefault());
+      listenWhileOpen(doc, "fullscreenchange", () => close({ focus: true }));
+      listenWhileOpen(doc, "scroll", follow, { capture: true, passive: true });
+      listenWhileOpen(view, "resize", follow, { passive: true });
+    };
+    const open = ({ point = null, anchor = null, opener: from = void 0 } = {}) => {
+      if (signal.aborted) return;
+      if (shown && !panel.matches(":popover-open")) close();
+      if (shown && from !== void 0 && from !== current && expands(current)) current.setAttribute("aria-expanded", "false");
+      if (from !== void 0) current = from;
+      const wasShown = shown;
+      shown = true;
+      opening += 1;
+      if (sheet && !asSheet && !wasShown && view.matchMedia(SHEET).matches) {
+        asSheet = true;
+        panel.dataset.dsSheet = "";
+        for (const cancel of cancels()) cancel.hidden = false;
+        scrim = doc.createElement("div");
+        scrim.className = "ds-menu-scrim";
+        scrim.setAttribute("popover", "manual");
+        scrim.setAttribute("aria-hidden", "true");
+        panel.before(scrim);
+        scrim.showPopover();
+        release = hideOutside(panel);
+        dragClosed(opening).catch(() => {
+        });
+      }
+      if (!panel.matches(":popover-open")) panel.showPopover();
+      if (expands(current)) current.setAttribute("aria-expanded", "true");
+      following = point || asSheet ? null : anchor;
+      pointed = Boolean(point) && !asSheet;
+      if (pointed && anchor) {
+        const box = anchor.getBoundingClientRect();
+        pointedAt = { element: anchor, top: box.top, left: box.left };
+      } else pointedAt = null;
+      watch();
+      place({ point, anchor });
+    };
+    listen(panel, "keydown", (event) => {
+      if (!shown || event.defaultPrevented) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        close({ focus: true });
+      } else if (event.key === "Tab" && tabCloses) close({ focus: true });
+    });
+    listen(panel, "focusout", (event) => {
+      if (shown && !inside(event.relatedTarget)) close();
+    });
+    signal.addEventListener("abort", () => close({ focus: "auto" }), { once: true });
+    return {
+      open,
+      close,
+      get isOpen() {
+        return isOpen();
+      },
+      /** The control that opened the panel (it gets focus back). */
+      get opener() {
+        return current;
+      },
+      /** True while the panel shows as a phone's sheet. */
+      get isSheet() {
+        return shown && asSheet;
+      }
+    };
+  }
+  function adoptMenu(menu, { signal } = {}) {
+    const listen = listener(signal);
+    const items = () => [...menu.querySelectorAll(ITEM)].filter((item) => !item.hidden && !item.closest("[hidden]"));
+    const disabled = (item) => item.getAttribute("aria-disabled") === "true";
+    const focus = (item) => {
+      if (!item) return;
+      for (const other of menu.querySelectorAll(ITEM)) other.tabIndex = other === item ? 0 : -1;
+      item.focus({ preventScroll: true });
+    };
+    const label = (item) => (item.querySelector("[data-ds-menu-label]") ?? item).textContent.trim().toLocaleLowerCase();
+    listen(menu, "click", (event) => {
+      const item = event.target.closest?.(ITEM);
+      if (item && disabled(item)) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    }, { capture: true });
+    listen(menu, "pointermove", (event) => {
+      const item = event.pointerType === "touch" ? null : event.target.closest?.(ITEM);
+      if (item && item !== menu.ownerDocument.activeElement && items().includes(item)) focus(item);
+    }, { passive: true });
+    listen(menu, "keydown", (event) => {
+      const list = items(), at = list.indexOf(event.target.closest?.(ITEM));
+      if (!list.length || event.ctrlKey || event.metaKey || event.altKey) return;
+      const move = { ArrowDown: at + 1, ArrowUp: at - 1, Home: 0, End: list.length - 1 }[event.key];
+      if (move !== void 0) {
+        event.preventDefault();
+        focus(list[(move + list.length) % list.length]);
+        return;
+      }
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        if (at >= 0 && !disabled(list[at])) list[at].click();
+        return;
+      }
+      if (event.key.length === 1 && event.key.trim()) {
+        const key = event.key.toLocaleLowerCase(), order = [...list.slice(at + 1), ...list.slice(0, at + 1)];
+        const match = order.find((item) => label(item).startsWith(key));
+        if (match) {
+          event.preventDefault();
+          focus(match);
+        }
+      }
+    });
+    return {
+      /** The shown items in order. */
+      items,
+      /** Focus the first shown item. */
+      first() {
+        focus(items()[0]);
+      },
+      focus
+    };
+  }
+  function check(item) {
+    const role = item.getAttribute("role");
+    if (role === "menuitemcheckbox") item.setAttribute("aria-checked", String(item.getAttribute("aria-checked") !== "true"));
+    if (role !== "menuitemradio") return;
+    const group = item.closest('[role="group"]') ?? item.closest('[role="menu"]');
+    for (const other of group.querySelectorAll('[role="menuitemradio"]')) {
+      if (other.getAttribute("name") === item.getAttribute("name")) other.setAttribute("aria-checked", String(other === item));
+    }
+  }
+  function choose(menu, popup, signal, select) {
+    menu.addEventListener("click", (event) => {
+      const item = event.target.closest?.(ITEM);
+      if (!item || !menu.contains(item)) return;
+      swallowClickBurst(event);
+      if (item.hasAttribute("data-ds-menu-cancel")) {
+        popup.close({ focus: true });
+        return;
+      }
+      check(item);
+      popup.close({ focus: true });
+      select(item, event);
+    }, { signal });
+  }
+  function enhanceMenuButton(trigger, { onSelect, onUnavailable } = {}) {
+    const Button = trigger?.ownerDocument?.defaultView?.HTMLButtonElement;
+    if (!Button || !(trigger instanceof Button) || trigger.getAttribute("aria-haspopup") !== "menu") {
+      throw new TypeError('enhanceMenuButton needs the native trigger button from renderMenuButton or renderSplitButton (aria-haspopup="menu").');
+    }
+    const id = trigger.getAttribute("aria-controls");
+    const menu = id ? trigger.getRootNode().querySelector(`#${trigger.ownerDocument.defaultView.CSS.escape(id)}`) : null;
+    if (!menu?.matches('[role="menu"][popover="manual"]')) throw new TypeError(`The trigger's aria-controls must name its role="menu" popover="manual" in the same tree.`);
+    checkCallbacks([onSelect, onUnavailable]);
+    const disposeButton = enhanceButton(trigger, {
+      onAction: () => popup.isOpen ? popup.close({ focus: true }) : show(false),
+      onUnavailable
+    });
+    const controller = new AbortController();
+    const { signal } = controller;
+    const anchor = trigger.parentElement?.matches(".ds-split-button") ? trigger.parentElement : trigger;
+    const popup = adoptPopup(menu, { signal, opener: trigger, tabCloses: true, sheet: true });
+    const keys = adoptMenu(menu, { signal });
+    const hideShortcuts = menu.querySelector("[data-ds-shortcut]") ? showShortcuts(menu) : () => {
+    };
+    const show = (last) => {
+      popup.open({ anchor });
+      keys.focus(last ? keys.items().at(-1) : firstOf(keys));
+    };
+    const blocked = () => trigger.ariaBusy === "true" || trigger.ariaDisabled === "true" || trigger.matches(":disabled");
+    trigger.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowDown" && event.key !== "ArrowUp" || event.altKey || event.ctrlKey || event.metaKey || blocked()) return;
+      event.preventDefault();
+      show(event.key === "ArrowUp");
+    }, { signal });
+    choose(menu, popup, signal, (item, event) => onSelect?.(item, event));
+    return () => {
+      if (signal.aborted) return;
+      controller.abort();
+      hideShortcuts();
+      disposeButton();
+    };
+  }
+  function enhanceContextMenu(menu, { target, subject, onOpen, onSelect } = {}) {
+    const view = menu?.ownerDocument?.defaultView;
+    if (!view || !(menu instanceof view.HTMLElement) || !menu.matches('[role="menu"][popover="manual"]')) {
+      throw new TypeError('enhanceContextMenu needs the menu from renderContextMenu (role="menu" popover="manual").');
+    }
+    if (!(target instanceof view.Element)) throw new TypeError("enhanceContextMenu needs a target: the element whose right click and menu keys open it.");
+    if (subject !== void 0 && (typeof subject !== "string" || !subject.trim())) throw new TypeError("subject is a selector for what the menu is about inside target, such as '[data-file]'.");
+    checkCallbacks([onOpen, onSelect]);
+    if (contextMenus.has(menu)) throw new TypeError("This context menu is already enhanced; dispose() the first mount before mounting it again.");
+    contextMenus.add(menu);
+    const doc = menu.ownerDocument;
+    const controller = new AbortController();
+    const { signal } = controller;
+    const popup = adoptPopup(menu, { signal, tabCloses: true, sheet: true });
+    const keys = adoptMenu(menu, { signal });
+    const hideShortcuts = menu.querySelector("[data-ds-shortcut]") ? showShortcuts(menu) : () => {
+    };
+    let current = null, keyOpened = 0;
+    const subjectOf = (node) => {
+      if (!node?.closest || !target.contains(node) || menu.contains(node)) return null;
+      if (subject === void 0) return target;
+      const found = node.closest(subject);
+      return found && target.contains(found) ? found : null;
+    };
+    const open = (found, place, opener, event) => {
+      if (onOpen?.(found, event) === false) return false;
+      current = found;
+      popup.open({ ...place, opener });
+      keys.focus(firstOf(keys));
+      return true;
+    };
+    target.addEventListener("pointerdown", () => {
+      keyOpened = 0;
+    }, { capture: true, signal });
+    target.addEventListener("contextmenu", (event) => {
+      if (event.defaultPrevented) return;
+      if (keyOpened && view.performance.now() - keyOpened < 1e3) {
+        event.preventDefault();
+        keyOpened = 0;
+        return;
+      }
+      const found = subjectOf(event.target);
+      if (!found || editable(event.target)) return;
+      const active = doc.activeElement;
+      const opener = focusable(found) ? found : active && active !== doc.body && !menu.contains(active) ? active : focusable(target) ? target : null;
+      if (open(found, { point: { x: event.clientX, y: event.clientY }, anchor: found }, opener, event)) event.preventDefault();
+    }, { signal });
+    target.addEventListener("keydown", (event) => {
+      if (event.defaultPrevented || menu.contains(event.target)) return;
+      const menuKey = MENU_KEYS.includes(event.key) && !event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey;
+      const shiftF10 = event.key === "F10" && event.shiftKey && !event.ctrlKey && !event.metaKey && !event.altKey;
+      if (!menuKey && !shiftF10) return;
+      const found = subjectOf(event.target);
+      if (!found || editable(event.target)) return;
+      if (!open(found, { anchor: event.target }, event.target, event)) return;
+      event.preventDefault();
+      keyOpened = view.performance.now();
+    }, { signal });
+    choose(menu, popup, signal, (item, event) => onSelect?.(item, current, event));
+    return () => {
+      if (signal.aborted) return;
+      controller.abort();
+      hideShortcuts();
+      contextMenus.delete(menu);
+    };
+  }
+  var EDGE, GAP, SHEET, ITEM, expands, firstOf, checkCallbacks, contextMenus, MENU_KEYS, editable, focusable;
+  var init_menu = __esm({
+    "src/vendor/ui/components/menu/menu.js"() {
+      "use strict";
+      init_button();
+      init_leaving_copy();
+      init_click_burst();
+      EDGE = 8;
+      GAP = 4;
+      SHEET = "(max-width: 768px)";
+      ITEM = '[role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"]';
+      expands = (node) => Boolean(node?.matches?.('button[aria-haspopup], [role="button"][aria-haspopup]'));
+      firstOf = (keys) => {
+        const list = keys.items(), first = list[0];
+        if (first?.getAttribute("role") !== "menuitemradio") return first;
+        const group = first.closest('[role="group"]') ?? first.parentElement;
+        return list.find((item) => group.contains(item) && item.getAttribute("aria-checked") === "true") ?? first;
+      };
+      checkCallbacks = (callbacks) => {
+        for (const callback of callbacks) {
+          if (callback !== void 0 && typeof callback !== "function") throw new TypeError("Menu callbacks must be functions.");
+        }
+      };
+      contextMenus = /* @__PURE__ */ new WeakSet();
+      MENU_KEYS = ["ContextMenu", "Apps"];
+      editable = (node) => Boolean(node?.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"])'));
+      focusable = (node) => Boolean(node?.matches?.("[tabindex], a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), summary"));
+    }
+  });
+
   // src/features/devices/api/devices.ts
   var VENDORS = [
     { id: 1, name: "ABB" },
@@ -1643,14 +4102,14 @@ h3 {
     const subscribers = /* @__PURE__ */ new Set();
     const publish = (devices, connections) => {
       snapshot = { devices, connections };
-      subscribers.forEach((listener) => listener());
+      subscribers.forEach((listener2) => listener2());
     };
     return {
       getDevices: () => snapshot.devices.map((device) => ({ ...device, registers: device.registers?.map((register) => ({ ...register })) })),
       getConnections: () => snapshot.connections.map((connection) => ({ ...connection })),
-      subscribe(listener) {
-        subscribers.add(listener);
-        return () => subscribers.delete(listener);
+      subscribe(listener2) {
+        subscribers.add(listener2);
+        return () => subscribers.delete(listener2);
       },
       add(input) {
         const vendor = VENDORS.find((item) => item.id === input.vendorId);
@@ -1692,6 +4151,402 @@ h3 {
       }
     };
   }
+
+  // src/vendor/ui/components/batch-bar/batch-bar.js
+  init_button();
+
+  // src/vendor/ui/components/toolbar/toolbar.js
+  var CONTROLS = 'button, a[href], input:not([type="hidden"]), select, textarea';
+  var OWNERS = '[role="toolbar"], [popover], dialog, [role="dialog"], [role="menu"], [role="listbox"]';
+  var OWN_KEYS = 'input:not([type="button"], [type="submit"], [type="reset"], [type="checkbox"], [type="image"], [type="file"], [type="color"]), select, textarea';
+  var mounted2 = /* @__PURE__ */ new WeakSet();
+  function enhanceToolbar(toolbar) {
+    const view = toolbar?.ownerDocument?.defaultView;
+    if (!view || !(toolbar instanceof view.Element) || toolbar.getAttribute("role") !== "toolbar") {
+      throw new TypeError('enhanceToolbar needs the role="toolbar" element from renderToolbar.');
+    }
+    if (mounted2.has(toolbar)) throw new Error("This toolbar is already enhanced; dispose before remounting.");
+    mounted2.add(toolbar);
+    const doc = toolbar.ownerDocument;
+    const controller = new AbortController();
+    const { signal } = controller;
+    const original = /* @__PURE__ */ new WeakMap();
+    const candidates = () => [...toolbar.querySelectorAll(CONTROLS)].filter((node) => node.parentElement.closest(OWNERS) === toolbar);
+    const reachable = (node) => Boolean(node?.isConnected) && toolbar.contains(node) && !node.matches(":disabled") && !node.closest("[inert]") && node.checkVisibility({ visibilityProperty: true });
+    const items = () => candidates().filter(reachable);
+    let stop = null;
+    let last = [];
+    let inside = false;
+    const hold = (node) => {
+      for (const control of candidates()) {
+        if (!original.has(control)) original.set(control, control.getAttribute("tabindex"));
+        const index = control === node ? "0" : "-1";
+        if (control.getAttribute("tabindex") !== index) control.setAttribute("tabindex", index);
+      }
+      stop = node;
+    };
+    const repair = () => {
+      if (signal.aborted) return;
+      const list2 = items();
+      if (!list2.length) {
+        hold(stop);
+        return;
+      }
+      if (!list2.includes(stop)) {
+        const at = Math.max(0, last.indexOf(stop));
+        hold(stop?.id && list2.find((node) => node.id === stop.id) || list2[Math.min(at, list2.length - 1)]);
+      } else hold(stop);
+      last = list2;
+      const active = doc.activeElement;
+      const dropped = !active || active === doc.body || toolbar.contains(active) && candidates().includes(active) && !list2.includes(active);
+      if (inside && dropped) stop.focus();
+    };
+    toolbar.addEventListener("keydown", (event) => {
+      if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      const list2 = items();
+      const at = list2.indexOf(event.target);
+      if (at < 0 || event.target.matches(OWN_KEYS) || event.target.isContentEditable) return;
+      const vertical = toolbar.getAttribute("aria-orientation") === "vertical";
+      const rtl = !vertical && view.getComputedStyle(toolbar).direction === "rtl";
+      const [back, forth] = vertical ? ["ArrowUp", "ArrowDown"] : rtl ? ["ArrowRight", "ArrowLeft"] : ["ArrowLeft", "ArrowRight"];
+      let next = { [back]: at - 1, [forth]: at + 1, Home: 0, End: list2.length - 1 }[event.key];
+      if (next === void 0) return;
+      event.preventDefault();
+      event.stopPropagation();
+      if (next < 0 || next >= list2.length) {
+        if (toolbar.dataset.wrap !== "true") return;
+        next = (next + list2.length) % list2.length;
+      }
+      hold(list2[next]);
+      last = list2;
+      list2[next].focus();
+    }, { capture: true, signal });
+    toolbar.addEventListener("focusin", (event) => {
+      inside = true;
+      if (event.target !== stop && items().includes(event.target)) hold(event.target);
+    }, { signal });
+    toolbar.addEventListener("focusout", (event) => {
+      const to = event.relatedTarget;
+      if (to && toolbar.contains(to)) return;
+      if (to) {
+        inside = false;
+        return;
+      }
+      const from = event.target;
+      queueMicrotask(() => {
+        if (signal.aborted) return;
+        if (reachable(from) || doc.activeElement && doc.activeElement !== doc.body) {
+          if (!toolbar.contains(doc.activeElement)) inside = false;
+          return;
+        }
+        repair();
+      });
+    }, { signal });
+    const observer = new view.MutationObserver(repair);
+    observer.observe(toolbar, { subtree: true, childList: true, attributes: true, attributeFilter: ["disabled", "hidden", "inert", "class"] });
+    const sizes = new view.ResizeObserver(repair);
+    sizes.observe(toolbar);
+    const list = items();
+    hold(list.includes(doc.activeElement) ? doc.activeElement : list[0] ?? null);
+    last = list;
+    inside = toolbar.contains(doc.activeElement);
+    return () => {
+      if (signal.aborted) return;
+      controller.abort();
+      observer.disconnect();
+      sizes.disconnect();
+      for (const control of candidates()) {
+        if (!original.has(control)) continue;
+        const value = original.get(control);
+        if (value === null) control.removeAttribute("tabindex");
+        else control.setAttribute("tabindex", value);
+      }
+      mounted2.delete(toolbar);
+    };
+  }
+
+  // src/vendor/ui/components/batch-bar/batch-bar.js
+  var mounted3 = /* @__PURE__ */ new WeakSet();
+  var STATE_KEYS = ["count", "verbs", "narrow"];
+  var KEBAB = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
+  var MORPH = ["ds-batch-bar-travel", "ds-batch-bar-open", "ds-batch-bar-word"];
+  var GHOST = "ds-batch-bar-ghost";
+  var fill = (template, values) => template.replace(/\{(applies|count)\}/g, (match, name) => values[name] ?? match);
+  var QUIET_MS = 500;
+  function enhanceBatchBar(bar, { onAction, onClear, onNarrow, text } = {}) {
+    const view = bar?.ownerDocument?.defaultView;
+    if (!view || !(bar instanceof view.Element) || !bar.classList.contains("ds-batch-bar")) {
+      throw new TypeError("enhanceBatchBar needs the .ds-batch-bar element from renderBatchBar.");
+    }
+    const toolbar = bar.querySelector(':scope > [role="toolbar"]');
+    const clear = toolbar?.querySelector("[data-ds-batch-clear]");
+    const countNode = toolbar?.querySelector(".ds-batch-bar-count");
+    if (!clear || !countNode) throw new TypeError("enhanceBatchBar needs the markup renderBatchBar wrote.");
+    for (const callback of [onAction, onClear, onNarrow]) {
+      if (callback !== void 0 && typeof callback !== "function") throw new TypeError("Batch bar onAction, onClear and onNarrow must be functions.");
+    }
+    if (text !== void 0 && (!text || typeof text !== "object" || Object.entries(text).some(([key, value]) => !["count", "reach"].includes(key) || typeof value !== "function"))) {
+      throw new TypeError("Batch bar text takes count(count) and reach(applies, count) functions.");
+    }
+    if (mounted3.has(bar)) throw new Error("This batch bar is already enhanced; dispose before remounting.");
+    mounted3.add(bar);
+    const doc = bar.ownerDocument;
+    const controller = new AbortController();
+    const { signal } = controller;
+    const verbs = new Map([...toolbar.querySelectorAll("[data-ds-batch-verb]")].map((button2) => [button2.dataset.dsBatchVerb, button2]));
+    const countWords = text?.count ?? ((n) => fill(bar.dataset.dsCountText, { count: n }));
+    const reachWords = text?.reach ?? ((applies, n) => fill(bar.dataset.dsReachText, { applies, count: n }));
+    const disposers = [enhanceToolbar(toolbar)];
+    disposers.push(enhanceButton(clear, { onAction: () => onClear?.() }));
+    const phone = view.matchMedia("(max-width: 768px)");
+    const verbDisposers = /* @__PURE__ */ new Map();
+    const mountVerbs = () => {
+      for (const [value, button2] of verbs) {
+        verbDisposers.get(button2)?.();
+        if (phone.matches) button2.dataset.iconOnly = "true";
+        else delete button2.dataset.iconOnly;
+        verbDisposers.set(button2, enhanceButton(button2, { onAction: () => onAction?.(value, button2) }));
+      }
+    };
+    mountVerbs();
+    phone.addEventListener("change", mountVerbs, { signal });
+    disposers.push(() => {
+      for (const [button2, dispose] of verbDisposers) {
+        dispose();
+        button2.removeAttribute("data-icon-only");
+      }
+    });
+    const narrowTrigger = toolbar.querySelector("[data-ds-batch-narrow]");
+    const narrowMenu = narrowTrigger && toolbar.querySelector(`#${view.CSS.escape(narrowTrigger.getAttribute("aria-controls"))}`);
+    const template = narrowMenu?.querySelector(":scope > [data-ds-batch-template]");
+    if (narrowTrigger) {
+      Promise.resolve().then(() => (init_menu(), menu_exports)).then(({ enhanceMenuButton: enhanceMenuButton2 }) => {
+        if (!signal.aborted) disposers.push(enhanceMenuButton2(narrowTrigger, { onSelect: (item) => onNarrow?.(item.value) }));
+      });
+    }
+    const setNarrow = (options) => {
+      const offered = options.length >= 2;
+      if (offered) {
+        const items = new Map([...narrowMenu.querySelectorAll(":scope > .ds-menu-item:not([data-ds-menu-cancel], [data-ds-batch-template])")].map((item) => [item.value, item]));
+        let next = narrowMenu.firstElementChild;
+        for (const { value, label } of options) {
+          let item = items.get(value);
+          items.delete(value);
+          if (!item) {
+            item = template.cloneNode(true);
+            item.removeAttribute("data-ds-batch-template");
+            item.hidden = false;
+            item.value = value;
+          }
+          const words = item.querySelector("[data-ds-menu-label]");
+          if (words.textContent !== label) words.textContent = label;
+          if (item === next) next = next.nextElementSibling;
+          else narrowMenu.insertBefore(item, next);
+        }
+        for (const stale of items.values()) stale.remove();
+      }
+      if (narrowTrigger.hidden !== offered) return;
+      if (!offered && (narrowTrigger === doc.activeElement || narrowMenu.contains(doc.activeElement))) {
+        quietUntil = view.performance.now() + QUIET_MS;
+        [...verbs.values()].find((verb) => !verb.hidden)?.focus();
+      }
+      narrowTrigger.hidden = !offered;
+    };
+    let quietUntil = 0;
+    const holdBack = (event) => {
+      if (event.key !== "Enter" && event.key !== " " || narrowMenu?.contains(event.target)) return;
+      if (!event.repeat && view.performance.now() >= quietUntil) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+    };
+    bar.addEventListener("keydown", holdBack, { capture: true, signal });
+    bar.addEventListener("keyup", holdBack, { capture: true, signal });
+    let shown = !bar.hidden;
+    let leaving = null;
+    let cameFrom = null;
+    bar.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+      event.preventDefault();
+      onClear?.();
+    }, { signal });
+    bar.addEventListener("focusin", (event) => {
+      const from = event.relatedTarget;
+      if (from && !bar.contains(from)) cameFrom = from;
+    }, { signal });
+    let told = shown;
+    const tell = (value) => {
+      if (told === value) return;
+      told = value;
+      bar.dispatchEvent(new view.CustomEvent("ds-batch-bar-toggle", { bubbles: true, detail: { shown: value } }));
+    };
+    const morph = (names = MORPH) => toolbar.getAnimations({ subtree: true }).filter((animation) => names.includes(animation.animationName));
+    let entering = null;
+    let skipGhost = false;
+    const endGhost = () => {
+      if (!("dsLanded" in bar.dataset)) return;
+      delete bar.dataset.dsLanded;
+      toolbar.style.removeProperty("--_ghost");
+      if (!toolbar.style.length) toolbar.removeAttribute("style");
+    };
+    const endEntering = () => {
+      entering = null;
+      delete bar.dataset.dsEntering;
+      endGhost();
+    };
+    const measure = () => {
+      const reach = -parseFloat(view.getComputedStyle(toolbar, "::after").top);
+      const { offsetWidth: width, offsetHeight: height } = toolbar;
+      return `${width / (width + 2 * reach)} ${height / (height + 2 * reach)}`;
+    };
+    toolbar.addEventListener("animationend", (event) => {
+      if (event.animationName === GHOST) endGhost();
+    }, { signal });
+    const finishEntering = (morphed) => {
+      if (!entering) return;
+      const scale = morphed && !skipGhost && measure();
+      endEntering();
+      if (!scale) return;
+      toolbar.style.setProperty("--_ghost", scale);
+      bar.dataset.dsLanded = "";
+    };
+    const finishLeaving = () => {
+      if (!leaving) return;
+      leaving = null;
+      bar.hidden = true;
+      bar.inert = false;
+      delete bar.dataset.dsLeaving;
+      tell(false);
+    };
+    bar.addEventListener("focusin", () => {
+      if (!entering) return;
+      skipGhost = true;
+      for (const animation of morph()) animation.finish();
+    }, { signal });
+    const show = () => {
+      if (leaving) {
+        leaving = null;
+        shown = true;
+        delete bar.dataset.dsLeaving;
+        bar.inert = false;
+        tell(true);
+        return;
+      }
+      if (shown) return;
+      shown = true;
+      bar.hidden = false;
+      bar.dataset.dsEntering = "";
+      tell(true);
+      const token = {};
+      entering = token;
+      skipGhost = false;
+      const running = morph();
+      if (!running.length) {
+        finishEntering(false);
+        return;
+      }
+      const done = () => {
+        if (entering === token) finishEntering(true);
+      };
+      Promise.all(running.map((animation) => animation.finished)).then(done, done);
+    };
+    const hide = () => {
+      if (!shown) return;
+      shown = false;
+      endEntering();
+      if (bar.contains(doc.activeElement)) {
+        if (cameFrom?.isConnected && !cameFrom.closest("[inert], [hidden]")) cameFrom.focus({ preventScroll: true });
+        else doc.activeElement.blur();
+      }
+      bar.inert = true;
+      bar.dataset.dsLeaving = "";
+      const token = {};
+      leaving = token;
+      const exit = toolbar.getAnimations().find((animation) => animation.animationName === "ds-batch-bar-leave" && animation.playState !== "finished");
+      if (!exit) {
+        finishLeaving();
+        return;
+      }
+      const done = () => {
+        if (leaving === token) finishLeaving();
+      };
+      exit.finished.then(done, done);
+    };
+    const update = (state) => {
+      if (signal.aborted) throw new Error("This batch bar was disposed; enhance it again to update it.");
+      if (!state || typeof state !== "object" || Array.isArray(state)) throw new TypeError(`Batch bar update takes { ${STATE_KEYS.join(", ")} }.`);
+      const unknown = Object.keys(state).filter((key) => !STATE_KEYS.includes(key));
+      if (unknown.length) throw new TypeError(`Unknown batch bar state: ${unknown.join(", ")}. Allowed: ${STATE_KEYS.join(", ")}.`);
+      if (!Number.isInteger(state.count) || state.count < 0) throw new RangeError("Batch bar count must be a whole number, 0 or more.");
+      if (state.count === 0) {
+        hide();
+        return;
+      }
+      let reach = null;
+      if (state.verbs !== void 0) {
+        if (!Array.isArray(state.verbs)) throw new TypeError("Batch bar verbs must be a list of { value, applies }.");
+        reach = /* @__PURE__ */ new Map();
+        for (const verb of state.verbs) {
+          const keys = verb && typeof verb === "object" ? Object.keys(verb) : [];
+          if (!keys.includes("value") || keys.some((key) => key !== "value" && key !== "applies")) throw new TypeError("Each batch bar verb is { value, applies }; label, icon and order come from the markup.");
+          if (!verbs.has(verb.value)) throw new RangeError(`Unknown batch bar verb "${verb.value}". This bar has: ${[...verbs.keys()].join(", ")}.`);
+          if (reach.has(verb.value)) throw new RangeError(`Batch bar verb "${verb.value}" is listed twice.`);
+          const applies = verb.applies ?? state.count;
+          if (!Number.isInteger(applies) || applies < 0 || applies > state.count) {
+            throw new RangeError(`Batch bar verb "${verb.value}" applies must be a whole number from 0 to count (${state.count}); 0 hides it.`);
+          }
+          reach.set(verb.value, applies);
+        }
+      }
+      let narrow = [];
+      if (state.narrow !== void 0) {
+        if (!Array.isArray(state.narrow)) throw new TypeError("Batch bar narrow must be a list of { value, label }.");
+        const values = /* @__PURE__ */ new Set();
+        for (const option of state.narrow) {
+          const keys = option && typeof option === "object" ? Object.keys(option) : [];
+          if (keys.length !== 2 || !keys.includes("value") || !keys.includes("label")) throw new TypeError("Each batch bar narrow option is { value, label }.");
+          if (typeof option.value !== "string" || !KEBAB.test(option.value) || values.has(option.value)) throw new RangeError(`Batch bar narrow values must be unique kebab-case (got "${option.value}").`);
+          if (typeof option.label !== "string" || !option.label.trim()) throw new TypeError("Batch bar narrow label must be non-empty text.");
+          values.add(option.value);
+        }
+        if (state.narrow.length && !narrowTrigger) throw new TypeError("This batch bar was rendered without narrow (renderBatchBar narrow => []).");
+        narrow = state.narrow;
+      }
+      const { count } = state;
+      bar.dataset.count = String(count);
+      const label = countWords(count);
+      if (countNode.textContent !== label) countNode.textContent = label;
+      for (const [value, button2] of verbs) {
+        const applies = reach ? reach.get(value) ?? 0 : count;
+        if (button2.hidden !== (applies === 0)) button2.hidden = applies === 0;
+        const partial = applies > 0 && applies < count;
+        const badge = button2.querySelector(":scope > .ds-batch-bar-reach");
+        if (!badge) continue;
+        const words = partial ? reachWords(applies, count) : "";
+        const node = badge.lastChild?.nodeType === 3 ? badge.lastChild : badge.appendChild(badge.ownerDocument.createTextNode(""));
+        if (node.data !== words) node.data = words;
+        if (badge.hidden === partial) badge.hidden = !partial;
+      }
+      if (narrowTrigger) setNarrow(narrow);
+      show();
+    };
+    return {
+      update,
+      get shown() {
+        return shown;
+      },
+      dispose() {
+        if (signal.aborted) return;
+        finishLeaving();
+        endEntering();
+        controller.abort();
+        for (const dispose of disposers.reverse()) dispose();
+        mounted3.delete(bar);
+      }
+    };
+  }
+
+  // src/vendor/ui/batch-markup.ts
+  var batchMarkup = '<div class="ds-batch-bar" id="device-batch" data-count="0" data-ds-count-text="{count} selected" data-ds-reach-text="{applies} of {count}" hidden><div class="ds-toolbar" role="toolbar" aria-describedby="device-batch-count" aria-label="Actions for selected devices" id="device-batch-toolbar" data-size="m"><div class="ds-batch-bar-verbs"><button data-ds-batch-verb="register-check" class="ds-button" data-variant="tertiary" data-size="m" type="button" id="device-batch-verb-register-check"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="search" viewBox="0 0 24 24" fill="currentColor"><path d="M16.1017 17.1624C14.717 18.3101 12.9391 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11C19 12.9391 18.3101 14.717 17.1624 16.1018L21.7803 20.7197C22.0732 21.0126 22.0732 21.4874 21.7803 21.7803C21.4874 22.0732 21.0125 22.0732 20.7196 21.7803L16.1017 17.1624ZM17.5 11C17.5 7.41015 14.5899 4.5 11 4.5C7.41015 4.5 4.5 7.41015 4.5 11C4.5 14.5899 7.41015 17.5 11 17.5C14.5899 17.5 17.5 14.5899 17.5 11Z"/></svg><span data-ds-button-label>Register Check</span><span class="ds-batch-bar-reach" hidden><span class="ds-visually-hidden">, </span></span></button><button data-ds-batch-verb="toggle-status" class="ds-button" data-variant="tertiary" data-size="m" type="button" id="device-batch-verb-toggle-status"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="edit" viewBox="0 0 24 24" fill="currentColor"><path d="M20.9519 3.0481C19.5543 1.65058 17.2885 1.65064 15.8911 3.04825L3.94103 14.9997C3.5347 15.4061 3.2491 15.9172 3.116 16.4762L2.02041 21.0777C1.96009 21.3311 2.03552 21.5976 2.21968 21.7817C2.40385 21.9659 2.67037 22.0413 2.92373 21.981L7.52498 20.8855C8.08418 20.7523 8.59546 20.4666 9.00191 20.0601L20.952 8.10861C22.3493 6.71112 22.3493 4.4455 20.9519 3.0481ZM16.9518 4.10884C17.7634 3.29709 19.0795 3.29705 19.8912 4.10876C20.7028 4.9204 20.7029 6.23632 19.8913 7.04801L19 7.93946L16.0606 5.00012L16.9518 4.10884ZM15 6.06084L17.9394 9.00018L7.94119 18.9995C7.73104 19.2097 7.46668 19.3574 7.17755 19.4263L3.76191 20.2395L4.57521 16.8237C4.64402 16.5346 4.79168 16.2704 5.00175 16.0603L15 6.06084Z"/></svg><span data-ds-button-label>Toggle Status</span><span class="ds-batch-bar-reach" hidden><span class="ds-visually-hidden">, </span></span></button><button data-ds-batch-verb="delete" data-ds-destructive class="ds-button" data-variant="tertiary" data-tone="danger" data-size="m" type="button" id="device-batch-verb-delete"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="delete" viewBox="0 0 24 24" fill="currentColor"><path d="M10 5H14C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5ZM8.5 5C8.5 3.067 10.067 1.5 12 1.5C13.933 1.5 15.5 3.067 15.5 5H21.25C21.6642 5 22 5.33579 22 5.75C22 6.16421 21.6642 6.5 21.25 6.5H19.9309L18.7589 18.6112C18.5729 20.5334 16.9575 22 15.0263 22H8.97369C7.04254 22 5.42715 20.5334 5.24113 18.6112L4.06908 6.5H2.75C2.33579 6.5 2 6.16421 2 5.75C2 5.33579 2.33579 5 2.75 5H8.5ZM10.5 9.75C10.5 9.33579 10.1642 9 9.75 9C9.33579 9 9 9.33579 9 9.75V17.25C9 17.6642 9.33579 18 9.75 18C10.1642 18 10.5 17.6642 10.5 17.25V9.75ZM14.25 9C14.6642 9 15 9.33579 15 9.75V17.25C15 17.6642 14.6642 18 14.25 18C13.8358 18 13.5 17.6642 13.5 17.25V9.75C13.5 9.33579 13.8358 9 14.25 9ZM6.73416 18.4667C6.84577 19.62 7.815 20.5 8.97369 20.5H15.0263C16.185 20.5 17.1542 19.62 17.2658 18.4667L18.4239 6.5H5.57608L6.73416 18.4667Z"/></svg><span data-ds-button-label>Delete</span><span class="ds-batch-bar-reach" hidden><span class="ds-visually-hidden">, </span></span></button></div><div class="ds-batch-bar-selection"><span class="ds-batch-bar-count" id="device-batch-count">0 selected</span><button data-ds-batch-clear class="ds-button" data-variant="tertiary" data-size="m" type="button" id="device-batch-clear" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="dismiss" viewBox="0 0 24 24" fill="currentColor"><path d="M4.39705 4.55379L4.46967 4.46967C4.73594 4.2034 5.1526 4.1792 5.44621 4.39705L5.53033 4.46967L12 10.939L18.4697 4.46967C18.7626 4.17678 19.2374 4.17678 19.5303 4.46967C19.8232 4.76256 19.8232 5.23744 19.5303 5.53033L13.061 12L19.5303 18.4697C19.7966 18.7359 19.8208 19.1526 19.6029 19.4462L19.5303 19.5303C19.2641 19.7966 18.8474 19.8208 18.5538 19.6029L18.4697 19.5303L12 13.061L5.53033 19.5303C5.23744 19.8232 4.76256 19.8232 4.46967 19.5303C4.17678 19.2374 4.17678 18.7626 4.46967 18.4697L10.939 12L4.46967 5.53033C4.2034 5.26406 4.1792 4.8474 4.39705 4.55379L4.46967 4.46967L4.39705 4.55379Z"/></svg><span data-ds-button-label>Clear selection</span></button></div></div></div>';
 
   // src/platform/page-transition.ts
   function createPageTransition({ enabled = true, duration = 160 } = {}) {
@@ -1850,7 +4705,7 @@ h3 {
   function mountDevices(root2, site) {
     const selected = /* @__PURE__ */ new Set();
     let activeDialog = null;
-    root2.innerHTML = '<div class="layout" id="shell"><aside class="nav" id="sidebar" aria-label="Main navigation"><div class="nav-header"><button type="button" class="nav-toggle" id="nav-toggle" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar-menu"><span aria-hidden="true">\u2630</span></button><img class="nav-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="Red Kite" width="56" height="24"></div><nav id="sidebar-menu" class="nav-menu" aria-label="Main navigation"><div class="menu-group is-active"><button type="button" class="menu-link menu-parent" id="infrastructure-toggle" aria-expanded="true" aria-controls="infrastructure-items"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="3" width="11" height="18" rx="1.5"/><path d="M7 7h5M7 10h5M15 7h2l2 2v7a2 2 0 0 1-4 0"/></svg><span class="menu-label">Infrastructure</span><svg class="menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="menu-children" id="infrastructure-items"><a href="#/devices" class="menu-child is-active" aria-current="page">Devices</a></div></div></nav></aside><div class="workspace"><header class="topbar"><div class="mobile-header-start"><button type="button" class="mobile-menu" id="mobile-menu" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="mobile-app-name">Satellite</span></div><div class="header-actions"><span class="environment">SATELLITE LOCAL</span><span class="demo">Sample data</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme"><svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg><span>Theme</span></button></div></header><main><section id="infrastructure-overview" class="infrastructure-overview" hidden aria-labelledby="infrastructure-title"><h1 id="infrastructure-title" tabindex="-1">Infrastructure</h1><button type="button" id="open-devices" class="overview-card"><strong>Devices</strong><span>Manage devices and inspect registers</span></button></section><div id="devices-page"><div class="page-heading"><div><div class="title-line"><button type="button" id="back-infrastructure" class="back-button" aria-label="Back to Infrastructure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button><h1 id="devices-title" tabindex="-1">Devices</h1><details class="info"><summary aria-label="About sample data">i</summary><div class="info-content">This preview uses sample data. Changes reset when the page reloads.</div></details></div></div><button type="button" id="new-device" class="ion-button ion-button--cta">+ New Device</button></div><section class="card" aria-label="Device inventory"><div class="card-heading"><p class="muted" id="device-count"></p></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-actions" class="bulk-actions" hidden></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></main></div></div><div id="panel-host"></div>';
+    root2.innerHTML = '<div class="layout" id="shell"><aside class="nav" id="sidebar" aria-label="Main navigation"><div class="nav-header"><button type="button" class="nav-toggle" id="nav-toggle" aria-label="Collapse sidebar" aria-expanded="true" aria-controls="sidebar-menu"><span aria-hidden="true">\u2630</span></button><img class="nav-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="Red Kite" width="56" height="24"></div><nav id="sidebar-menu" class="nav-menu" aria-label="Main navigation"><div class="menu-group is-active"><button type="button" class="menu-link menu-parent" id="infrastructure-toggle" aria-expanded="true" aria-controls="infrastructure-items"><svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="3" width="11" height="18" rx="1.5"/><path d="M7 7h5M7 10h5M15 7h2l2 2v7a2 2 0 0 1-4 0"/></svg><span class="menu-label">Infrastructure</span><svg class="menu-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="menu-children" id="infrastructure-items"><a href="#/devices" class="menu-child is-active" aria-current="page">Devices</a></div></div></nav></aside><div class="workspace"><header class="topbar"><div class="mobile-header-start"><button type="button" class="mobile-menu" id="mobile-menu" aria-controls="sidebar" aria-expanded="false" aria-label="Open navigation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><span class="mobile-app-name">Satellite</span></div><div class="header-actions"><span class="environment">SATELLITE LOCAL</span><span class="demo">Sample data</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme"><svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg><span>Theme</span></button></div></header><main><section id="infrastructure-overview" class="infrastructure-overview" hidden aria-labelledby="infrastructure-title"><h1 id="infrastructure-title" tabindex="-1">Infrastructure</h1><button type="button" id="open-devices" class="overview-card"><strong>Devices</strong><span>Manage devices and inspect registers</span></button></section><div id="devices-page"><div class="page-heading"><div><div class="title-line"><button type="button" id="back-infrastructure" class="back-button" aria-label="Back to Infrastructure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></button><h1 id="devices-title" tabindex="-1">Devices</h1><details class="info"><summary aria-label="About sample data">i</summary><div class="info-content">This preview uses sample data. Changes reset when the page reloads.</div></details></div></div><button type="button" id="new-device" class="ion-button ion-button--cta">+ New Device</button></div><section class="card" aria-label="Device inventory"><div class="card-heading"><p class="muted" id="device-count"></p></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></main></div></div><div id="panel-host"></div>';
     const shell = root2.querySelector("#shell");
     const navToggle = root2.querySelector("#nav-toggle");
     const mobileMenu = root2.querySelector("#mobile-menu");
@@ -2027,8 +4882,8 @@ h3 {
       input.addEventListener("input", render);
       panel.addEventListener("keydown", (event) => {
         if (event.key !== "Tab") return;
-        const focusable = Array.from(panel.querySelectorAll("button,input,select,a[href]"));
-        const first = focusable[0], last = focusable[focusable.length - 1];
+        const focusable2 = Array.from(panel.querySelectorAll("button,input,select,a[href]"));
+        const first = focusable2[0], last = focusable2[focusable2.length - 1];
         if (event.shiftKey && document.activeElement === first) {
           event.preventDefault();
           last.focus();
@@ -2041,7 +4896,9 @@ h3 {
       render();
       closeButton.focus();
     }
-    const bulk = root2.querySelector("#bulk-actions");
+    const bulkHost = root2.querySelector("#bulk-host");
+    bulkHost.innerHTML = batchMarkup;
+    const bulk = bulkHost.querySelector(".ds-batch-bar");
     const newButton = root2.querySelector("#new-device");
     const selectAll = root2.querySelector("#select-all");
     const notice = root2.querySelector("#notice");
@@ -2088,32 +4945,7 @@ h3 {
         row.append(cell);
         body.append(row);
       }
-      bulk.hidden = selected.size === 0;
-      bulk.replaceChildren();
-      if (!selected.size) return;
-      bulk.append(element("span", "selection-count", selected.size + " selected"));
-      const check = button("Register Check", "ion-button ion-button--cta");
-      check.addEventListener("click", () => {
-        const candidates = site.getDevices().filter((device) => selected.has(device.id));
-        if (candidates[0]) open(candidates[0], check, candidates.map((device) => device.id));
-      });
-      const toggle = button("Toggle Status", "ion-button ion-button--primary");
-      toggle.addEventListener("click", () => {
-        const count = selected.size;
-        site.toggle(selected);
-        renderInventory();
-        announce("Updated sample status for " + count + " devices.");
-        bulk.querySelector(".ion-button--primary")?.focus();
-      });
-      const remove = button("Delete", "ion-button ion-button--danger");
-      remove.addEventListener("click", () => confirmDelete(remove));
-      const cancel = button("Cancel");
-      cancel.addEventListener("click", () => {
-        selected.clear();
-        renderInventory();
-        newButton.focus();
-      });
-      bulk.append(check, toggle, remove, cancel);
+      batch.update({ count: selected.size });
     }
     selectAll.addEventListener("change", () => {
       selected.clear();
@@ -2157,6 +4989,7 @@ h3 {
         selected.clear();
         renderInventory();
         dismiss();
+        newButton.focus();
         announce(`Deleted ${ids.size} devices and ${linkCount} links.`);
       });
       actions.append(cancel, confirm);
@@ -2223,9 +5056,31 @@ h3 {
       box.append(form);
       form.querySelector("#device-name").focus();
     }
+    const batch = enhanceBatchBar(bulk, {
+      onClear: () => {
+        selected.clear();
+        renderInventory();
+        newButton.focus();
+        announce("Selection cleared.");
+      },
+      onAction: (action, opener) => {
+        if (action === "register-check") {
+          const candidates = site.getDevices().filter((device) => selected.has(device.id));
+          if (candidates[0]) open(candidates[0], opener, candidates.map((device) => device.id));
+        } else if (action === "toggle-status") {
+          const count = selected.size;
+          site.toggle(selected);
+          renderInventory();
+          announce("Updated sample status for " + count + " devices.");
+        } else if (action === "delete") {
+          confirmDelete(opener);
+        }
+      }
+    });
     newButton.addEventListener("click", createDevice);
     renderInventory();
     return () => {
+      batch.dispose();
       transition.dispose();
       disposeTableNavigator();
       window.removeEventListener("hashchange", routeChanged);
