@@ -1242,6 +1242,107 @@
 
 /* src/ion-ui/batch-bar.css */
 
+/* src/vendor/ui/components/scroll-steering/scroll-steering.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  .ds-scroll-steering {
+    display: inline-flex;
+    align-items: center;
+    overflow: hidden;
+    border: var(--ds-control-border-width) solid var(--ds-color-control-edge);
+    border-radius: 999px;
+    background: var(--ds-color-surface);
+    box-shadow: var(--ds-shadow-raised);
+    color: var(--ds-color-text-body);
+    translate: var(--ds-scroll-steering-pull, 0) 0;
+    transition: translate .34s cubic-bezier(.18, 1.6, .38, 1);
+    cursor: grab;
+    user-select: none;
+    touch-action: pan-y pinch-zoom;
+  }
+  .ds-scroll-steering[hidden] {
+    display: none;
+  }
+  .ds-scroll-steering[data-dragging] {
+    transition: none;
+    cursor: grabbing;
+  }
+  .ds-scroll-steering-step {
+    display: grid;
+    place-items: center;
+    flex: none;
+    inline-size: var(--ds-control-size-s);
+    block-size: var(--ds-control-size-s);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--ds-color-text-strong);
+    cursor: inherit;
+  }
+  .ds-scroll-steering-step::before {
+    content: "";
+    display: block;
+    inline-size: var(--ds-space-2);
+    block-size: var(--ds-space-2);
+    border-inline-start: 2px solid currentColor;
+    border-block-end: 2px solid currentColor;
+    rotate: 45deg;
+  }
+  .ds-scroll-steering-step[data-step=forward]::before {
+    rotate: 225deg;
+  }
+  .ds-scroll-steering:dir(rtl) .ds-scroll-steering-step[data-step=back]::before {
+    rotate: 225deg;
+  }
+  .ds-scroll-steering:dir(rtl) .ds-scroll-steering-step[data-step=forward]::before {
+    rotate: 45deg;
+  }
+  .ds-scroll-steering-step[aria-disabled=true] {
+    color: var(--ds-color-disabled-text);
+  }
+  .ds-scroll-steering-step:hover:not([aria-disabled=true]) {
+    background: var(--ds-color-ghost-hover);
+  }
+  .ds-scroll-steering-step:focus-visible {
+    outline: var(--ds-focus-width) solid var(--ds-color-focus);
+    outline-offset: calc(-1 * var(--ds-focus-width));
+  }
+  .ds-scroll-steering-grip {
+    display: grid;
+    place-items: center;
+    flex: none;
+    inline-size: var(--ds-control-size-s);
+    block-size: var(--ds-control-size-s);
+    color: var(--ds-color-text-muted);
+  }
+  .ds-scroll-steering-grip::before {
+    content: "";
+    inline-size: var(--ds-space-3);
+    block-size: 2px;
+    border-radius: 1px;
+    background: currentColor;
+    box-shadow: 0 -4px 0 currentColor, 0 4px 0 currentColor;
+  }
+  @media (hover: none), (pointer: coarse) {
+    .ds-scroll-steering {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ds-scroll-steering {
+      transition: none;
+    }
+  }
+  [data-reduced-motion=true] .ds-scroll-steering {
+    transition: none;
+  }
+  @media (forced-colors: active) {
+    .ds-scroll-steering {
+      border-color: CanvasText;
+    }
+  }
+}
+
 /* src/vendor/ui/components/tag/tag.css */
 @layer ds.tokens, ds.base, ds.components;
 @layer ds.components {
@@ -3823,54 +3924,6 @@ h3 {
     border-radius: 12px 12px 0 0;
   }
 }
-.table-navigator {
-  display: flex;
-  align-items: center;
-  border: 1px solid var(--color-neutral-300);
-  border-radius: 999px;
-  background: var(--color-neutral-000);
-  color: var(--color-neutral-600);
-  overflow: hidden;
-  transform: translateX(var(--pull,0));
-  transition: transform .25s ease;
-  touch-action: none;
-  user-select: none;
-}
-.table-navigator[hidden] {
-  display: none;
-}
-.table-navigator.dragging {
-  transition: none;
-  cursor: grabbing;
-}
-.table-navigator button {
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font-size: 24px;
-  line-height: 1;
-  width: 32px;
-  height: 32px;
-  cursor: pointer;
-}
-.table-navigator button:hover {
-  background: var(--color-neutral-200);
-}
-.table-navigator button[aria-disabled=true] {
-  color: var(--color-neutral-300);
-}
-.table-navigator-grip {
-  width: 28px;
-  text-align: center;
-  cursor: grab;
-  color: var(--color-neutral-400);
-  font-size: 16px;
-}
-@media (prefers-reduced-motion: reduce) {
-  .table-navigator {
-    transition: none;
-  }
-}
 @media (max-width: 700px) {
   .workspace main {
     border-radius: clamp(12px, 4vw, 20px) clamp(12px, 4vw, 20px) 0 0;
@@ -4336,36 +4389,6 @@ h3 {
 [data-theme=dark] .metadata dt {
   color: var(--color-neutral-400);
 }
-.table-navigator {
-  border-color: var(--color-neutral-200);
-  box-shadow: 0 1px 4px #0002;
-}
-.table-navigator button {
-  display: grid;
-  place-items: center;
-  padding: 0;
-}
-.table-navigator button::before {
-  content: "";
-  width: 18px;
-  height: 18px;
-  background: currentColor;
-  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>') no-repeat center / contain;
-  -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/></svg>') no-repeat center / contain;
-}
-.table-navigator button:last-child::before {
-  mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>');
-  -webkit-mask-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>');
-}
-.table-navigator-grip {
-  display: block;
-  width: 12px;
-  height: 2px;
-  margin: 0 5px;
-  border-radius: 1px;
-  background: currentColor;
-  box-shadow: 0 -4px currentColor, 0 4px currentColor;
-}
 .shell-sidebar-header {
   display: flex;
   align-items: center;
@@ -4650,6 +4673,140 @@ h3 {
   .device-form .field input,
   .device-form .field select {
     height: 32px;
+  }
+}
+.inventory-state {
+  padding: 16px 24px;
+  color: var(--color-neutral-500);
+}
+.inventory-state[hidden],
+.table-scroll[hidden] {
+  display: none;
+}
+.inventory-state button {
+  margin-inline-start: 8px;
+}
+.card-heading {
+  align-items: center;
+  min-height: 58px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+.widget-title {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 21px;
+}
+.card-heading p {
+  margin-top: 0;
+  font-size: 11px;
+  line-height: 16px;
+}
+.ion-table th {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-400);
+  font-size: 13px;
+  font-weight: 500;
+}
+.ion-table tbody tr:nth-child(even) {
+  background: var(--color-neutral-100);
+}
+.card .ion-table td {
+  font-size: 13px;
+}
+[data-theme=dark] .ion-table th {
+  color: var(--color-neutral-400);
+}
+.overview-widget {
+  width: min(100%, 760px);
+  padding: 24px;
+  background: var(--color-neutral-000);
+  color: var(--color-neutral-600);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--card-border-radius,8px);
+  box-shadow: 0 2px 8px #1d12200d;
+}
+.overview-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.overview-heading h2 {
+  font-size: 18px;
+}
+.overview-heading button {
+  min-height: 44px;
+}
+.overview-state {
+  padding-top: 24px;
+  color: var(--color-neutral-500);
+}
+.overview-state button {
+  margin-left: 8px;
+  min-height: 44px;
+}
+.overview-summary {
+  display: flex;
+  align-items: flex-end;
+  gap: 48px;
+  padding-top: 24px;
+}
+.overview-summary[hidden],
+.overview-state[hidden] {
+  display: none;
+}
+.overview-total {
+  display: grid;
+  gap: 4px;
+  min-width: 135px;
+}
+.overview-total strong {
+  font-size: 32px;
+  line-height: 1.1;
+}
+.overview-total span,
+.overview-status > span {
+  color: var(--color-neutral-500);
+  font-size: 13px;
+}
+.overview-status {
+  flex: 1;
+}
+.overview-status dl {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin: 10px 0 0;
+}
+.overview-status dl div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.overview-status dt {
+  color: var(--color-neutral-500);
+}
+.overview-status dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 560px) {
+  .overview-widget {
+    padding: 20px;
+  }
+  .overview-summary {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .overview-status dl {
+    gap: 8px;
+  }
+  .overview-status dl div {
+    flex-direction: column;
+    gap: 4px;
   }
 }
 </style></head><body><div id="app"></div><script>"use strict";
@@ -5874,439 +6031,198 @@ h3 {
     }
   });
 
-  // src/features/devices/api/devices.ts
-  var VENDORS = [
-    { id: 1, name: "ABB" },
-    { id: 2, name: "ALPITRONIC" },
-    { id: 3, name: "KACO" },
-    { id: 4, name: "NETICO" },
-    { id: 5, name: "SCHNEIDER" },
-    { id: 6, name: "REGELKRAFT" },
-    { id: 7, name: "EKOENERGETYKA" },
-    { id: 8, name: "JANITZA" },
-    { id: 9, name: "TRITIUM" },
-    { id: 10, name: "ZIEHL" },
-    { id: 11, name: "PLCNEXT" },
-    { id: 12, name: "SIEMENS" },
-    { id: 13, name: "HUAWEI" }
-  ];
-  var MODELS = [
-    { id: 1, name: "EVSS TGPv1", vendorId: 1 },
-    { id: 2, name: "HYC400", vendorId: 2 },
-    { id: 3, name: "Blueplanet", vendorId: 3 },
-    { id: 4, name: "NTPM100A", vendorId: 4 },
-    { id: 5, name: "IFE", vendorId: 5 },
-    { id: 6, name: "DSO", vendorId: 6 },
-    { id: 7, name: "LSCC", vendorId: 7 },
-    { id: 8, name: "UMG604-PRO", vendorId: 8 },
-    { id: 9, name: "BESS BMS", vendorId: 1 },
-    { id: 10, name: "BESS PCS", vendorId: 1 },
-    { id: 11, name: "EKIP", vendorId: 1 },
-    { id: 12, name: "HPC350", vendorId: 9 },
-    { id: 13, name: "TR660IP", vendorId: 10 },
-    { id: 14, name: "Axioline F", vendorId: 11 },
-    { id: 15, name: "EKIP BESS", vendorId: 1 },
-    { id: 16, name: "HYC1000", vendorId: 2 },
-    { id: 17, name: "3WA", vendorId: 12 },
-    { id: 18, name: "EVSS TGPv2", vendorId: 1 },
-    { id: 19, name: "FusionCharge", vendorId: 13 },
-    { id: 20, name: "EVSS TGP v2.5", vendorId: 1 }
-  ];
-  var INITIAL_DEVICES = [
-    {
-      id: "dev-001",
-      name: "ABB Central Grid Substation",
-      type: "Grid",
-      status: "Online",
-      x: 60,
-      y: 160,
-      addedAt: "2026-10-12 14:00",
-      vendor: "ABB",
-      vendorId: 1,
-      model: "EVSS TGPv2",
-      modelId: 18,
-      ipAddress: "192.168.1.101",
-      port: 502,
-      unitId: -1,
-      capabilities: "GRID",
-      inUse: true,
-      nodeType: "EVSS"
-    },
-    {
-      id: "dev-002",
-      name: "Alpitronic HYC400 Fast Charger",
-      type: "Loads",
-      status: "Online",
-      x: 710,
-      y: 460,
-      addedAt: "2026-10-12 14:05",
-      vendor: "ALPITRONIC",
-      vendorId: 2,
-      model: "HYC400",
-      modelId: 2,
-      ipAddress: "192.168.1.102",
-      port: 502,
-      unitId: -1,
-      capabilities: "LOAD",
-      inUse: true,
-      nodeType: "Charger"
-    },
-    {
-      id: "dev-003",
-      name: "KACO Blueplanet String Inverter",
-      type: "String",
-      status: "Online",
-      x: 380,
-      y: 200,
-      addedAt: "2026-10-12 14:10",
-      vendor: "KACO",
-      vendorId: 3,
-      model: "Blueplanet",
-      modelId: 3,
-      ipAddress: "192.168.1.103",
-      port: 502,
-      unitId: -1,
-      capabilities: "INVERTER",
-      inUse: true,
-      nodeType: "Compensator"
-    },
-    {
-      id: "dev-004",
-      name: "Netico NTPM100A Power Meter",
-      type: "Meter",
-      status: "Online",
-      x: 710,
-      y: 180,
-      addedAt: "2026-10-12 14:15",
-      vendor: "NETICO",
-      vendorId: 4,
-      model: "NTPM100A",
-      modelId: 4,
-      ipAddress: "192.168.1.104",
-      port: 502,
-      unitId: -1,
-      capabilities: "METER",
-      inUse: true,
-      nodeType: "Meter"
-    },
-    {
-      id: "dev-005",
-      name: "Schneider IFE Switchboard",
-      type: "Loads",
-      status: "Online",
-      x: 380,
-      y: 520,
-      addedAt: "2026-10-12 14:20",
-      vendor: "SCHNEIDER",
-      vendorId: 5,
-      model: "IFE",
-      modelId: 5,
-      ipAddress: "192.168.1.105",
-      port: 502,
-      unitId: -1,
-      capabilities: "BREAKER",
-      inUse: true,
-      nodeType: "Breaker"
-    },
-    {
-      id: "dev-006",
-      name: "Regelkraft Regional DSO",
-      type: "DSO",
-      status: "Online",
-      x: 380,
-      y: 40,
-      addedAt: "2026-10-12 14:25",
-      vendor: "REGELKRAFT",
-      vendorId: 6,
-      model: "DSO",
-      modelId: 6,
-      ipAddress: "192.168.1.106",
-      port: 502,
-      unitId: -1,
-      capabilities: "DSO",
-      inUse: true,
-      nodeType: "DSO Gateway"
-    },
-    {
-      id: "dev-007",
-      name: "Ekoenergetyka LSCC Station",
-      type: "Loads",
-      status: "Online",
-      x: 710,
-      y: 600,
-      addedAt: "2026-10-12 14:30",
-      vendor: "EKOENERGETYKA",
-      vendorId: 7,
-      model: "LSCC",
-      modelId: 7,
-      ipAddress: "192.168.1.107",
-      port: 502,
-      unitId: -1,
-      capabilities: "LOAD",
-      inUse: true,
-      nodeType: "EVSS"
-    },
-    {
-      id: "dev-008",
-      name: "Janitza UMG604 Telemetry Meter",
-      type: "Meter",
-      status: "Online",
-      x: 710,
-      y: 40,
-      addedAt: "2026-10-12 14:35",
-      vendor: "JANITZA",
-      vendorId: 8,
-      model: "UMG604-PRO",
-      modelId: 8,
-      ipAddress: "192.168.1.108",
-      port: 502,
-      unitId: -1,
-      capabilities: "METER",
-      inUse: true,
-      nodeType: "Meter"
-    },
-    {
-      id: "dev-009",
-      name: "Tritium HPC350 High Power Charger",
-      type: "Loads",
-      status: "Online",
-      x: 1040,
-      y: 40,
-      addedAt: "2026-10-12 14:40",
-      vendor: "TRITIUM",
-      vendorId: 9,
-      model: "HPC350",
-      modelId: 12,
-      ipAddress: "192.168.1.109",
-      port: 502,
-      unitId: -1,
-      capabilities: "CHARGER",
-      inUse: true,
-      nodeType: "Charger"
-    },
-    {
-      id: "dev-010",
-      name: "Ziehl TR660IP Monitoring Relay",
-      type: "Meter",
-      status: "Online",
-      x: 710,
-      y: 320,
-      addedAt: "2026-10-12 14:45",
-      vendor: "ZIEHL",
-      vendorId: 10,
-      model: "TR660IP",
-      modelId: 13,
-      ipAddress: "192.168.1.110",
-      port: 502,
-      unitId: -1,
-      capabilities: "RELAY",
-      inUse: true,
-      nodeType: "Sensor"
-    },
-    {
-      id: "dev-011",
-      name: "PLCnext Axioline F Controller",
-      type: "Loads",
-      status: "Online",
-      x: 380,
-      y: 360,
-      addedAt: "2026-10-12 14:50",
-      vendor: "PLCNEXT",
-      vendorId: 11,
-      model: "Axioline F",
-      modelId: 14,
-      ipAddress: "192.168.1.111",
-      port: 502,
-      unitId: -1,
-      capabilities: "CONTROLLER",
-      inUse: true,
-      nodeType: "Sensor"
-    },
-    {
-      id: "dev-012",
-      name: "Siemens 3WA Air Circuit Breaker",
-      type: "Loads",
-      status: "Online",
-      x: 60,
-      y: 320,
-      addedAt: "2026-10-12 14:55",
-      vendor: "SIEMENS",
-      vendorId: 12,
-      model: "3WA",
-      modelId: 17,
-      ipAddress: "192.168.1.112",
-      port: 502,
-      unitId: -1,
-      capabilities: "BREAKER",
-      inUse: true,
-      nodeType: "Breaker"
-    },
-    {
-      id: "dev-013",
-      name: "Huawei FusionCharge DC Station",
-      type: "Loads",
-      status: "Online",
-      x: 1040,
-      y: 180,
-      addedAt: "2026-10-12 15:00",
-      vendor: "HUAWEI",
-      vendorId: 13,
-      model: "FusionCharge",
-      modelId: 19,
-      ipAddress: "192.168.1.113",
-      port: 502,
-      unitId: -1,
-      capabilities: "CHARGER",
-      inUse: true,
-      nodeType: "Charger"
+  // src/app/site-data-source.ts
+  var MutationNotAppliedError = class extends Error {
+    constructor(message) {
+      super(message);
+      this.name = "MutationNotAppliedError";
     }
-  ];
-  var INITIAL_CONNECTIONS = [
-    { id: "conn-g1-dso", fromId: "dev-001", toId: "dev-006" },
-    { id: "conn-g1-str1", fromId: "dev-001", toId: "dev-003" },
-    { id: "conn-str1-m1", fromId: "dev-003", toId: "dev-008" },
-    { id: "conn-str1-m2", fromId: "dev-003", toId: "dev-004" },
-    { id: "conn-str1-l1", fromId: "dev-003", toId: "dev-002" }
-  ];
-  function inferComponentType(modelName) {
-    if (!modelName) return "Loads";
-    const mName = modelName.toUpperCase();
-    if (mName === "DSO") return "DSO";
-    if (mName.includes("BESS")) return "BESS";
-    if (mName.includes("UMG") || mName.includes("NTPM") || mName.includes("TR660IP")) return "Meter";
-    if (mName.includes("BLUEPLANET")) return "String";
-    if (mName.includes("3WA") || mName.includes("IFE")) return "Grid";
-    return "Loads";
-  }
-  function getDefaultModbusRegisters(nodeType, model) {
-    const normType = (nodeType || "").toLowerCase();
-    const normModel = (model || "").toLowerCase();
-    if (normType.includes("charger") || normType.includes("evss") || normModel.includes("hyc") || normModel.includes("hpc") || normModel.includes("lscc") || normModel.includes("fusion")) {
-      return [
-        { register: 40001, description: "Total Active Power (kW)", status: "verified", value: "350.4" },
-        { register: 40002, description: "DC Output Voltage (V)", status: "verified", value: "820.5" },
-        { register: 40003, description: "DC Output Current (A)", status: "verified", value: "427.1" },
-        { register: 40004, description: "Connector 1 State", status: "verified", value: "Charging" },
-        { register: 40005, description: "Connector 2 State", status: "no status", value: "Available" },
-        { register: 40006, description: "Emergency Stop Circuit", status: "verified", value: "Normal" },
-        { register: 40007, description: "Isolation Resistance (kOhm)", status: "error", value: "18.2" },
-        { register: 40008, description: "Hardware Fault Code", status: "error", value: "E-401" },
-        { register: 40009, description: "Cooling Unit Flow Rate", status: "no status", value: "N/A" },
-        { register: 40010, description: "Energy Delivered Total (kWh)", status: "verified", value: "142850.2" }
-      ];
+  };
+  var MutationUncertainError = class extends Error {
+    constructor(cause, refreshed, refreshError) {
+      super(refreshed ? "The operation outcome is uncertain; data was refreshed." : "The operation outcome is uncertain and data could not be refreshed.");
+      this.cause = cause;
+      this.refreshed = refreshed;
+      this.refreshError = refreshError;
+      this.name = "MutationUncertainError";
     }
-    if (normType.includes("meter") || normModel.includes("umg") || normModel.includes("ntpm") || normModel.includes("tr660")) {
-      return [
-        { register: 30001, description: "Voltage L1-N (V)", status: "verified", value: "230.2" },
-        { register: 30002, description: "Voltage L2-N (V)", status: "verified", value: "229.8" },
-        { register: 30003, description: "Voltage L3-N (V)", status: "verified", value: "231.1" },
-        { register: 30004, description: "Current L1 (A)", status: "verified", value: "145.6" },
-        { register: 30005, description: "Current L2 (A)", status: "verified", value: "142.3" },
-        { register: 30006, description: "Current L3 (A)", status: "verified", value: "148.0" },
-        { register: 30007, description: "Active Power Import Total (kW)", status: "verified", value: "101.4" },
-        { register: 30008, description: "Grid Frequency (Hz)", status: "verified", value: "50.01" },
-        { register: 30009, description: "Total Harmonic Distortion THD-V (%)", status: "error", value: "6.8%" },
-        { register: 30010, description: "Modbus Communication Watchdog", status: "no status", value: "0" }
-      ];
-    }
-    if (normType.includes("breaker") || normModel.includes("3wa") || normModel.includes("ife")) {
-      return [
-        { register: 30001, description: "Breaker Status (Open/Closed)", status: "verified", value: "Closed" },
-        { register: 30002, description: "Trip Counter", status: "verified", value: "4" },
-        { register: 30003, description: "Protection Relay Health", status: "verified", value: "OK" },
-        { register: 30004, description: "Contact Wear Level (%)", status: "verified", value: "12%" },
-        { register: 30005, description: "Under-Voltage Release State", status: "error", value: "Fault" },
-        { register: 30006, description: "Spring Charge Mechanism", status: "no status", value: "Unknown" },
-        { register: 30007, description: "Arc Fault Detection (AFDD)", status: "no status", value: "Standby" },
-        { register: 30008, description: "Phase Imbalance Alarm", status: "error", value: "Warning" }
-      ];
-    }
-    if (normType.includes("compensator") || normType.includes("inverter") || normModel.includes("blueplanet")) {
-      return [
-        { register: 40101, description: "Inverter Operating State", status: "verified", value: "Running" },
-        { register: 40102, description: "Active Power Target (kW)", status: "verified", value: "250.0" },
-        { register: 40103, description: "Reactive Power Q (kVAR)", status: "verified", value: "-12.5" },
-        { register: 40104, description: "DC String 1 Voltage (V)", status: "verified", value: "680.4" },
-        { register: 40105, description: "DC String 2 Voltage (V)", status: "verified", value: "675.2" },
-        { register: 40106, description: "Heatsink Internal Temp (\xB0C)", status: "verified", value: "42.8" },
-        { register: 40107, description: "Grid Sync Phase Angle Error", status: "error", value: "Offset Out of Spec" },
-        { register: 40108, description: "Curtailment Derating Factor", status: "no status", value: "Unset" }
-      ];
-    }
-    return [
-      { register: 40001, description: "Device Operating State", status: "verified", value: "Operational" },
-      { register: 40002, description: "Telemetry Packet Counter", status: "verified", value: "184920" },
-      { register: 40003, description: "Primary Bus Voltage (V)", status: "verified", value: "400.2" },
-      { register: 40004, description: "Primary Bus Current (A)", status: "verified", value: "88.5" },
-      { register: 40005, description: "Firmware Checksum Register", status: "verified", value: "0x8F4A" },
-      { register: 40006, description: "Communication Heartbeat Flag", status: "error", value: "Timeout Expired" },
-      { register: 40007, description: "Thermal Monitoring Probe #2", status: "no status", value: "Disconnected" },
-      { register: 40008, description: "Auxiliary Power Supply Alarm", status: "no status", value: "Not Initialized" }
-    ];
-  }
-  function getDeviceModbusRegisters(device) {
-    if (device.registers && device.registers.length > 0) {
-      return device.registers;
-    }
-    return getDefaultModbusRegisters(device.nodeType, device.model);
+  };
+  function copySnapshot(snapshot) {
+    return {
+      devices: snapshot.devices.map((device) => ({ ...device, registers: device.registers?.map((register) => ({ ...register })) })),
+      connections: snapshot.connections.map((connection) => ({ ...connection }))
+    };
   }
 
   // src/app/site.ts
-  function createSite() {
-    let snapshot = {
-      devices: INITIAL_DEVICES.map((device) => ({ ...device })),
-      connections: INITIAL_CONNECTIONS.map((connection) => ({ ...connection }))
-    };
-    let nextId = 1;
+  function createSite(source) {
+    let snapshot = { devices: [], connections: [] };
+    let state = { kind: source.kind, status: "idle", pending: false, error: null };
+    let disposed = false;
+    let pending2 = 0;
+    let queue = Promise.resolve();
     const subscribers = /* @__PURE__ */ new Set();
-    const publish = (devices, connections) => {
-      snapshot = { devices, connections };
-      subscribers.forEach((listener2) => listener2());
+    const controllers = /* @__PURE__ */ new Set();
+    const notify = () => {
+      if (disposed) return;
+      for (const listener2 of [...subscribers]) {
+        try {
+          listener2();
+        } catch (error) {
+          console.error("Site subscriber failed", error);
+        }
+      }
+    };
+    const alive = () => {
+      if (disposed) throw new DOMException("Site was disposed", "AbortError");
+    };
+    const perform = async (run) => {
+      alive();
+      const controller = new AbortController();
+      controllers.add(controller);
+      try {
+        const value = await run(controller.signal);
+        alive();
+        return value;
+      } finally {
+        controllers.delete(controller);
+      }
+    };
+    const enqueue = (work) => {
+      if (disposed) return Promise.reject(new DOMException("Site was disposed", "AbortError"));
+      pending2++;
+      state = { ...state, pending: true, error: null };
+      notify();
+      const result = queue.then(async () => {
+        alive();
+        state = { ...state, error: null };
+        notify();
+        try {
+          await work();
+        } catch (error) {
+          if (!disposed) {
+            state = { ...state, error };
+            notify();
+          }
+          throw error;
+        }
+      });
+      queue = result.then(() => {
+      }, () => {
+      });
+      return result.finally(() => {
+        pending2--;
+        if (!disposed) {
+          state = { ...state, pending: pending2 > 0 };
+          notify();
+        }
+      });
+    };
+    const apply = (value) => {
+      snapshot = copySnapshot(value);
+      notify();
+    };
+    const requireReady = () => {
+      if (state.status !== "ready") throw new Error("The site is not ready");
+    };
+    const requireWriteReady = () => {
+      if (state.status !== "ready") throw new MutationNotAppliedError("The site is not ready");
+    };
+    const write2 = async (operation) => {
+      try {
+        return copySnapshot(await perform(operation));
+      } catch (error) {
+        if (disposed || error instanceof MutationNotAppliedError) throw error;
+        let refreshed;
+        try {
+          refreshed = copySnapshot(await perform((signal) => source.load(signal)));
+        } catch (refreshError) {
+          if (disposed) throw refreshError;
+          const uncertain = new MutationUncertainError(error, false, refreshError);
+          state = { ...state, status: "error", error: uncertain };
+          notify();
+          throw uncertain;
+        }
+        apply(refreshed);
+        throw new MutationUncertainError(error, true);
+      }
     };
     return {
-      getDevices: () => snapshot.devices.map((device) => ({ ...device, registers: device.registers?.map((register) => ({ ...register })) })),
-      getConnections: () => snapshot.connections.map((connection) => ({ ...connection })),
+      getState: () => ({ ...state }),
+      getDevices: () => copySnapshot(snapshot).devices,
+      getConnections: () => copySnapshot(snapshot).connections,
       subscribe(listener2) {
+        alive();
         subscribers.add(listener2);
         return () => subscribers.delete(listener2);
       },
+      load() {
+        return enqueue(async () => {
+          state = { ...state, status: "loading", error: null };
+          notify();
+          try {
+            const value = await perform((signal) => source.load(signal));
+            snapshot = copySnapshot(value);
+            state = { ...state, status: "ready", error: null };
+            notify();
+          } catch (error) {
+            if (!disposed) {
+              state = { ...state, status: "error", error };
+              notify();
+            }
+            throw error;
+          }
+        });
+      },
       add(input) {
-        const vendor = VENDORS.find((item) => item.id === input.vendorId);
-        const model = MODELS.find((item) => item.id === input.modelId && item.vendorId === vendor?.id);
-        const parts = input.ipAddress.trim().split(".");
-        if (!input.name.trim() || input.vendorId !== void 0 && !vendor || input.modelId !== void 0 && !model || !Number.isInteger(input.port) || input.port < 1 || input.port > 65535 || !Number.isInteger(input.unitId) || input.unitId < -1 || input.unitId > 247 || parts.length !== 4 || !parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) <= 255)) {
-          throw new Error("Invalid device data");
-        }
-        let id;
-        do {
-          id = `local-${nextId++}`;
-        } while (snapshot.devices.some((device2) => device2.id === id));
-        const type = inferComponentType(model?.name);
-        const device = {
-          ...input,
-          name: input.name.trim(),
-          ipAddress: input.ipAddress.trim(),
-          vendor: vendor?.name,
-          model: model?.name,
-          id,
-          type,
-          status: "Offline",
-          x: 60,
-          y: 60,
-          addedAt: (/* @__PURE__ */ new Date()).toISOString(),
-          capabilities: type.toUpperCase(),
-          inUse: false
-        };
-        publish([...snapshot.devices, device], snapshot.connections);
+        const request = { ...input };
+        return enqueue(async () => {
+          requireWriteReady();
+          const previousIds = new Set(snapshot.devices.map((device) => device.id));
+          apply(await write2(async (signal) => {
+            const result = await source.create(request, signal);
+            if (!result.devices.some((device) => !previousIds.has(device.id))) throw new Error("Create did not return a new device");
+            return result;
+          }));
+        });
+      },
+      setStatuses(changes) {
+        const requested = changes.map((change) => ({ ...change }));
+        return enqueue(async () => {
+          requireWriteReady();
+          apply(await write2((signal) => source.setStatuses(requested, signal)));
+        });
       },
       toggle(ids) {
-        publish(snapshot.devices.map((device) => ids.has(device.id) ? { ...device, status: device.status === "Online" ? "Offline" : "Online" } : device), snapshot.connections);
+        const requested = [...ids];
+        return enqueue(async () => {
+          requireWriteReady();
+          const wanted = new Set(requested);
+          const chosen = snapshot.devices.filter((device) => wanted.has(device.id));
+          if (chosen.length !== wanted.size) throw new MutationNotAppliedError("Device not found");
+          if (chosen.some((device) => device.status !== "Online" && device.status !== "Offline")) throw new MutationNotAppliedError("Device status is not actionable");
+          const changes = chosen.map((device) => ({ id: device.id, status: device.status === "Online" ? "Offline" : "Online" }));
+          apply(await write2((signal) => source.setStatuses(changes, signal)));
+        });
       },
       remove(ids) {
-        publish(
-          snapshot.devices.filter((device) => !ids.has(device.id)),
-          snapshot.connections.filter((connection) => !ids.has(connection.fromId) && !ids.has(connection.toId))
-        );
+        const requested = [...ids];
+        return enqueue(async () => {
+          requireWriteReady();
+          apply(await write2((signal) => source.remove(requested, signal)));
+        });
+      },
+      async readRegisters(deviceId) {
+        requireReady();
+        const values = await perform((signal) => source.readRegisters(deviceId, signal));
+        return values.map((value) => ({ ...value }));
+      },
+      dispose() {
+        if (disposed) return;
+        disposed = true;
+        for (const controller of controllers) controller.abort();
+        controllers.clear();
+        subscribers.clear();
       }
     };
   }
@@ -6757,7 +6673,7 @@ h3 {
     return () => {
       if (signal.aborted) return;
       controller.abort();
-      for (const dispose of disposers.reverse()) dispose();
+      for (const dispose2 of disposers.reverse()) dispose2();
       for (const [element2, names] of written) {
         for (const [name, value] of names) {
           if (name === "style" && value === null) {
@@ -6781,6 +6697,113 @@ h3 {
 
   // src/vendor/ui/shell-markup.ts
   var shellMarkup = '<div class="ds-app-shell" id="app" data-ds-app-shell data-ds-sections="one"><a class="ds-app-shell-skip" href="#app-main">Skip to content</a><div class="ds-app-shell-sidebar"><div class="ds-app-shell-panel" id="app-panel" popover><div class="ds-app-shell-search" hidden><svg class="ds-icon" aria-hidden="true" data-icon="search" viewBox="0 0 24 24" fill="currentColor"><path d="M16.1017 17.1624C14.717 18.3101 12.9391 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11C19 12.9391 18.3101 14.717 17.1624 16.1018L21.7803 20.7197C22.0732 21.0126 22.0732 21.4874 21.7803 21.7803C21.4874 22.0732 21.0125 22.0732 20.7196 21.7803L16.1017 17.1624ZM17.5 11C17.5 7.41015 14.5899 4.5 11 4.5C7.41015 4.5 4.5 7.41015 4.5 11C4.5 14.5899 7.41015 17.5 11 17.5C14.5899 17.5 17.5 14.5899 17.5 11Z"/></svg><input type="search" id="app-search" aria-label="Search pages" placeholder="Search pages" autocomplete="off" enterkeyhint="go" spellcheck="false"><kbd class="ds-app-shell-kbd" aria-hidden="true">Ctrl K</kbd></div><nav class="ds-app-shell-pages" aria-label="Navigation"><section class="ds-app-shell-group" data-ds-section="0" data-ds-active><ul class="ds-app-shell-rows" data-ds-level="2" aria-label="Navigation"><li><a class="ds-app-shell-row" href="/__rxui__/infrastructure"><svg class="ds-icon" aria-hidden="true" data-icon="grid" viewBox="0 0 24 24" fill="currentColor"><path d="M8.75 13C9.99264 13 11 14.0074 11 15.25V18.75C11 19.9926 9.99264 21 8.75 21H5.25C4.00736 21 3 19.9926 3 18.75V15.25C3 14.0074 4.00736 13 5.25 13H8.75ZM18.75 13C19.9926 13 21 14.0074 21 15.25V18.75C21 19.9926 19.9926 21 18.75 21H15.25C14.0074 21 13 19.9926 13 18.75V15.25C13 14.0074 14.0074 13 15.25 13H18.75ZM8.75 14.5H5.25C4.83579 14.5 4.5 14.8358 4.5 15.25V18.75C4.5 19.1642 4.83579 19.5 5.25 19.5H8.75C9.16421 19.5 9.5 19.1642 9.5 18.75V15.25C9.5 14.8358 9.16421 14.5 8.75 14.5ZM18.75 14.5H15.25C14.8358 14.5 14.5 14.8358 14.5 15.25V18.75C14.5 19.1642 14.8358 19.5 15.25 19.5H18.75C19.1642 19.5 19.5 19.1642 19.5 18.75V15.25C19.5 14.8358 19.1642 14.5 18.75 14.5ZM8.75 3C9.99264 3 11 4.00736 11 5.25V8.75C11 9.99264 9.99264 11 8.75 11H5.25C4.00736 11 3 9.99264 3 8.75V5.25C3 4.00736 4.00736 3 5.25 3H8.75ZM18.75 3C19.9926 3 21 4.00736 21 5.25V8.75C21 9.99264 19.9926 11 18.75 11H15.25C14.0074 11 13 9.99264 13 8.75V5.25C13 4.00736 14.0074 3 15.25 3H18.75ZM8.75 4.5H5.25C4.83579 4.5 4.5 4.83579 4.5 5.25V8.75C4.5 9.16421 4.83579 9.5 5.25 9.5H8.75C9.16421 9.5 9.5 9.16421 9.5 8.75V5.25C9.5 4.83579 9.16421 4.5 8.75 4.5ZM18.75 4.5H15.25C14.8358 4.5 14.5 4.83579 14.5 5.25V8.75C14.5 9.16421 14.8358 9.5 15.25 9.5H18.75C19.1642 9.5 19.5 9.16421 19.5 8.75V5.25C19.5 4.83579 19.1642 4.5 18.75 4.5Z"/></svg><span class="ds-app-shell-label">Infrastructure</span></a></li><li><a class="ds-app-shell-row" href="/__rxui__/devices" aria-current="page"><svg class="ds-icon" aria-hidden="true" data-icon="list" viewBox="0 0 24 24" fill="currentColor"><path d="M2 5.75C2 5.33579 2.33579 5 2.75 5H18.25C18.6642 5 19 5.33579 19 5.75C19 6.16421 18.6642 6.5 18.25 6.5H2.75C2.33579 6.5 2 6.16421 2 5.75ZM2 17.75C2 17.3358 2.33579 17 2.75 17H15.25C15.6642 17 16 17.3358 16 17.75C16 18.1642 15.6642 18.5 15.25 18.5H2.75C2.33579 18.5 2 18.1642 2 17.75ZM2.75 11C2.33579 11 2 11.3358 2 11.75C2 12.1642 2.33579 12.5 2.75 12.5H21.25C21.6642 12.5 22 12.1642 22 11.75C22 11.3358 21.6642 11 21.25 11H2.75Z"/></svg><span class="ds-app-shell-label">Devices</span></a></li></ul></section><p class="ds-app-shell-empty" role="status" data-ds-words="Nothing matches." data-ds-found="{count} pages found" data-ds-found-one="1 page found"></p></nav><button class="ds-app-shell-row ds-app-shell-cancel" type="button" data-ds-menu-cancel hidden>Cancel</button></div></div><div class="ds-app-shell-content"><header class="ds-app-shell-header"><button class="ds-button ds-app-shell-toggle" aria-controls="app-panel" aria-expanded="true" data-ds-collapse="Hide navigation" data-ds-expand="Show navigation" hidden data-variant="tertiary" data-size="m" type="button" id="app-toggle" data-ds-shortcut="Mod+B" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="panel-right-contract" viewBox="0 0 24 24" fill="currentColor"><path d="M9.19253 9.24894C9.46962 8.94112 9.94384 8.91617 10.2517 9.1932L12.7517 11.4427C12.9098 11.5849 13 11.7874 13 12C13 12.2126 12.9098 12.4152 12.7517 12.5574L10.2517 14.8068C9.94384 15.0839 9.46962 15.0589 9.19253 14.7511C8.91543 14.4433 8.94039 13.9692 9.24827 13.6922L10.2955 12.7499H6.75C6.33579 12.7499 6 12.4141 6 12C6 11.5859 6.33579 11.2502 6.75 11.2502H10.2955L9.24828 10.3079C8.94039 10.0309 8.91543 9.55675 9.19253 9.24894ZM22 17.2506C22 18.7691 20.7688 20 19.25 20L4.75 20C3.23122 20 2 18.7691 2 17.2506V6.74937C2 5.23093 3.23122 4 4.75 4H19.25C20.7688 4 22 5.23094 22 6.74937L22 17.2506ZM19.25 18.5003C19.9404 18.5003 20.5 17.9408 20.5 17.2506L20.5 6.74937C20.5 6.05917 19.9404 5.49966 19.25 5.49966L15.9958 5.49966L15.9958 18.5003H19.25ZM14.4958 18.5003L14.4958 5.49966L4.75 5.49965C4.05965 5.49965 3.5 6.05917 3.5 6.74937L3.5 17.2506C3.5 17.9408 4.05964 18.5003 4.75 18.5003L14.4958 18.5003Z"/></svg><span data-ds-button-label>Hide navigation<span data-ds-keys="Ctrl+B" data-ds-keys-apple="\u2318B" aria-hidden="true"></span></span></button><div class="ds-app-shell-identity"><a class="ds-app-shell-product" href="/__rxui__/infrastructure">Satellite</a></div><div class="ds-app-shell-end"><div class="ds-app-shell-tools"><span class="demo">Sample data</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme"><svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg></button></div></div></header><div class="ds-app-shell-body"><main class="ds-app-shell-main" id="app-main" tabindex="-1"><div id="app-content"></div></main></div></div><nav class="ds-app-shell-tabbar" aria-label="Navigation"><ul><li><a class="ds-app-shell-tab" href="/__rxui__/infrastructure"><svg class="ds-icon" aria-hidden="true" data-icon="grid" viewBox="0 0 24 24" fill="currentColor"><path d="M8.75 13C9.99264 13 11 14.0074 11 15.25V18.75C11 19.9926 9.99264 21 8.75 21H5.25C4.00736 21 3 19.9926 3 18.75V15.25C3 14.0074 4.00736 13 5.25 13H8.75ZM18.75 13C19.9926 13 21 14.0074 21 15.25V18.75C21 19.9926 19.9926 21 18.75 21H15.25C14.0074 21 13 19.9926 13 18.75V15.25C13 14.0074 14.0074 13 15.25 13H18.75ZM8.75 14.5H5.25C4.83579 14.5 4.5 14.8358 4.5 15.25V18.75C4.5 19.1642 4.83579 19.5 5.25 19.5H8.75C9.16421 19.5 9.5 19.1642 9.5 18.75V15.25C9.5 14.8358 9.16421 14.5 8.75 14.5ZM18.75 14.5H15.25C14.8358 14.5 14.5 14.8358 14.5 15.25V18.75C14.5 19.1642 14.8358 19.5 15.25 19.5H18.75C19.1642 19.5 19.5 19.1642 19.5 18.75V15.25C19.5 14.8358 19.1642 14.5 18.75 14.5ZM8.75 3C9.99264 3 11 4.00736 11 5.25V8.75C11 9.99264 9.99264 11 8.75 11H5.25C4.00736 11 3 9.99264 3 8.75V5.25C3 4.00736 4.00736 3 5.25 3H8.75ZM18.75 3C19.9926 3 21 4.00736 21 5.25V8.75C21 9.99264 19.9926 11 18.75 11H15.25C14.0074 11 13 9.99264 13 8.75V5.25C13 4.00736 14.0074 3 15.25 3H18.75ZM8.75 4.5H5.25C4.83579 4.5 4.5 4.83579 4.5 5.25V8.75C4.5 9.16421 4.83579 9.5 5.25 9.5H8.75C9.16421 9.5 9.5 9.16421 9.5 8.75V5.25C9.5 4.83579 9.16421 4.5 8.75 4.5ZM18.75 4.5H15.25C14.8358 4.5 14.5 4.83579 14.5 5.25V8.75C14.5 9.16421 14.8358 9.5 15.25 9.5H18.75C19.1642 9.5 19.5 9.16421 19.5 8.75V5.25C19.5 4.83579 19.1642 4.5 18.75 4.5Z"/></svg><span class="ds-truncate" title="Infrastructure"><span class="ds-truncate-text" dir="auto">Infrastructure</span></span></a></li><li><a class="ds-app-shell-tab" href="/__rxui__/devices" aria-current="page"><svg class="ds-icon" aria-hidden="true" data-icon="list" viewBox="0 0 24 24" fill="currentColor"><path d="M2 5.75C2 5.33579 2.33579 5 2.75 5H18.25C18.6642 5 19 5.33579 19 5.75C19 6.16421 18.6642 6.5 18.25 6.5H2.75C2.33579 6.5 2 6.16421 2 5.75ZM2 17.75C2 17.3358 2.33579 17 2.75 17H15.25C15.6642 17 16 17.3358 16 17.75C16 18.1642 15.6642 18.5 15.25 18.5H2.75C2.33579 18.5 2 18.1642 2 17.75ZM2.75 11C2.33579 11 2 11.3358 2 11.75C2 12.1642 2.33579 12.5 2.75 12.5H21.25C21.6642 12.5 22 12.1642 22 11.75C22 11.3358 21.6642 11 21.25 11H2.75Z"/></svg><span class="ds-truncate" title="Devices"><span class="ds-truncate-text" dir="auto">Devices</span></span></a></li><li><button class="ds-app-shell-tab" type="button" popovertarget="app-panel"><svg class="ds-icon" aria-hidden="true" data-icon="more-horizontal" viewBox="0 0 24 24" fill="currentColor"><path d="M7.75 12C7.75 12.9665 6.9665 13.75 6 13.75C5.0335 13.75 4.25 12.9665 4.25 12C4.25 11.0335 5.0335 10.25 6 10.25C6.9665 10.25 7.75 11.0335 7.75 12ZM13.75 12C13.75 12.9665 12.9665 13.75 12 13.75C11.0335 13.75 10.25 12.9665 10.25 12C10.25 11.0335 11.0335 10.25 12 10.25C12.9665 10.25 13.75 11.0335 13.75 12ZM18 13.75C18.9665 13.75 19.75 12.9665 19.75 12C19.75 11.0335 18.9665 10.25 18 10.25C17.0335 10.25 16.25 11.0335 16.25 12C16.25 12.9665 17.0335 13.75 18 13.75Z"/></svg><span class="ds-truncate" title="More"><span class="ds-truncate-text" dir="auto">More</span></span></button></li></ul></nav></div>';
+
+  // src/app/registry.ts
+  var ROUTES = [
+    { id: "infrastructure", hash: "#/infrastructure", label: "Infrastructure", icon: "grid", headingId: "infrastructure-title" },
+    { id: "devices", hash: "#/devices", label: "Devices", icon: "list", headingId: "devices-title", parent: "infrastructure" }
+  ];
+  var DEFAULT_ROUTE = "devices";
+  function routeById(id) {
+    const route = ROUTES.find((candidate) => candidate.id === id);
+    if (!route) throw new Error(`Unknown route id: ${id}`);
+    return route;
+  }
+  function resolveRoute(hash) {
+    if (hash === "" || hash === "#") return routeById(DEFAULT_ROUTE);
+    return ROUTES.find((candidate) => candidate.hash === hash);
+  }
+  function navigationDirection(from, to) {
+    if (to.parent === from.id) return "deeper";
+    if (from.parent === to.id) return "back";
+    return "same-level";
+  }
+
+  // src/app/shell.ts
+  function mountShell(root2, kind) {
+    root2.innerHTML = shellMarkup;
+    root2.insertAdjacentHTML("beforeend", '<div id="panel-host"></div>');
+    const shell = root2.querySelector("[data-ds-app-shell]");
+    root2.querySelector(".demo").textContent = kind === "sample" ? "Sample data" : "Live source";
+    const list = shell.querySelector(".ds-app-shell-pages .ds-app-shell-rows");
+    const tabs = shell.querySelector(".ds-app-shell-tabbar > ul");
+    const icons = new Map(Array.from(list.querySelectorAll(".ds-icon[data-icon]")).map((icon) => [icon.dataset.icon, icon]));
+    const more = tabs.querySelector("li:has(button.ds-app-shell-tab)");
+    list.replaceChildren();
+    tabs.replaceChildren();
+    for (const route of ROUTES) {
+      const icon = icons.get(route.icon);
+      if (!icon) throw new Error(`Missing shell icon: ${route.icon}`);
+      const item = document.createElement("li");
+      const link = document.createElement("a");
+      link.className = "ds-app-shell-row";
+      link.href = route.hash;
+      const label = document.createElement("span");
+      label.className = "ds-app-shell-label";
+      label.textContent = route.label;
+      link.append(icon.cloneNode(true), label);
+      item.append(link);
+      list.append(item);
+      if (tabs.childElementCount < 4) {
+        const tabItem = document.createElement("li");
+        const tab = document.createElement("a");
+        tab.className = "ds-app-shell-tab";
+        tab.href = route.hash;
+        const truncate = document.createElement("span");
+        truncate.className = "ds-truncate";
+        truncate.title = route.label;
+        const text = document.createElement("span");
+        text.className = "ds-truncate-text";
+        text.dir = "auto";
+        text.textContent = route.label;
+        truncate.append(text);
+        tab.append(icon.cloneNode(true), truncate);
+        tabItem.append(tab);
+        tabs.append(tabItem);
+      }
+    }
+    tabs.append(more);
+    shell.querySelectorAll('a[href^="/__rxui__/"]').forEach((link) => {
+      link.setAttribute("href", "#/" + link.getAttribute("href").split("/").pop());
+    });
+    const navPanel = shell.querySelector(".ds-app-shell-panel");
+    const sidebarHeader = document.createElement("div");
+    sidebarHeader.className = "shell-sidebar-header";
+    const navToggle = shell.querySelector(".ds-app-shell-toggle");
+    sidebarHeader.append(navToggle);
+    sidebarHeader.insertAdjacentHTML("beforeend", '<img class="rkc-shell-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="">');
+    navPanel.prepend(sidebarHeader);
+    const disposeSharedShell = enhanceAppShell(shell);
+    const tabbar = root2.querySelector(".ds-app-shell-tabbar");
+    tabbar.querySelector("button.ds-app-shell-tab")?.setAttribute("aria-label", "More");
+    const onBatchToggle = (event) => {
+      const shown = event.detail.shown;
+      tabbar.inert = shown;
+      tabbar.classList.toggle("batch-bar-active", shown);
+    };
+    root2.addEventListener("ds-batch-bar-toggle", onBatchToggle);
+    const themeToggle = root2.querySelector("#theme-toggle");
+    themeToggle.addEventListener("click", () => {
+      const dark = document.documentElement.dataset.theme !== "dark";
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+      themeToggle.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
+      try {
+        localStorage.setItem("rxui-theme", dark ? "dark" : "light");
+      } catch {
+      }
+    });
+    try {
+      if (localStorage.getItem("rxui-theme") === "dark") {
+        document.documentElement.dataset.theme = "dark";
+        themeToggle.setAttribute("aria-label", "Switch to light theme");
+      }
+    } catch {
+    }
+    return { shell, dispose: () => {
+      root2.removeEventListener("ds-batch-bar-toggle", onBatchToggle);
+      disposeSharedShell();
+    } };
+  }
 
   // src/vendor/ui/components/batch-bar/batch-bar.js
   init_button();
@@ -6941,8 +6964,8 @@ h3 {
     mountVerbs();
     phone.addEventListener("change", mountVerbs, { signal });
     disposers.push(() => {
-      for (const [button2, dispose] of verbDisposers) {
-        dispose();
+      for (const [button2, dispose2] of verbDisposers) {
+        dispose2();
         button2.removeAttribute("data-icon-only");
       }
     });
@@ -7169,7 +7192,7 @@ h3 {
         finishLeaving();
         endEntering();
         controller.abort();
-        for (const dispose of disposers.reverse()) dispose();
+        for (const dispose2 of disposers.reverse()) dispose2();
         mounted4.delete(bar);
       }
     };
@@ -7177,6 +7200,216 @@ h3 {
 
   // src/vendor/ui/batch-markup.ts
   var batchMarkup = '<div class="ds-batch-bar" id="device-batch" data-count="0" data-ds-count-text="{count} selected" data-ds-reach-text="{applies} of {count}" hidden><div class="ds-toolbar" role="toolbar" aria-describedby="device-batch-count" aria-label="Actions for selected devices" id="device-batch-toolbar" data-size="m"><div class="ds-batch-bar-verbs"><button data-ds-batch-verb="register-check" class="ds-button" data-variant="tertiary" data-size="m" type="button" id="device-batch-verb-register-check"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="search" viewBox="0 0 24 24" fill="currentColor"><path d="M16.1017 17.1624C14.717 18.3101 12.9391 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11C19 12.9391 18.3101 14.717 17.1624 16.1018L21.7803 20.7197C22.0732 21.0126 22.0732 21.4874 21.7803 21.7803C21.4874 22.0732 21.0125 22.0732 20.7196 21.7803L16.1017 17.1624ZM17.5 11C17.5 7.41015 14.5899 4.5 11 4.5C7.41015 4.5 4.5 7.41015 4.5 11C4.5 14.5899 7.41015 17.5 11 17.5C14.5899 17.5 17.5 14.5899 17.5 11Z"/></svg><span data-ds-button-label>Register Check</span><span class="ds-batch-bar-reach" hidden><span class="ds-visually-hidden">, </span></span></button><button data-ds-batch-verb="toggle-status" class="ds-button" data-variant="tertiary" data-size="m" type="button" id="device-batch-verb-toggle-status"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="edit" viewBox="0 0 24 24" fill="currentColor"><path d="M20.9519 3.0481C19.5543 1.65058 17.2885 1.65064 15.8911 3.04825L3.94103 14.9997C3.5347 15.4061 3.2491 15.9172 3.116 16.4762L2.02041 21.0777C1.96009 21.3311 2.03552 21.5976 2.21968 21.7817C2.40385 21.9659 2.67037 22.0413 2.92373 21.981L7.52498 20.8855C8.08418 20.7523 8.59546 20.4666 9.00191 20.0601L20.952 8.10861C22.3493 6.71112 22.3493 4.4455 20.9519 3.0481ZM16.9518 4.10884C17.7634 3.29709 19.0795 3.29705 19.8912 4.10876C20.7028 4.9204 20.7029 6.23632 19.8913 7.04801L19 7.93946L16.0606 5.00012L16.9518 4.10884ZM15 6.06084L17.9394 9.00018L7.94119 18.9995C7.73104 19.2097 7.46668 19.3574 7.17755 19.4263L3.76191 20.2395L4.57521 16.8237C4.64402 16.5346 4.79168 16.2704 5.00175 16.0603L15 6.06084Z"/></svg><span data-ds-button-label>Toggle Status</span><span class="ds-batch-bar-reach" hidden><span class="ds-visually-hidden">, </span></span></button><button data-ds-batch-verb="delete" data-ds-destructive class="ds-button" data-variant="tertiary" data-tone="danger" data-size="m" type="button" id="device-batch-verb-delete"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="delete" viewBox="0 0 24 24" fill="currentColor"><path d="M10 5H14C14 3.89543 13.1046 3 12 3C10.8954 3 10 3.89543 10 5ZM8.5 5C8.5 3.067 10.067 1.5 12 1.5C13.933 1.5 15.5 3.067 15.5 5H21.25C21.6642 5 22 5.33579 22 5.75C22 6.16421 21.6642 6.5 21.25 6.5H19.9309L18.7589 18.6112C18.5729 20.5334 16.9575 22 15.0263 22H8.97369C7.04254 22 5.42715 20.5334 5.24113 18.6112L4.06908 6.5H2.75C2.33579 6.5 2 6.16421 2 5.75C2 5.33579 2.33579 5 2.75 5H8.5ZM10.5 9.75C10.5 9.33579 10.1642 9 9.75 9C9.33579 9 9 9.33579 9 9.75V17.25C9 17.6642 9.33579 18 9.75 18C10.1642 18 10.5 17.6642 10.5 17.25V9.75ZM14.25 9C14.6642 9 15 9.33579 15 9.75V17.25C15 17.6642 14.6642 18 14.25 18C13.8358 18 13.5 17.6642 13.5 17.25V9.75C13.5 9.33579 13.8358 9 14.25 9ZM6.73416 18.4667C6.84577 19.62 7.815 20.5 8.97369 20.5H15.0263C16.185 20.5 17.1542 19.62 17.2658 18.4667L18.4239 6.5H5.57608L6.73416 18.4667Z"/></svg><span data-ds-button-label>Delete</span><span class="ds-batch-bar-reach" hidden><span class="ds-visually-hidden">, </span></span></button></div><div class="ds-batch-bar-selection"><span class="ds-batch-bar-count" id="device-batch-count">0 selected</span><button data-ds-batch-clear class="ds-button" data-variant="tertiary" data-size="m" type="button" id="device-batch-clear" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="dismiss" viewBox="0 0 24 24" fill="currentColor"><path d="M4.39705 4.55379L4.46967 4.46967C4.73594 4.2034 5.1526 4.1792 5.44621 4.39705L5.53033 4.46967L12 10.939L18.4697 4.46967C18.7626 4.17678 19.2374 4.17678 19.5303 4.46967C19.8232 4.76256 19.8232 5.23744 19.5303 5.53033L13.061 12L19.5303 18.4697C19.7966 18.7359 19.8208 19.1526 19.6029 19.4462L19.5303 19.5303C19.2641 19.7966 18.8474 19.8208 18.5538 19.6029L18.4697 19.5303L12 13.061L5.53033 19.5303C5.23744 19.8232 4.76256 19.8232 4.46967 19.5303C4.17678 19.2374 4.17678 18.7626 4.46967 18.4697L10.939 12L4.46967 5.53033C4.2034 5.26406 4.1792 4.8474 4.39705 4.55379L4.46967 4.46967L4.39705 4.55379Z"/></svg><span data-ds-button-label>Clear selection</span></button></div></div></div>';
+
+  // src/vendor/ui/components/scroll-steering/scroll-steering.js
+  init_pointer_gesture();
+  init_click_burst();
+  var mounted5 = /* @__PURE__ */ new WeakSet();
+  var STEP = 0.75;
+  var HOLD_MS = 320;
+  var HOLD_PX = 14;
+  var DRAG_DEAD = 8;
+  var DRAG_FULL = 90;
+  var DRAG_MAX_PX = 33;
+  function mountScrollSteering(scroller, host, { label = "Scroll horizontally", backLabel = "Scroll backward", forwardLabel = "Scroll forward" } = {}) {
+    const view = scroller?.ownerDocument?.defaultView;
+    if (!view || !(scroller instanceof view.HTMLElement) || !(host instanceof view.HTMLElement) || host.ownerDocument !== scroller.ownerDocument) throw new TypeError("mountScrollSteering needs a scroll region and host in the same document.");
+    if (mounted5.has(scroller)) throw new Error("This scroll region already has a steering control.");
+    if ([label, backLabel, forwardLabel].some((value) => typeof value !== "string" || !value.trim())) throw new TypeError("Scroll steering labels must be non-empty text.");
+    mounted5.add(scroller);
+    const controller = new view.AbortController(), { signal } = controller;
+    const originalTabindex = scroller.getAttribute("tabindex");
+    const control = view.document.createElement("div");
+    control.className = "ds-scroll-steering";
+    control.setAttribute("role", "group");
+    control.setAttribute("aria-label", label);
+    const step = (way2, name) => {
+      const button2 = view.document.createElement("button");
+      button2.type = "button";
+      button2.className = "ds-scroll-steering-step";
+      button2.dataset.step = way2;
+      button2.setAttribute("aria-label", name);
+      button2.title = name;
+      return button2;
+    };
+    const back = step("back", backLabel), forward = step("forward", forwardLabel);
+    const grip = view.document.createElement("span");
+    grip.className = "ds-scroll-steering-grip";
+    grip.setAttribute("aria-hidden", "true");
+    control.append(back, grip, forward);
+    host.append(control);
+    let speed = 0, frame = 0, timer = 0, lastFrame = 0, held = false, disposed = false;
+    const rtl = () => view.getComputedStyle(scroller).direction === "rtl";
+    const way = (button2) => (button2 === back ? -1 : 1) * (rtl() ? -1 : 1);
+    const stop = () => {
+      view.clearTimeout(timer);
+      view.cancelAnimationFrame(frame);
+      speed = 0;
+      frame = 0;
+      timer = 0;
+      lastFrame = 0;
+    };
+    const tick = (time) => {
+      if (!speed) {
+        frame = 0;
+        lastFrame = 0;
+        return;
+      }
+      const elapsed = lastFrame ? Math.min(32, time - lastFrame) : 16.67;
+      lastFrame = time;
+      scroller.scrollLeft += speed * elapsed / 16.67;
+      frame = view.requestAnimationFrame(tick);
+    };
+    const go = (value) => {
+      speed = value;
+      if (value && !frame) frame = view.requestAnimationFrame(tick);
+    };
+    const restoreTabindex = () => {
+      if (originalTabindex === null) scroller.removeAttribute("tabindex");
+      else scroller.setAttribute("tabindex", originalTabindex);
+    };
+    function refresh() {
+      if (disposed) return;
+      control.dir = rtl() ? "rtl" : "ltr";
+      const max = Math.max(0, scroller.scrollWidth - scroller.clientWidth), at = Math.abs(scroller.scrollLeft);
+      const overflow = max > 1;
+      control.hidden = !overflow;
+      back.setAttribute("aria-disabled", String(at <= 1));
+      forward.setAttribute("aria-disabled", String(at >= max - 1));
+      if (overflow && originalTabindex === null) scroller.setAttribute("tabindex", "0");
+      else if (!overflow && view.document.activeElement !== scroller) restoreTabindex();
+      if (!overflow) {
+        stop();
+        control.removeAttribute("data-dragging");
+        control.style.removeProperty("--ds-scroll-steering-pull");
+      }
+    }
+    const behavior = () => prefersReducedMotion(scroller.ownerDocument) ? "auto" : "smooth";
+    control.addEventListener("pointerdown", (event) => {
+      held = false;
+      stop();
+      const button2 = event.target.closest?.(".ds-scroll-steering-step");
+      if (!button2 || event.button !== 0 || button2.getAttribute("aria-disabled") === "true") return;
+      timer = view.setTimeout(() => {
+        held = true;
+        go(way(button2) * HOLD_PX);
+      }, HOLD_MS);
+    }, { signal });
+    for (const type of ["pointerup", "pointercancel", "pointerleave"]) control.addEventListener(type, () => {
+      if (!control.hasAttribute("data-dragging")) stop();
+    }, { signal });
+    control.addEventListener("click", (event) => {
+      const button2 = event.target.closest?.(".ds-scroll-steering-step");
+      if (held) {
+        held = false;
+        return;
+      }
+      if (!button2 || button2.getAttribute("aria-disabled") === "true" || isRepeatClick(event)) return;
+      scroller.scrollBy({ left: way(button2) * scroller.clientWidth * STEP, behavior: behavior() });
+    }, { signal });
+    control.addEventListener("dblclick", (event) => {
+      const button2 = event.target.closest?.(".ds-scroll-steering-step");
+      if (!button2) return;
+      scroller.scrollTo({ left: button2 === back ? 0 : way(button2) * scroller.scrollWidth, behavior: behavior() });
+    }, { signal });
+    const release = () => {
+      stop();
+      control.removeAttribute("data-dragging");
+      control.style.removeProperty("--ds-scroll-steering-pull");
+    };
+    let reach = { left: 0, right: 0 };
+    attachPointerGesture(control, {
+      axis: "x",
+      threshold: DRAG_DEAD,
+      signal,
+      onStart: () => {
+        stop();
+        held = false;
+        const region = host.getBoundingClientRect(), box = control.getBoundingClientRect();
+        reach = { left: Math.max(0, Math.min(24, box.left - region.left)), right: Math.max(0, Math.min(24, region.right - box.right)) };
+        control.setAttribute("data-dragging", "");
+      },
+      onMove: (gesture) => {
+        const ratio = Math.min(1, Math.max(0, Math.abs(gesture.dx) - DRAG_DEAD) / (DRAG_FULL - DRAG_DEAD));
+        go(Math.sign(gesture.dx) * ratio ** 1.6 * DRAG_MAX_PX);
+        if (!prefersReducedMotion(scroller.ownerDocument)) {
+          const limit = gesture.dx < 0 ? reach.left : reach.right;
+          const offset = Math.sign(gesture.dx) * Math.min(limit, Math.abs(gesture.dx) * 0.4);
+          control.style.setProperty("--ds-scroll-steering-pull", `${offset}px`);
+        }
+      },
+      onEnd: release,
+      onCancel: release
+    });
+    scroller.addEventListener("scroll", refresh, { passive: true, signal });
+    scroller.addEventListener("focusout", () => view.queueMicrotask(refresh), { signal });
+    const observer = new view.ResizeObserver(refresh);
+    observer.observe(scroller);
+    if (scroller.firstElementChild) observer.observe(scroller.firstElementChild);
+    refresh();
+    return {
+      refresh,
+      dispose() {
+        if (disposed) return;
+        disposed = true;
+        controller.abort();
+        observer.disconnect();
+        release();
+        restoreTabindex();
+        control.remove();
+        mounted5.delete(scroller);
+      }
+    };
+  }
+
+  // src/features/devices/api/devices.ts
+  var VENDORS = [
+    { id: 1, name: "ABB" },
+    { id: 2, name: "ALPITRONIC" },
+    { id: 3, name: "KACO" },
+    { id: 4, name: "NETICO" },
+    { id: 5, name: "SCHNEIDER" },
+    { id: 6, name: "REGELKRAFT" },
+    { id: 7, name: "EKOENERGETYKA" },
+    { id: 8, name: "JANITZA" },
+    { id: 9, name: "TRITIUM" },
+    { id: 10, name: "ZIEHL" },
+    { id: 11, name: "PLCNEXT" },
+    { id: 12, name: "SIEMENS" },
+    { id: 13, name: "HUAWEI" }
+  ];
+  var MODELS = [
+    { id: 1, name: "EVSS TGPv1", vendorId: 1 },
+    { id: 2, name: "HYC400", vendorId: 2 },
+    { id: 3, name: "Blueplanet", vendorId: 3 },
+    { id: 4, name: "NTPM100A", vendorId: 4 },
+    { id: 5, name: "IFE", vendorId: 5 },
+    { id: 6, name: "DSO", vendorId: 6 },
+    { id: 7, name: "LSCC", vendorId: 7 },
+    { id: 8, name: "UMG604-PRO", vendorId: 8 },
+    { id: 9, name: "BESS BMS", vendorId: 1 },
+    { id: 10, name: "BESS PCS", vendorId: 1 },
+    { id: 11, name: "EKIP", vendorId: 1 },
+    { id: 12, name: "HPC350", vendorId: 9 },
+    { id: 13, name: "TR660IP", vendorId: 10 },
+    { id: 14, name: "Axioline F", vendorId: 11 },
+    { id: 15, name: "EKIP BESS", vendorId: 1 },
+    { id: 16, name: "HYC1000", vendorId: 2 },
+    { id: 17, name: "3WA", vendorId: 12 },
+    { id: 18, name: "EVSS TGPv2", vendorId: 1 },
+    { id: 19, name: "FusionCharge", vendorId: 13 },
+    { id: 20, name: "EVSS TGP v2.5", vendorId: 1 }
+  ];
+  function inferComponentType(modelName) {
+    if (!modelName) return "Loads";
+    const mName = modelName.toUpperCase();
+    if (mName === "DSO") return "DSO";
+    if (mName.includes("BESS")) return "BESS";
+    if (mName.includes("UMG") || mName.includes("NTPM") || mName.includes("TR660IP")) return "Meter";
+    if (mName.includes("BLUEPLANET")) return "String";
+    if (mName.includes("3WA") || mName.includes("IFE")) return "Grid";
+    return "Loads";
+  }
 
   // src/platform/page-transition.ts
   function createPageTransition({ enabled = true, duration = 160 } = {}) {
@@ -7200,121 +7433,91 @@ h3 {
     };
   }
 
-  // src/views/devices/table-navigator.ts
-  function mountTableNavigator(scroller, header) {
-    const media = window.matchMedia("(hover: hover) and (pointer: fine) and (min-width: 769px)");
-    const control = document.createElement("div");
-    control.className = "table-navigator";
-    control.setAttribute("role", "group");
-    control.setAttribute("aria-label", "Scroll device table horizontally");
-    const left = document.createElement("button");
-    const right = document.createElement("button");
-    left.type = right.type = "button";
-    left.setAttribute("aria-label", "Scroll table left");
-    right.setAttribute("aria-label", "Scroll table right");
-    const grip = document.createElement("span");
-    grip.className = "table-navigator-grip";
-    grip.setAttribute("aria-hidden", "true");
-    control.append(left, grip, right);
-    header.append(control);
-    let frame = 0;
-    let hold = 0;
-    let origin = 0;
-    let speed = 0;
-    let dragging = false;
-    let suppressClick = false;
-    let startedAt = 0;
-    let activePointer = null;
-    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  // src/app/router.ts
+  function mountRouter(options) {
+    const { root: root2, shell, views, beforeChange } = options;
+    const transition = createPageTransition({ enabled: true });
+    let previous;
+    const render = (focusHeading) => {
+      const route = resolveRoute(location.hash);
+      for (const [id, page] of Object.entries(views.pages)) page.hidden = id !== route?.id;
+      views.missing.hidden = Boolean(route);
+      shell.querySelectorAll(".ds-app-shell-row, .ds-app-shell-tab").forEach((link) => {
+        if (link.hash === route?.hash) link.setAttribute("aria-current", "page");
+        else link.removeAttribute("aria-current");
+      });
+      if (focusHeading) {
+        root2.querySelector("#" + (route?.headingId ?? "missing-title"))?.focus();
+        if (previous && route && previous.id !== route.id) transition.enter(views.pages[route.id], navigationDirection(previous, route));
+      }
+      previous = route;
+    };
+    const changed = () => {
+      const next = resolveRoute(location.hash);
+      if (beforeChange && !beforeChange(next, previous)) return;
+      render(true);
+    };
+    window.addEventListener("hashchange", changed);
+    render(false);
+    return () => {
+      window.removeEventListener("hashchange", changed);
+      transition.dispose();
+    };
+  }
+
+  // src/views/infrastructure/infrastructure.view.ts
+  function createInfrastructureView(site) {
+    const section = document.createElement("section");
+    section.id = "infrastructure-overview";
+    section.className = "infrastructure-overview";
+    section.hidden = true;
+    section.setAttribute("aria-labelledby", "infrastructure-title");
+    section.append(createPageHeader({ title: "Infrastructure", headingId: "infrastructure-title" }));
+    const content = document.createElement("div");
+    content.className = "page-content";
+    content.innerHTML = `<section class="overview-widget" aria-labelledby="overview-devices-title">
+    <div class="overview-heading"><h2 id="overview-devices-title">Devices</h2><button type="button" id="open-devices" class="ion-button ion-button--primary">Open devices</button></div>
+    <div class="overview-state" role="status" aria-live="polite"></div>
+    <div class="overview-summary" hidden>
+      <div class="overview-total"><strong data-count="total"></strong><span>Configured devices</span></div>
+      <div class="overview-status"><span>Reported status</span><dl>
+        <div><dt>Online</dt><dd data-count="online"></dd></div>
+        <div><dt>Offline</dt><dd data-count="offline"></dd></div>
+        <div><dt>Other</dt><dd data-count="other"></dd></div>
+      </dl></div>
+    </div>
+  </section>`;
+    section.append(content);
+    const status = content.querySelector(".overview-state");
+    const summary = content.querySelector(".overview-summary");
     const update = () => {
-      const max = scroller.scrollWidth - scroller.clientWidth;
-      control.hidden = !media.matches || max <= 1;
-      left.setAttribute("aria-disabled", String(scroller.scrollLeft <= 1));
-      right.setAttribute("aria-disabled", String(scroller.scrollLeft >= max - 1));
-    };
-    const tick = () => {
-      scroller.scrollLeft += speed;
-      frame = requestAnimationFrame(tick);
-    };
-    const stop = () => {
-      clearTimeout(hold);
-      cancelAnimationFrame(frame);
-      hold = 0;
-      frame = 0;
-      speed = 0;
-      control.classList.remove("dragging");
-      control.style.removeProperty("--pull");
-    };
-    const down = (event) => {
-      if (event.button !== 0) return;
-      const target = event.target;
-      if (target !== left && target !== right && target !== grip) return;
-      origin = event.clientX;
-      startedAt = performance.now();
-      dragging = false;
-      suppressClick = false;
-      activePointer = event.pointerId;
-      target.setPointerCapture(event.pointerId);
-      if (target !== grip) {
-        const direction = target === left ? -1 : 1;
-        hold = window.setTimeout(() => {
-          speed = direction * 12;
-          if (!frame) frame = requestAnimationFrame(tick);
-        }, 320);
-      }
-    };
-    const move = (event) => {
-      if (activePointer !== event.pointerId) return;
-      const delta = event.clientX - origin;
-      if (!dragging && Math.abs(delta) >= 8) {
-        dragging = true;
-        clearTimeout(hold);
-        control.classList.add("dragging");
-      }
-      if (dragging) {
-        speed = Math.sign(delta) * Math.min(26, Math.max(0, Math.abs(delta) - 8) * 0.6);
-        if (!motion.matches) control.style.setProperty("--pull", Math.max(-24, Math.min(24, delta * 0.4)) + "px");
-        if (!frame) frame = requestAnimationFrame(tick);
-      }
-    };
-    const up = () => {
-      suppressClick = dragging || performance.now() - startedAt >= 320;
-      activePointer = null;
-      stop();
-    };
-    const click = (direction, event) => {
-      if (suppressClick && event.detail !== 0) {
-        suppressClick = false;
+      const state = site.getState();
+      const ready = state.status === "ready";
+      summary.hidden = !ready;
+      status.replaceChildren();
+      status.hidden = ready;
+      if (!ready) {
+        status.append(document.createTextNode(state.status === "error" ? "Could not load devices. " : "Loading devices\u2026"));
+        if (state.status === "error") {
+          const retry = document.createElement("button");
+          retry.type = "button";
+          retry.className = "ion-button ion-button--primary";
+          retry.textContent = "Retry";
+          retry.addEventListener("click", () => {
+            void site.load().catch(() => {
+            });
+          });
+          status.append(retry);
+        }
         return;
       }
-      suppressClick = false;
-      scroller.scrollBy({ left: direction * scroller.clientWidth * 0.75, behavior: motion.matches ? "auto" : "smooth" });
-      if (event.detail === 2) scroller.scrollTo({ left: direction < 0 ? 0 : scroller.scrollWidth, behavior: motion.matches ? "auto" : "smooth" });
+      const devices = site.getDevices();
+      const online = devices.filter((device) => device.status === "Online").length;
+      const offline = devices.filter((device) => device.status === "Offline").length;
+      const counts = { total: devices.length, online, offline, other: devices.length - online - offline };
+      for (const [key, value] of Object.entries(counts)) content.querySelector(`[data-count="${key}"]`).textContent = String(value);
     };
-    grip.addEventListener("click", () => {
-      suppressClick = false;
-    });
-    left.addEventListener("click", (event) => click(-1, event));
-    right.addEventListener("click", (event) => click(1, event));
-    control.addEventListener("pointerdown", down);
-    control.addEventListener("pointermove", move);
-    control.addEventListener("pointerup", up);
-    control.addEventListener("pointercancel", up);
-    control.addEventListener("lostpointercapture", stop);
-    scroller.addEventListener("scroll", update, { passive: true });
-    media.addEventListener("change", update);
-    const observer = new ResizeObserver(update);
-    observer.observe(scroller);
-    const table = scroller.querySelector("table");
-    if (table) observer.observe(table);
-    update();
-    return () => {
-      stop();
-      observer.disconnect();
-      scroller.removeEventListener("scroll", update);
-      media.removeEventListener("change", update);
-      control.remove();
-    };
+    return { element: section, update };
   }
 
   // src/views/devices/devices.view.ts
@@ -7332,93 +7535,66 @@ h3 {
   function mountDevices(root2, site) {
     const selected = /* @__PURE__ */ new Set();
     let activeDialog = null;
-    root2.innerHTML = shellMarkup;
-    root2.querySelector("#app-content").innerHTML = '<section id="infrastructure-overview" class="infrastructure-overview" hidden aria-labelledby="infrastructure-title"><div id="overview-header"></div><div class="page-content"><button type="button" id="open-devices" class="overview-card"><strong>Devices</strong><span>Manage devices and inspect registers</span></button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div class="card-heading"><p class="muted" id="device-count"></p></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
-    root2.querySelector("#overview-header").append(createPageHeader({ title: "Infrastructure", headingId: "infrastructure-title" }));
+    let alive = true;
+    let mutationPending = false;
+    let registerRequest = 0;
+    const sample = site.getState().kind === "sample";
+    const { shell, dispose: disposeShell } = mountShell(root2, site.getState().kind);
+    root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div class="card-heading"><div><h2 class="widget-title">Inventory</h2><p class="muted" id="device-count"></p></div></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
+    const infrastructure = createInfrastructureView(site);
+    root2.querySelector("#app-content").prepend(infrastructure.element);
+    root2.querySelector("#missing-header").append(createPageHeader({ title: "Page not found", headingId: "missing-title" }));
     root2.querySelector("#devices-header").append(createPageHeader({
       title: "Devices",
       headingId: "devices-title",
       back: { id: "back-infrastructure", label: "Back to Infrastructure" },
-      info: { label: "About sample data", text: "This preview uses sample data. Changes reset when the page reloads." },
+      ...sample ? { info: { label: "About sample data", text: "This preview uses sample data. Changes reset when the page reloads." } } : {},
       action: { id: "new-device", label: "+ New Device" }
     }));
-    root2.insertAdjacentHTML("beforeend", '<div id="panel-host"></div>');
-    const shell = root2.querySelector("[data-ds-app-shell]");
-    shell.querySelectorAll('a[href^="/__rxui__/"]').forEach((link) => {
-      link.setAttribute("href", "#/" + link.getAttribute("href").split("/").pop());
-    });
-    const navPanel = shell.querySelector(".ds-app-shell-panel");
-    const sidebarHeader = document.createElement("div");
-    sidebarHeader.className = "shell-sidebar-header";
-    const navToggle = shell.querySelector(".ds-app-shell-toggle");
-    sidebarHeader.append(navToggle);
-    sidebarHeader.insertAdjacentHTML("beforeend", '<img class="rkc-shell-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="">');
-    navPanel.prepend(sidebarHeader);
-    const disposeShell = enhanceAppShell(shell);
-    const tabbar = root2.querySelector(".ds-app-shell-tabbar");
-    tabbar.querySelector("button.ds-app-shell-tab")?.setAttribute("aria-label", "More");
-    const onBatchToggle = (event) => {
-      const shown = event.detail.shown;
-      tabbar.inert = shown;
-      tabbar.classList.toggle("batch-bar-active", shown);
-    };
-    root2.addEventListener("ds-batch-bar-toggle", onBatchToggle);
-    const themeToggle = root2.querySelector("#theme-toggle");
-    themeToggle.addEventListener("click", () => {
-      const dark = document.documentElement.dataset.theme !== "dark";
-      document.documentElement.dataset.theme = dark ? "dark" : "light";
-      themeToggle.setAttribute("aria-label", dark ? "Switch to light theme" : "Switch to dark theme");
-      try {
-        localStorage.setItem("rxui-theme", dark ? "dark" : "light");
-      } catch {
-      }
-    });
-    try {
-      if (localStorage.getItem("rxui-theme") === "dark") {
-        document.documentElement.dataset.theme = "dark";
-        themeToggle.setAttribute("aria-label", "Switch to light theme");
-      }
-    } catch {
-    }
-    const disposeTableNavigator = mountTableNavigator(root2.querySelector(".card .table-scroll"), root2.querySelector(".card-heading"));
+    const tableSteering = mountScrollSteering(root2.querySelector(".card .table-scroll"), root2.querySelector(".card-heading"), { label: "Device table navigation" });
     const overview = root2.querySelector("#infrastructure-overview");
     const devicesPage = root2.querySelector("#devices-page");
-    const transition = createPageTransition({ enabled: true });
-    let previousOverview;
-    const syncRoute = (focusHeading = false) => {
-      const showingOverview = location.hash === "#/infrastructure";
-      overview.hidden = !showingOverview;
-      devicesPage.hidden = showingOverview;
-      shell.querySelectorAll(".ds-app-shell-row, .ds-app-shell-tab").forEach((link) => {
-        if (link.hash === (showingOverview ? "#/infrastructure" : "#/devices")) link.setAttribute("aria-current", "page");
-        else link.removeAttribute("aria-current");
-      });
-      if (focusHeading) {
-        root2.querySelector(showingOverview ? "#infrastructure-title" : "#devices-title")?.focus();
-        if (previousOverview !== showingOverview) transition.enter(showingOverview ? overview : devicesPage, showingOverview ? "back" : "deeper");
+    const missingPage = root2.querySelector("#route-missing");
+    const disposeRouter = mountRouter({
+      root: root2,
+      shell,
+      views: { pages: { infrastructure: overview, devices: devicesPage }, missing: missingPage },
+      beforeChange: (next, previous) => {
+        if (activeDialog) {
+          const currentHash = previous?.hash ?? routeById("devices").hash;
+          if (location.hash !== currentHash) location.hash = currentHash;
+          let status = activeDialog.querySelector("#dialog-navigation-status");
+          if (!status) {
+            status = element("p", "muted");
+            status.id = "dialog-navigation-status";
+            status.setAttribute("role", "status");
+            activeDialog.append(status);
+          }
+          status.textContent = "Finish or cancel this dialog before leaving.";
+          return false;
+        }
+        if (host.firstChild) close();
+        if (next?.id !== "devices" && selected.size) {
+          selected.clear();
+          renderInventory();
+        }
+        return true;
       }
-      previousOverview = showingOverview;
-    };
-    const routeChanged = () => {
-      if (host.firstChild) close();
-      if (location.hash === "#/infrastructure" && selected.size) {
-        selected.clear();
-        renderInventory();
-      }
-      syncRoute(true);
-    };
+    });
     root2.querySelector("#back-infrastructure").addEventListener("click", () => {
-      location.hash = "#/infrastructure";
+      location.hash = routeById("infrastructure").hash;
     });
     root2.querySelector("#open-devices").addEventListener("click", () => {
-      location.hash = "#/devices";
+      location.hash = routeById("devices").hash;
     });
-    window.addEventListener("hashchange", routeChanged);
-    syncRoute();
+    root2.querySelector("#return-devices").addEventListener("click", () => {
+      location.hash = routeById("devices").hash;
+    });
     const body = root2.querySelector("#devices-body");
     let lastOpener = null;
     const host = root2.querySelector("#panel-host");
     const close = () => {
+      registerRequest++;
       host.replaceChildren();
       shell.inert = false;
       if (lastOpener?.isConnected && lastOpener.checkVisibility()) lastOpener.focus();
@@ -7433,7 +7609,8 @@ h3 {
     document.addEventListener("keydown", keydown);
     function open(device, opener, candidates = []) {
       lastOpener = opener;
-      const registers = getDeviceModbusRegisters(device);
+      ++registerRequest;
+      let registers = [];
       let status = "all";
       host.replaceChildren();
       const backdrop = element("div", "backdrop");
@@ -7442,7 +7619,10 @@ h3 {
       panel.setAttribute("role", "dialog");
       panel.setAttribute("aria-modal", "true");
       panel.setAttribute("aria-labelledby", "panel-title");
-      panel.innerHTML = '<div class="panel-content"><p class="sample-note">Sample readings \xB7 no live device connection</p><section><h3>Device information</h3><dl class="metadata"></dl></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" id="register-summary"></p></div></div><label for="register-search">Search registers</label><input id="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p id="result-count" class="muted" aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section></div>';
+      panel.innerHTML = '<div class="panel-content"><p class="sample-note" id="reading-source"></p><section><h3>Device information</h3><dl class="metadata"></dl></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" id="register-summary"></p></div></div><label for="register-search">Search registers</label><input id="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p id="result-count" class="muted" aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section></div>';
+      const sourceNote = panel.querySelector("#reading-source");
+      sourceNote.hidden = !sample;
+      sourceNote.textContent = sample ? "Sample readings \xB7 no live device connection" : "";
       const titleBar = createTitleBar({
         title: device.name,
         subtitle: [device.vendor, device.model, device.id].filter(Boolean).join(" \xB7 "),
@@ -7453,11 +7633,12 @@ h3 {
       panel.prepend(titleBar);
       const closeButton = titleBar.querySelector("button");
       const metadata = panel.querySelector("dl");
-      const details = [["Status", device.status + " (sample)"], ["IP address", device.ipAddress ?? "\u2014"], ["Port", String(device.port ?? "\u2014")], ["Unit ID", String(device.unitId ?? "\u2014")], ["Type", device.nodeType ?? device.type], ["Capabilities", device.capabilities ?? "\u2014"], ["In use", device.inUse ? "Yes" : "No"], ["Connected links", String(site.getConnections().filter((c) => c.fromId === device.id || c.toId === device.id).length)]];
+      const details = [["Status", device.status + (sample ? " (sample)" : "")], ["IP address", device.ipAddress ?? "\u2014"], ["Port", String(device.port ?? "\u2014")], ["Unit ID", String(device.unitId ?? "\u2014")], ["Type", device.nodeType ?? device.type], ["Capabilities", device.capabilities ?? "\u2014"], ["In use", device.inUse ? "Yes" : "No"], ["Connected links", String(site.getConnections().filter((c) => c.fromId === device.id || c.toId === device.id).length)]];
       for (const [label, value] of details) {
         metadata.append(element("dt", "", label), element("dd", "", value));
       }
-      panel.querySelector("#register-summary").textContent = registers.length + " total \xB7 " + registers.filter((r) => r.status === "error").length + " errors \xB7 " + registers.filter((r) => r.status === "verified").length + " verified";
+      const summary = panel.querySelector("#register-summary");
+      summary.textContent = "Loading registers\u2026";
       if (candidates.length > 1) {
         const label = element("label", "device-switch-label", "Inspect selected device");
         const select = element("select", "device-switch");
@@ -7501,7 +7682,7 @@ h3 {
         }
         if (!filtered.length) {
           const row = element("tr");
-          const cell = element("td", "empty", "No registers match. Clear the search or choose another status.");
+          const cell = element("td", "empty", registers.length === 0 ? "No registers available." : "No registers match. Clear the search or choose another status.");
           cell.colSpan = 3;
           row.append(cell);
           rows.append(row);
@@ -7517,9 +7698,41 @@ h3 {
         filters.append(filter);
       }
       input.addEventListener("input", render);
+      const retry = button("Retry", "ion-button ion-button--primary");
+      retry.hidden = true;
+      retry.addEventListener("click", () => {
+        void loadRegisters();
+      });
+      panel.querySelector(".register-section").append(retry);
+      const loadRegisters = async () => {
+        const attempt = ++registerRequest;
+        retry.hidden = true;
+        input.disabled = true;
+        filters.querySelectorAll("button").forEach((control) => {
+          control.disabled = true;
+        });
+        rows.replaceChildren();
+        summary.textContent = "Loading registers\u2026";
+        panel.querySelector("#result-count").textContent = "";
+        try {
+          const result = await site.readRegisters(device.id);
+          if (!alive || attempt !== registerRequest || !panel.isConnected) return;
+          registers = result;
+          input.disabled = false;
+          filters.querySelectorAll("button").forEach((control) => {
+            control.disabled = false;
+          });
+          summary.textContent = registers.length + " total \xB7 " + registers.filter((r) => r.status === "error").length + " errors \xB7 " + registers.filter((r) => r.status === "verified").length + " verified";
+          render();
+        } catch {
+          if (!alive || attempt !== registerRequest || !panel.isConnected) return;
+          summary.textContent = "Could not load registers.";
+          retry.hidden = false;
+        }
+      };
       panel.addEventListener("keydown", (event) => {
         if (event.key !== "Tab") return;
-        const focusable2 = Array.from(panel.querySelectorAll("button,input,select,a[href]"));
+        const focusable2 = Array.from(panel.querySelectorAll("button,input,select,a[href]")).filter((control) => control.checkVisibility() && !control.matches(":disabled") && control.tabIndex >= 0);
         const first = focusable2[0], last = focusable2[focusable2.length - 1];
         if (event.shiftKey && document.activeElement === first) {
           event.preventDefault();
@@ -7531,7 +7744,7 @@ h3 {
       });
       shell.inert = true;
       host.append(backdrop, panel);
-      render();
+      void loadRegisters();
       closeButton.focus();
     }
     const bulkHost = root2.querySelector("#bulk-host");
@@ -7545,11 +7758,38 @@ h3 {
       notice.textContent = message;
     };
     function renderInventory() {
+      infrastructure.update();
       const devices = site.getDevices();
-      root2.querySelector("#device-count").textContent = devices.length + (devices.length === 1 ? " device" : " devices");
+      const state = site.getState();
+      if (state.status === "ready") {
+        const available = new Set(devices.map((device) => device.id));
+        for (const id of selected) if (!available.has(id)) selected.delete(id);
+      }
+      const busy = state.pending || mutationPending;
+      const stateNode = root2.querySelector("#inventory-state");
+      const ready = state.status === "ready";
+      stateNode.replaceChildren();
+      stateNode.hidden = ready;
+      if (!ready) {
+        stateNode.append(document.createTextNode(state.status === "error" ? "Could not load devices. " : "Loading devices\u2026"));
+        if (state.status === "error") {
+          const retry = button("Retry", "ion-button ion-button--primary");
+          retry.disabled = busy;
+          retry.addEventListener("click", () => {
+            void site.load().catch(() => {
+            });
+          });
+          stateNode.append(retry);
+        }
+      }
+      root2.querySelector(".card .table-scroll").hidden = !ready && devices.length === 0;
+      root2.querySelector("#device-count").textContent = ready ? devices.length + (devices.length === 1 ? " device" : " devices") : "";
+      newButton.disabled = !ready || busy;
+      const mobileAction = root2.querySelector("#devices-header .page-header-action-menu button");
+      if (mobileAction) mobileAction.disabled = !ready || busy;
       selectAll.checked = devices.length > 0 && selected.size === devices.length;
       selectAll.indeterminate = selected.size > 0 && selected.size < devices.length;
-      selectAll.disabled = devices.length === 0;
+      selectAll.disabled = !ready || busy || devices.length === 0;
       newButton.classList.toggle("ion-button--cta", selected.size === 0);
       newButton.classList.toggle("ion-button--primary", selected.size > 0);
       body.replaceChildren();
@@ -7558,6 +7798,7 @@ h3 {
         const selectionCell = element("td");
         const checkbox = element("input");
         checkbox.type = "checkbox";
+        checkbox.disabled = !ready || busy;
         checkbox.checked = selected.has(device.id);
         checkbox.setAttribute("aria-label", "Select " + device.name);
         checkbox.addEventListener("change", () => {
@@ -7588,6 +7829,9 @@ h3 {
       countLabel.dataset.compactCount = selected.size + "\xD7";
       countLabel.setAttribute("aria-label", selected.size + " selected");
       batch.update({ count: selected.size });
+      bulk.querySelectorAll("button").forEach((control) => {
+        control.disabled = !ready || busy;
+      });
     }
     selectAll.addEventListener("change", () => {
       selected.clear();
@@ -7604,10 +7848,11 @@ h3 {
       root2.append(box);
       activeDialog = box;
       const dismiss = () => {
+        if (mutationPending) return;
         box.close();
         box.remove();
         activeDialog = null;
-        if (opener.isConnected) opener.focus();
+        if (opener.isConnected && opener.checkVisibility()) opener.focus();
         else focusNewDevice();
       };
       box.addEventListener("cancel", (event) => {
@@ -7621,18 +7866,58 @@ h3 {
       const ids = new Set(selected);
       const linkCount = site.getConnections().filter((connection) => ids.has(connection.fromId) || ids.has(connection.toId)).length;
       const { box, close: dismiss } = dialog("Delete selected devices?", opener);
-      box.append(element("p", "modal-copy", `Delete ${ids.size} devices and ${linkCount} connected links? This affects sample data until reload.`));
+      const description = element("p", "modal-copy", `Delete ${ids.size} devices and ${linkCount} connected links?` + (sample ? " This affects sample data until reload." : ""));
+      box.append(description);
+      const error = element("p", "field-error");
+      error.setAttribute("role", "alert");
+      box.append(error);
+      let retryBlocked = false;
       const actions = element("div", "modal-actions");
       const cancel = button("Cancel", "ion-button ion-button--primary");
       cancel.addEventListener("click", dismiss);
       const confirm = button("Delete devices", "ion-button ion-button--danger");
-      confirm.addEventListener("click", () => {
-        site.remove(ids);
-        selected.clear();
-        renderInventory();
-        dismiss();
-        focusNewDevice();
-        announce2(`Deleted ${ids.size} devices and ${linkCount} links.`);
+      confirm.addEventListener("click", async () => {
+        if (mutationPending) return;
+        const attemptIds = new Set(selected);
+        if (!attemptIds.size) return;
+        mutationPending = true;
+        confirm.disabled = true;
+        cancel.disabled = true;
+        error.textContent = "";
+        try {
+          await site.remove(attemptIds);
+          if (!alive || !box.isConnected) return;
+          const remaining = new Set(site.getDevices().map((device) => device.id));
+          const notRemoved = [...attemptIds].filter((id) => remaining.has(id));
+          if (notRemoved.length) {
+            selected.clear();
+            notRemoved.forEach((id) => selected.add(id));
+            const remainingLinks = site.getConnections().filter((connection) => selected.has(connection.fromId) || selected.has(connection.toId)).length;
+            description.textContent = `Delete ${notRemoved.length} remaining devices and ${remainingLinks} connected links?`;
+            error.textContent = `${notRemoved.length} device(s) were not deleted. Review and retry.`;
+            return;
+          }
+          selected.clear();
+          mutationPending = false;
+          renderInventory();
+          dismiss();
+          focusNewDevice();
+          announce2(`Deleted ${attemptIds.size} devices.`);
+        } catch (failure) {
+          if (alive && box.isConnected) {
+            if (failure instanceof MutationUncertainError) {
+              retryBlocked = true;
+              error.textContent = failure.refreshed ? "The result is uncertain. Close this dialog and review the refreshed devices before trying again." : "The result is uncertain and devices could not be refreshed. Close this dialog and retry loading before making changes.";
+            } else error.textContent = "Could not delete devices. Please try again.";
+          }
+        } finally {
+          mutationPending = false;
+          if (box.isConnected) {
+            confirm.disabled = retryBlocked;
+            cancel.disabled = false;
+            renderInventory();
+          }
+        }
       });
       actions.append(cancel, confirm);
       box.append(actions);
@@ -7663,7 +7948,11 @@ h3 {
         }
       });
       form.querySelector("#cancel-create").addEventListener("click", dismiss);
-      form.addEventListener("submit", (event) => {
+      const submitError = element("p", "field-error");
+      submitError.setAttribute("role", "alert");
+      form.append(submitError);
+      let retryBlocked = false;
+      form.addEventListener("submit", async (event) => {
         event.preventDefault();
         const name = form.querySelector("#device-name");
         const ip = form.querySelector("#device-ip");
@@ -7691,10 +7980,37 @@ h3 {
           invalid[0].focus();
           return;
         }
-        site.add({ name: name.value.trim(), ipAddress: ip.value.trim(), port: Number(port.value), unitId: Number(unit.value), vendorId: vendorItem?.id, vendor: vendorItem?.name, modelId: modelItem?.id, model: modelItem?.name });
-        renderInventory();
-        dismiss();
-        announce2("Device added to sample data.");
+        if (mutationPending) return;
+        mutationPending = true;
+        submitError.textContent = "";
+        const controls = Array.from(form.querySelectorAll("input, select, button"));
+        controls.forEach((control) => {
+          control.disabled = true;
+        });
+        try {
+          await site.add({ name: name.value.trim(), ipAddress: ip.value.trim(), port: Number(port.value), unitId: Number(unit.value), vendorId: vendorItem?.id, vendor: vendorItem?.name, modelId: modelItem?.id, model: modelItem?.name });
+          if (!alive || !box.isConnected) return;
+          mutationPending = false;
+          dismiss();
+          announce2(sample ? "Device added to sample data." : "Device added.");
+        } catch (failure) {
+          if (alive && box.isConnected) {
+            if (failure instanceof MutationUncertainError) {
+              retryBlocked = true;
+              submitError.textContent = failure.refreshed ? "The result is uncertain. Close this dialog and check the refreshed inventory before trying again." : "The result is uncertain and inventory could not be refreshed. Close this dialog and retry loading before making changes.";
+            } else submitError.textContent = "Could not add the device. Your entries are preserved; please try again.";
+          }
+        } finally {
+          mutationPending = false;
+          if (box.isConnected) {
+            controls.forEach((control) => {
+              control.disabled = false;
+            });
+            model.disabled = !vendor.value;
+            form.querySelector("[type=submit]").disabled = retryBlocked;
+          }
+          if (alive) renderInventory();
+        }
       });
       box.append(form);
       form.querySelector("#device-name").focus();
@@ -7711,24 +8027,45 @@ h3 {
           const candidates = site.getDevices().filter((device) => selected.has(device.id));
           if (candidates[0]) open(candidates[0], opener, candidates.map((device) => device.id));
         } else if (action === "toggle-status") {
-          const count = selected.size;
-          site.toggle(selected);
-          renderInventory();
-          announce2("Updated sample status for " + count + " devices.");
+          if (mutationPending) return;
+          const chosen = site.getDevices().filter((device) => selected.has(device.id));
+          if (chosen.some((device) => device.status !== "Online" && device.status !== "Offline")) {
+            announce2("Status changes are unavailable for devices without a confirmed online or offline state.");
+            return;
+          }
+          const changes = chosen.map((device) => ({ id: device.id, status: device.status === "Online" ? "Offline" : "Online" }));
+          mutationPending = true;
+          void site.setStatuses(changes).then(() => {
+            if (!alive) return;
+            const confirmed = new Map(site.getDevices().map((device) => [device.id, device.status]));
+            const missed = changes.filter((change) => confirmed.get(change.id) !== change.status).length;
+            announce2(missed ? `${missed} device(s) did not reach the requested status. Review their current status.` : (sample ? "Updated sample status for " : "Updated status for ") + changes.length + " devices.");
+          }).catch((failure) => {
+            if (alive) announce2(failure instanceof MutationUncertainError ? failure.refreshed ? "The result is uncertain. Review the refreshed device statuses." : "The result is uncertain. Reload devices before making changes." : "Could not update device status. Please try again.");
+          }).finally(() => {
+            mutationPending = false;
+            if (alive) renderInventory();
+          });
         } else if (action === "delete") {
           confirmDelete(opener);
         }
       }
     });
     newButton.addEventListener("click", createDevice);
+    const unsubscribe = site.subscribe(() => {
+      if (alive) renderInventory();
+    });
     renderInventory();
+    void site.load().catch(() => {
+    });
     return () => {
-      root2.removeEventListener("ds-batch-bar-toggle", onBatchToggle);
+      alive = false;
+      registerRequest++;
+      unsubscribe();
       disposeShell();
       batch.dispose();
-      transition.dispose();
-      disposeTableNavigator();
-      window.removeEventListener("hashchange", routeChanged);
+      disposeRouter();
+      tableSteering.dispose();
       document.removeEventListener("keydown", keydown);
       activeDialog?.close();
       activeDialog?.remove();
@@ -7738,9 +8075,422 @@ h3 {
     };
   }
 
+  // src/app/application.ts
+  function startApp(root2, source) {
+    const site = createSite(source);
+    const unmount = mountDevices(root2, site);
+    return () => {
+      unmount();
+      site.dispose();
+    };
+  }
+
+  // src/app/mock-devices.ts
+  var INITIAL_DEVICES = [
+    {
+      id: "dev-001",
+      name: "ABB Central Grid Substation",
+      type: "Grid",
+      status: "Online",
+      x: 60,
+      y: 160,
+      addedAt: "2026-10-12 14:00",
+      vendor: "ABB",
+      vendorId: 1,
+      model: "EVSS TGPv2",
+      modelId: 18,
+      ipAddress: "192.168.1.101",
+      port: 502,
+      unitId: -1,
+      capabilities: "GRID",
+      inUse: true,
+      nodeType: "EVSS"
+    },
+    {
+      id: "dev-002",
+      name: "Alpitronic HYC400 Fast Charger",
+      type: "Loads",
+      status: "Online",
+      x: 710,
+      y: 460,
+      addedAt: "2026-10-12 14:05",
+      vendor: "ALPITRONIC",
+      vendorId: 2,
+      model: "HYC400",
+      modelId: 2,
+      ipAddress: "192.168.1.102",
+      port: 502,
+      unitId: -1,
+      capabilities: "LOAD",
+      inUse: true,
+      nodeType: "Charger"
+    },
+    {
+      id: "dev-003",
+      name: "KACO Blueplanet String Inverter",
+      type: "String",
+      status: "Online",
+      x: 380,
+      y: 200,
+      addedAt: "2026-10-12 14:10",
+      vendor: "KACO",
+      vendorId: 3,
+      model: "Blueplanet",
+      modelId: 3,
+      ipAddress: "192.168.1.103",
+      port: 502,
+      unitId: -1,
+      capabilities: "INVERTER",
+      inUse: true,
+      nodeType: "Compensator"
+    },
+    {
+      id: "dev-004",
+      name: "Netico NTPM100A Power Meter",
+      type: "Meter",
+      status: "Online",
+      x: 710,
+      y: 180,
+      addedAt: "2026-10-12 14:15",
+      vendor: "NETICO",
+      vendorId: 4,
+      model: "NTPM100A",
+      modelId: 4,
+      ipAddress: "192.168.1.104",
+      port: 502,
+      unitId: -1,
+      capabilities: "METER",
+      inUse: true,
+      nodeType: "Meter"
+    },
+    {
+      id: "dev-005",
+      name: "Schneider IFE Switchboard",
+      type: "Loads",
+      status: "Online",
+      x: 380,
+      y: 520,
+      addedAt: "2026-10-12 14:20",
+      vendor: "SCHNEIDER",
+      vendorId: 5,
+      model: "IFE",
+      modelId: 5,
+      ipAddress: "192.168.1.105",
+      port: 502,
+      unitId: -1,
+      capabilities: "BREAKER",
+      inUse: true,
+      nodeType: "Breaker"
+    },
+    {
+      id: "dev-006",
+      name: "Regelkraft Regional DSO",
+      type: "DSO",
+      status: "Online",
+      x: 380,
+      y: 40,
+      addedAt: "2026-10-12 14:25",
+      vendor: "REGELKRAFT",
+      vendorId: 6,
+      model: "DSO",
+      modelId: 6,
+      ipAddress: "192.168.1.106",
+      port: 502,
+      unitId: -1,
+      capabilities: "DSO",
+      inUse: true,
+      nodeType: "DSO Gateway"
+    },
+    {
+      id: "dev-007",
+      name: "Ekoenergetyka LSCC Station",
+      type: "Loads",
+      status: "Online",
+      x: 710,
+      y: 600,
+      addedAt: "2026-10-12 14:30",
+      vendor: "EKOENERGETYKA",
+      vendorId: 7,
+      model: "LSCC",
+      modelId: 7,
+      ipAddress: "192.168.1.107",
+      port: 502,
+      unitId: -1,
+      capabilities: "LOAD",
+      inUse: true,
+      nodeType: "EVSS"
+    },
+    {
+      id: "dev-008",
+      name: "Janitza UMG604 Telemetry Meter",
+      type: "Meter",
+      status: "Online",
+      x: 710,
+      y: 40,
+      addedAt: "2026-10-12 14:35",
+      vendor: "JANITZA",
+      vendorId: 8,
+      model: "UMG604-PRO",
+      modelId: 8,
+      ipAddress: "192.168.1.108",
+      port: 502,
+      unitId: -1,
+      capabilities: "METER",
+      inUse: true,
+      nodeType: "Meter"
+    },
+    {
+      id: "dev-009",
+      name: "Tritium HPC350 High Power Charger",
+      type: "Loads",
+      status: "Online",
+      x: 1040,
+      y: 40,
+      addedAt: "2026-10-12 14:40",
+      vendor: "TRITIUM",
+      vendorId: 9,
+      model: "HPC350",
+      modelId: 12,
+      ipAddress: "192.168.1.109",
+      port: 502,
+      unitId: -1,
+      capabilities: "CHARGER",
+      inUse: true,
+      nodeType: "Charger"
+    },
+    {
+      id: "dev-010",
+      name: "Ziehl TR660IP Monitoring Relay",
+      type: "Meter",
+      status: "Online",
+      x: 710,
+      y: 320,
+      addedAt: "2026-10-12 14:45",
+      vendor: "ZIEHL",
+      vendorId: 10,
+      model: "TR660IP",
+      modelId: 13,
+      ipAddress: "192.168.1.110",
+      port: 502,
+      unitId: -1,
+      capabilities: "RELAY",
+      inUse: true,
+      nodeType: "Sensor"
+    },
+    {
+      id: "dev-011",
+      name: "PLCnext Axioline F Controller",
+      type: "Loads",
+      status: "Online",
+      x: 380,
+      y: 360,
+      addedAt: "2026-10-12 14:50",
+      vendor: "PLCNEXT",
+      vendorId: 11,
+      model: "Axioline F",
+      modelId: 14,
+      ipAddress: "192.168.1.111",
+      port: 502,
+      unitId: -1,
+      capabilities: "CONTROLLER",
+      inUse: true,
+      nodeType: "Sensor"
+    },
+    {
+      id: "dev-012",
+      name: "Siemens 3WA Air Circuit Breaker",
+      type: "Loads",
+      status: "Online",
+      x: 60,
+      y: 320,
+      addedAt: "2026-10-12 14:55",
+      vendor: "SIEMENS",
+      vendorId: 12,
+      model: "3WA",
+      modelId: 17,
+      ipAddress: "192.168.1.112",
+      port: 502,
+      unitId: -1,
+      capabilities: "BREAKER",
+      inUse: true,
+      nodeType: "Breaker"
+    },
+    {
+      id: "dev-013",
+      name: "Huawei FusionCharge DC Station",
+      type: "Loads",
+      status: "Online",
+      x: 1040,
+      y: 180,
+      addedAt: "2026-10-12 15:00",
+      vendor: "HUAWEI",
+      vendorId: 13,
+      model: "FusionCharge",
+      modelId: 19,
+      ipAddress: "192.168.1.113",
+      port: 502,
+      unitId: -1,
+      capabilities: "CHARGER",
+      inUse: true,
+      nodeType: "Charger"
+    }
+  ];
+  var INITIAL_CONNECTIONS = [
+    { id: "conn-g1-dso", fromId: "dev-001", toId: "dev-006" },
+    { id: "conn-g1-str1", fromId: "dev-001", toId: "dev-003" },
+    { id: "conn-str1-m1", fromId: "dev-003", toId: "dev-008" },
+    { id: "conn-str1-m2", fromId: "dev-003", toId: "dev-004" },
+    { id: "conn-str1-l1", fromId: "dev-003", toId: "dev-002" }
+  ];
+  function getDefaultModbusRegisters(nodeType, model) {
+    const normType = (nodeType || "").toLowerCase();
+    const normModel = (model || "").toLowerCase();
+    if (normType.includes("charger") || normType.includes("evss") || normModel.includes("hyc") || normModel.includes("hpc") || normModel.includes("lscc") || normModel.includes("fusion")) {
+      return [
+        { register: 40001, description: "Total Active Power (kW)", status: "verified", value: "350.4" },
+        { register: 40002, description: "DC Output Voltage (V)", status: "verified", value: "820.5" },
+        { register: 40003, description: "DC Output Current (A)", status: "verified", value: "427.1" },
+        { register: 40004, description: "Connector 1 State", status: "verified", value: "Charging" },
+        { register: 40005, description: "Connector 2 State", status: "no status", value: "Available" },
+        { register: 40006, description: "Emergency Stop Circuit", status: "verified", value: "Normal" },
+        { register: 40007, description: "Isolation Resistance (kOhm)", status: "error", value: "18.2" },
+        { register: 40008, description: "Hardware Fault Code", status: "error", value: "E-401" },
+        { register: 40009, description: "Cooling Unit Flow Rate", status: "no status", value: "N/A" },
+        { register: 40010, description: "Energy Delivered Total (kWh)", status: "verified", value: "142850.2" }
+      ];
+    }
+    if (normType.includes("meter") || normModel.includes("umg") || normModel.includes("ntpm") || normModel.includes("tr660")) {
+      return [
+        { register: 30001, description: "Voltage L1-N (V)", status: "verified", value: "230.2" },
+        { register: 30002, description: "Voltage L2-N (V)", status: "verified", value: "229.8" },
+        { register: 30003, description: "Voltage L3-N (V)", status: "verified", value: "231.1" },
+        { register: 30004, description: "Current L1 (A)", status: "verified", value: "145.6" },
+        { register: 30005, description: "Current L2 (A)", status: "verified", value: "142.3" },
+        { register: 30006, description: "Current L3 (A)", status: "verified", value: "148.0" },
+        { register: 30007, description: "Active Power Import Total (kW)", status: "verified", value: "101.4" },
+        { register: 30008, description: "Grid Frequency (Hz)", status: "verified", value: "50.01" },
+        { register: 30009, description: "Total Harmonic Distortion THD-V (%)", status: "error", value: "6.8%" },
+        { register: 30010, description: "Modbus Communication Watchdog", status: "no status", value: "0" }
+      ];
+    }
+    if (normType.includes("breaker") || normModel.includes("3wa") || normModel.includes("ife")) {
+      return [
+        { register: 30001, description: "Breaker Status (Open/Closed)", status: "verified", value: "Closed" },
+        { register: 30002, description: "Trip Counter", status: "verified", value: "4" },
+        { register: 30003, description: "Protection Relay Health", status: "verified", value: "OK" },
+        { register: 30004, description: "Contact Wear Level (%)", status: "verified", value: "12%" },
+        { register: 30005, description: "Under-Voltage Release State", status: "error", value: "Fault" },
+        { register: 30006, description: "Spring Charge Mechanism", status: "no status", value: "Unknown" },
+        { register: 30007, description: "Arc Fault Detection (AFDD)", status: "no status", value: "Standby" },
+        { register: 30008, description: "Phase Imbalance Alarm", status: "error", value: "Warning" }
+      ];
+    }
+    if (normType.includes("compensator") || normType.includes("inverter") || normModel.includes("blueplanet")) {
+      return [
+        { register: 40101, description: "Inverter Operating State", status: "verified", value: "Running" },
+        { register: 40102, description: "Active Power Target (kW)", status: "verified", value: "250.0" },
+        { register: 40103, description: "Reactive Power Q (kVAR)", status: "verified", value: "-12.5" },
+        { register: 40104, description: "DC String 1 Voltage (V)", status: "verified", value: "680.4" },
+        { register: 40105, description: "DC String 2 Voltage (V)", status: "verified", value: "675.2" },
+        { register: 40106, description: "Heatsink Internal Temp (\xB0C)", status: "verified", value: "42.8" },
+        { register: 40107, description: "Grid Sync Phase Angle Error", status: "error", value: "Offset Out of Spec" },
+        { register: 40108, description: "Curtailment Derating Factor", status: "no status", value: "Unset" }
+      ];
+    }
+    return [
+      { register: 40001, description: "Device Operating State", status: "verified", value: "Operational" },
+      { register: 40002, description: "Telemetry Packet Counter", status: "verified", value: "184920" },
+      { register: 40003, description: "Primary Bus Voltage (V)", status: "verified", value: "400.2" },
+      { register: 40004, description: "Primary Bus Current (A)", status: "verified", value: "88.5" },
+      { register: 40005, description: "Firmware Checksum Register", status: "verified", value: "0x8F4A" },
+      { register: 40006, description: "Communication Heartbeat Flag", status: "error", value: "Timeout Expired" },
+      { register: 40007, description: "Thermal Monitoring Probe #2", status: "no status", value: "Disconnected" },
+      { register: 40008, description: "Auxiliary Power Supply Alarm", status: "no status", value: "Not Initialized" }
+    ];
+  }
+  function getDeviceModbusRegisters(device) {
+    if (device.registers && device.registers.length > 0) {
+      return device.registers;
+    }
+    return getDefaultModbusRegisters(device.nodeType, device.model);
+  }
+
+  // src/app/mock-site-data-source.ts
+  function createMockSiteDataSource(seed = {}) {
+    let snapshot = copySnapshot({ devices: seed.devices ?? INITIAL_DEVICES, connections: seed.connections ?? (seed.devices ? [] : INITIAL_CONNECTIONS) });
+    const readings = new Map(Object.entries(seed.registers ?? {}).map(([id, values]) => [id, values.map((value) => ({ ...value }))]));
+    let nextId = 1;
+    const check2 = (signal) => {
+      if (signal.aborted) throw new DOMException("The operation was aborted", "AbortError");
+    };
+    const result = (signal) => {
+      check2(signal);
+      return copySnapshot(snapshot);
+    };
+    return {
+      kind: "sample",
+      async load(signal) {
+        return result(signal);
+      },
+      async create(input, signal) {
+        check2(signal);
+        const vendor = VENDORS.find((item) => item.id === input.vendorId);
+        const model = MODELS.find((item) => item.id === input.modelId && item.vendorId === vendor?.id);
+        const parts = input.ipAddress.trim().split(".");
+        if (!input.name.trim() || input.vendorId !== void 0 && !vendor || input.modelId !== void 0 && !model || !Number.isInteger(input.port) || input.port < 1 || input.port > 65535 || !Number.isInteger(input.unitId) || input.unitId < -1 || input.unitId > 247 || parts.length !== 4 || !parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) <= 255)) {
+          throw new MutationNotAppliedError("Invalid device data");
+        }
+        let id;
+        do {
+          id = `local-${nextId++}`;
+        } while (snapshot.devices.some((device2) => device2.id === id));
+        const type = inferComponentType(model?.name);
+        const device = {
+          ...input,
+          name: input.name.trim(),
+          ipAddress: input.ipAddress.trim(),
+          vendor: vendor?.name,
+          model: model?.name,
+          id,
+          type,
+          status: "Offline",
+          x: 60,
+          y: 60,
+          addedAt: (/* @__PURE__ */ new Date()).toISOString(),
+          capabilities: type.toUpperCase(),
+          inUse: false
+        };
+        snapshot = { devices: [...snapshot.devices, device], connections: snapshot.connections };
+        return result(signal);
+      },
+      async setStatuses(changes, signal) {
+        check2(signal);
+        const updates = new Map(changes.map((change) => [change.id, change.status]));
+        if (changes.some((change) => !snapshot.devices.some((device) => device.id === change.id))) throw new MutationNotAppliedError("Device not found");
+        snapshot = { ...snapshot, devices: snapshot.devices.map((device) => updates.has(device.id) ? { ...device, status: updates.get(device.id) } : device) };
+        return result(signal);
+      },
+      async remove(ids, signal) {
+        check2(signal);
+        const targets = new Set(ids);
+        snapshot = { devices: snapshot.devices.filter((device) => !targets.has(device.id)), connections: snapshot.connections.filter((connection) => !targets.has(connection.fromId) && !targets.has(connection.toId)) };
+        return result(signal);
+      },
+      async readRegisters(deviceId, signal) {
+        check2(signal);
+        const device = snapshot.devices.find((item) => item.id === deviceId);
+        if (!device) throw new MutationNotAppliedError("Device not found");
+        return (readings.get(deviceId) ?? getDeviceModbusRegisters(device)).map((register) => ({ ...register }));
+      }
+    };
+  }
+
   // src/app/main.ts
   var root = document.querySelector("#app");
   if (!root) throw new Error("Missing app");
-  mountDevices(root, createSite());
+  var dispose = startApp(root, createMockSiteDataSource());
+  window.addEventListener("pagehide", (event) => {
+    if (!event.persisted) dispose();
+  });
 })();
 </script></body></html>
