@@ -7853,6 +7853,9 @@ h3 {
       const signature = JSON.stringify([devices, connections]);
       if (signature === renderedSnapshot) return;
       renderedSnapshot = signature;
+      const focusedKey = section.contains(document.activeElement) ? document.activeElement.dataset.overviewFocus : void 0;
+      const attentionExpanded = attentionCard.body.querySelector(".overview-more")?.open ?? false;
+      const connectionsExpanded = topologyCard.body.querySelector(".overview-more")?.open ?? false;
       const online = devices.filter((device) => device.status === "Online").length;
       const offline = devices.filter((device) => device.status === "Offline").length;
       const other = devices.length - online - offline;
@@ -7890,10 +7893,17 @@ h3 {
         const more = document.createElement("details");
         more.className = "overview-more";
         const moreLabel = document.createElement("summary");
+        moreLabel.dataset.overviewFocus = "attention:more";
         moreLabel.textContent = `Show ${Math.max(0, exceptions.length - 5)} more`;
         const moreList = document.createElement("ul");
         moreList.className = "overview-exceptions";
         more.append(moreLabel, moreList);
+        more.open = attentionExpanded;
+        const updateMoreLabel = () => {
+          moreLabel.textContent = more.open ? "Show fewer" : `Show ${exceptions.length - 5} more`;
+        };
+        more.addEventListener("toggle", updateMoreLabel);
+        updateMoreLabel();
         for (const [index, device] of exceptions.entries()) {
           const item = document.createElement("li");
           const open = document.createElement("button");
@@ -7903,6 +7913,7 @@ h3 {
           identity.className = "overview-device-identity";
           identity.append(text("strong", "", device.name), text("span", "overview-device-meta", [device.nodeType ?? device.type, device.ipAddress].filter(Boolean).join(" \xB7 ")));
           open.append(identity, text("span", `overview-badge ${device.status === "Offline" ? "overview-badge--offline" : ""}`, device.status), text("span", "overview-chevron", "\u203A"));
+          open.dataset.overviewFocus = `device:${device.id}`;
           open.addEventListener("click", () => inspect(device, open));
           item.append(open);
           (index < 5 ? list2 : moreList).append(item);
@@ -7924,26 +7935,34 @@ h3 {
       const moreLinks = document.createElement("details");
       moreLinks.className = "overview-more";
       const moreLinksLabel = document.createElement("summary");
+      moreLinksLabel.dataset.overviewFocus = "connections:more";
       moreLinksLabel.textContent = `Show ${Math.max(0, connections.length - 6)} more`;
       const additionalLinks = document.createElement("ul");
       additionalLinks.className = "overview-connections";
       moreLinks.append(moreLinksLabel, additionalLinks);
+      moreLinks.open = connectionsExpanded;
+      const updateLinkLabel = () => {
+        moreLinksLabel.textContent = moreLinks.open ? "Show fewer" : `Show ${connections.length - 6} more`;
+      };
+      moreLinks.addEventListener("toggle", updateLinkLabel);
+      updateLinkLabel();
       for (const [index, link] of connections.entries()) {
         const item = document.createElement("li");
         const source = byId.get(link.fromId);
         const target = byId.get(link.toId);
-        const endpoint = (device) => {
+        const endpoint = (device, side) => {
           if (!device) return text("span", "overview-endpoint-missing", "Unknown device");
           const b = document.createElement("button");
           b.type = "button";
           b.className = "overview-endpoint";
           b.textContent = device.name;
+          b.dataset.overviewFocus = `link:${link.id}:${side}`;
           b.addEventListener("click", () => inspect(device, b));
           return b;
         };
         const arrow = text("span", "overview-connection-arrow", "\u2192");
         arrow.setAttribute("aria-label", "connected to");
-        item.append(endpoint(source), arrow, endpoint(target));
+        item.append(endpoint(source, "from"), arrow, endpoint(target, "to"));
         (index < 6 ? list : additionalLinks).append(item);
       }
       topologyCard.body.replaceChildren(stats);
@@ -7951,6 +7970,15 @@ h3 {
         topologyCard.body.append(list);
         if (connections.length > 6) topologyCard.body.append(moreLinks);
       } else topologyCard.body.append(text("p", "overview-empty-copy", "No connections configured."));
+      if (focusedKey) {
+        const replacement = [...section.querySelectorAll("[data-overview-focus]")].find((node) => node.dataset.overviewFocus === focusedKey);
+        if (replacement) replacement.focus();
+        else {
+          const heading = section.querySelector("#overview-attention-title");
+          heading.tabIndex = -1;
+          heading.focus();
+        }
+      }
     };
     return { element: section, update };
   }
