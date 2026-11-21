@@ -5102,6 +5102,80 @@ h3 {
     min-height: 44px;
   }
 }
+.overview-ring {
+  background: none;
+  position: relative;
+}
+.overview-ring--empty {
+  background: none;
+}
+.overview-ring svg {
+  width: 100%;
+  height: 100%;
+  grid-area: 1/1;
+}
+.overview-ring > div {
+  grid-area: 1/1;
+  background: transparent;
+}
+.overview-ring-track {
+  fill: none;
+  stroke: var(--color-neutral-200);
+  stroke-width: 11;
+}
+.overview-slice--online {
+  fill: var(--color-success-success);
+}
+.overview-slice--offline {
+  fill: var(--color-warning-warning);
+}
+.overview-slice--other {
+  fill: var(--color-neutral-300);
+}
+.overview-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+.overview-connection-group {
+  min-width: 0;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 4px;
+  padding: 12px;
+}
+.overview-connection-source {
+  display: block;
+  font-weight: 600;
+  width: 100%;
+  padding: 4px 6px;
+}
+.overview-connection-group .overview-connections {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  margin: 8px 0 0 6px;
+  border-left: 1px solid var(--color-neutral-200);
+}
+.overview-connection-group .overview-connections li {
+  border: 0;
+  padding: 0 0 0 8px;
+  gap: 4px;
+}
+.overview-connection-group .overview-endpoint {
+  min-height: 36px;
+}
+.overview-connection-group .overview-connection-arrow {
+  font-size: 16px;
+}
+@media (max-width: 850px) {
+  .overview-groups {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .overview-connection-group .overview-endpoint {
+    min-height: 44px;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -7780,6 +7854,38 @@ h3 {
     };
   }
 
+  // src/ion-ui/status-chart.ts
+  function statusRingGap(values) {
+    const positive = values.filter((value) => value > 0);
+    if (positive.length < 2) return 0;
+    const total = positive.reduce((sum, value) => sum + value, 0);
+    return Math.min(1.14, Math.min(...positive) / total * 2 * Math.PI * 41.5 * 0.4);
+  }
+
+  // src/vendor/ui/components/chart/chart-ring.js
+  var fixed = (v) => String(+v.toFixed(2));
+  function slicePath(from, to, gap, [ro, ri, corner]) {
+    const at = (r, a) => `${fixed(50 + r * Math.sin(a))} ${fixed(50 - r * Math.cos(a))}`;
+    const a0 = from * 2 * Math.PI + gap / 2;
+    const a1 = to * 2 * Math.PI - gap / 2;
+    if (a1 - a0 <= 0) return "";
+    if (a1 - a0 >= 2 * Math.PI - 1e-9) return `M${at(ro, 0)}A${ro} ${ro} 0 1 1 ${at(ro, Math.PI)}A${ro} ${ro} 0 1 1 ${at(ro, 0)}ZM${at(ri, 0)}A${ri} ${ri} 0 1 0 ${at(ri, Math.PI)}A${ri} ${ri} 0 1 0 ${at(ri, 0)}Z`;
+    const rc = Math.min(corner, (ro - ri) / 2, (a1 - a0) * ri / 2);
+    const [o, i] = [rc / ro, rc / ri];
+    const large = (span) => span > Math.PI ? 1 : 0;
+    return `M${at(ro, a0 + o)}A${ro} ${ro} 0 ${large(a1 - a0 - 2 * o)} 1 ${at(ro, a1 - o)}Q${at(ro, a1)} ${at(ro - rc, a1)}L${at(ri + rc, a1)}Q${at(ri, a1)} ${at(ri, a1 - i)}A${ri} ${ri} 0 ${large(a1 - a0 - 2 * i)} 0 ${at(ri, a0 + i)}Q${at(ri, a0)} ${at(ri + rc, a0)}L${at(ro - rc, a0)}Q${at(ro, a0)} ${at(ro, a0 + o)}Z`;
+  }
+  function layout(slices, values, ring) {
+    const sum = values.reduce((all, value) => all + value, 0);
+    let from = 0;
+    slices.forEach((slice, k) => {
+      const to = from + (sum > 0 ? values[k] / sum : 0);
+      slice.setAttribute("d", slicePath(from, to, values.length > 1 ? ring[3] / ((ring[0] + ring[1]) / 2) : 0, ring));
+      from = to;
+    });
+    return sum;
+  }
+
   // src/views/infrastructure/infrastructure.view.ts
   function createInfrastructureView(site, inspect) {
     const section = document.createElement("section");
@@ -7815,6 +7921,7 @@ h3 {
     statusCard.card.classList.add("overview-status-card");
     const attentionCard = widget("To inspect", "overview-attention-title", "Devices with a non-online status");
     attentionCard.card.classList.add("overview-attention-card");
+    grid.prepend(attentionCard.card);
     const topologyCard = widget("Configured connections", "overview-topology-title", "Equipment relationships");
     topologyCard.card.classList.add("overview-topology-card");
     content.append(state, grid);
@@ -7826,6 +7933,7 @@ h3 {
       return node;
     };
     let renderedSnapshot = "";
+    let retryInProgress = false;
     const update = () => {
       const current = site.getState();
       const ready = current.status === "ready";
@@ -7841,12 +7949,23 @@ h3 {
           retry.textContent = "Retry";
           retry.disabled = current.pending;
           retry.addEventListener("click", () => {
+            retryInProgress = true;
+            state.tabIndex = -1;
+            state.focus();
             void site.load().catch(() => {
             });
           });
           state.append(retry);
+          if (retryInProgress && !current.pending && section.checkVisibility()) {
+            retry.focus();
+            retryInProgress = false;
+          }
         }
         return;
+      }
+      if (retryInProgress) {
+        retryInProgress = false;
+        if (section.checkVisibility()) section.querySelector("#infrastructure-title")?.focus();
       }
       const devices = site.getDevices();
       const connections = site.getConnections();
@@ -7864,8 +7983,28 @@ h3 {
       chart.setAttribute("role", "img");
       chart.setAttribute("aria-label", `${devices.length} configured devices`);
       if (!devices.length) chart.classList.add("overview-ring--empty");
-      chart.style.setProperty("--online", `${devices.length ? online / devices.length * 100 : 0}%`);
-      chart.style.setProperty("--offline-end", `${devices.length ? (online + offline) / devices.length * 100 : 0}%`);
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 100 100");
+      svg.setAttribute("aria-hidden", "true");
+      const segments = [[online, "online"], [offline, "offline"], [other, "other"]];
+      const nonzero = segments.filter(([value]) => value > 0);
+      if (!nonzero.length) {
+        const track = document.createElementNS(svg.namespaceURI, "circle");
+        track.setAttribute("cx", "50");
+        track.setAttribute("cy", "50");
+        track.setAttribute("r", "41.5");
+        track.setAttribute("class", "overview-ring-track");
+        svg.append(track);
+      }
+      const paths = nonzero.map(([, name]) => {
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("class", `overview-slice overview-slice--${name}`);
+        svg.append(path);
+        return path;
+      });
+      const values = nonzero.map(([value]) => value);
+      layout(paths, values, [47, 36, 4.6, statusRingGap(values)]);
+      chart.append(svg);
       const ringCenter = document.createElement("div");
       const total = text("strong", "", String(devices.length));
       total.dataset.count = "total";
@@ -7873,23 +8012,29 @@ h3 {
       chart.append(ringCenter);
       const breakdown = document.createElement("dl");
       breakdown.className = "overview-breakdown";
-      for (const [key, label, count] of [["online", "Online", online], ["offline", "Offline", offline], ["other", "Other statuses", other]]) {
+      const stateBreakdown = [
+        ["online", "Online", online],
+        ["offline", "Offline", offline],
+        ...["Unavailable", "Unknown", "Stale", "Permission denied"].map((status) => ["other", status, devices.filter((device) => device.status === status).length]).filter(([, , count]) => count > 0)
+      ];
+      for (const [key, label, count] of stateBreakdown) {
         const row = document.createElement("div");
         const dt = text("dt", `overview-legend overview-legend--${key}`, label);
         const dd = text("dd", "", String(count));
-        dd.dataset.count = key;
+        dd.dataset.count = key === "other" ? label.toLowerCase().replace(/ /g, "-") : key;
         row.append(dt, dd);
         breakdown.append(row);
       }
       statusCard.body.replaceChildren(chart, breakdown);
-      const exceptions = devices.filter((device) => device.status !== "Online");
+      const order = { Offline: 0, Unavailable: 1, Unknown: 2, Stale: 3, "Permission denied": 4, Online: 5 };
+      const exceptions = devices.filter((device) => device.status !== "Online").sort((a, b) => order[a.status] - order[b.status]);
       attentionCard.body.replaceChildren();
       if (!exceptions.length) {
         attentionCard.body.append(text("p", "overview-empty-title", devices.length ? "No non-online devices" : "No devices configured"), text("p", "overview-empty-copy", devices.length ? "All devices report online." : "Add a device to begin."));
       } else {
         attentionCard.body.append(text("p", "overview-attention-count", `${exceptions.length} ${exceptions.length === 1 ? "device" : "devices"} to inspect`));
-        const list2 = document.createElement("ul");
-        list2.className = "overview-exceptions";
+        const list = document.createElement("ul");
+        list.className = "overview-exceptions";
         const more = document.createElement("details");
         more.className = "overview-more";
         const moreLabel = document.createElement("summary");
@@ -7916,9 +8061,9 @@ h3 {
           open.dataset.overviewFocus = `device:${device.id}`;
           open.addEventListener("click", () => inspect(device, open));
           item.append(open);
-          (index < 5 ? list2 : moreList).append(item);
+          (index < 5 ? list : moreList).append(item);
         }
-        attentionCard.body.append(list2);
+        attentionCard.body.append(list);
         if (exceptions.length > 5) attentionCard.body.append(more);
       }
       const byId = new Map(devices.map((device) => [device.id, device]));
@@ -7930,45 +8075,62 @@ h3 {
         stat.append(text("strong", "", String(value)), text("span", "", label));
         stats.append(stat);
       }
-      const list = document.createElement("ul");
-      list.className = "overview-connections";
-      const moreLinks = document.createElement("details");
-      moreLinks.className = "overview-more";
-      const moreLinksLabel = document.createElement("summary");
-      moreLinksLabel.dataset.overviewFocus = "connections:more";
-      moreLinksLabel.textContent = `Show ${Math.max(0, connections.length - 6)} more`;
-      const additionalLinks = document.createElement("ul");
-      additionalLinks.className = "overview-connections";
-      moreLinks.append(moreLinksLabel, additionalLinks);
-      moreLinks.open = connectionsExpanded;
-      const updateLinkLabel = () => {
-        moreLinksLabel.textContent = moreLinks.open ? "Show fewer" : `Show ${connections.length - 6} more`;
+      const makeGroups = (links) => {
+        const groups = document.createElement("div");
+        groups.className = "overview-groups";
+        const sources = /* @__PURE__ */ new Map();
+        for (const link of links) {
+          const group = sources.get(link.fromId) ?? [];
+          group.push(link);
+          sources.set(link.fromId, group);
+        }
+        for (const [sourceId, group] of sources) {
+          const block = document.createElement("div");
+          block.className = "overview-connection-group";
+          const endpoint = (device, focusKey) => {
+            if (!device) return text("span", "overview-endpoint-missing", "Unknown device");
+            const b = document.createElement("button");
+            b.type = "button";
+            b.className = "overview-endpoint";
+            b.textContent = device.name;
+            b.dataset.overviewFocus = focusKey;
+            b.addEventListener("click", () => inspect(device, b));
+            return b;
+          };
+          const source = endpoint(byId.get(sourceId), `link:${group[0].id}:from`);
+          source.classList.add("overview-connection-source");
+          block.append(source);
+          const list = document.createElement("ul");
+          list.className = "overview-connections";
+          for (const link of group) {
+            const item = document.createElement("li");
+            const arrow = text("span", "overview-connection-arrow", "\u2192");
+            arrow.setAttribute("aria-label", "connected to");
+            item.append(arrow, endpoint(byId.get(link.toId), `link:${link.id}:to`));
+            list.append(item);
+          }
+          block.append(list);
+          groups.append(block);
+        }
+        return groups;
       };
-      moreLinks.addEventListener("toggle", updateLinkLabel);
-      updateLinkLabel();
-      for (const [index, link] of connections.entries()) {
-        const item = document.createElement("li");
-        const source = byId.get(link.fromId);
-        const target = byId.get(link.toId);
-        const endpoint = (device, side) => {
-          if (!device) return text("span", "overview-endpoint-missing", "Unknown device");
-          const b = document.createElement("button");
-          b.type = "button";
-          b.className = "overview-endpoint";
-          b.textContent = device.name;
-          b.dataset.overviewFocus = `link:${link.id}:${side}`;
-          b.addEventListener("click", () => inspect(device, b));
-          return b;
-        };
-        const arrow = text("span", "overview-connection-arrow", "\u2192");
-        arrow.setAttribute("aria-label", "connected to");
-        item.append(endpoint(source, "from"), arrow, endpoint(target, "to"));
-        (index < 6 ? list : additionalLinks).append(item);
-      }
       topologyCard.body.replaceChildren(stats);
       if (connections.length) {
-        topologyCard.body.append(list);
-        if (connections.length > 6) topologyCard.body.append(moreLinks);
+        topologyCard.body.append(makeGroups(connections.slice(0, 6)));
+        if (connections.length > 6) {
+          const more = document.createElement("details");
+          more.className = "overview-more";
+          more.open = connectionsExpanded;
+          const label = document.createElement("summary");
+          label.dataset.overviewFocus = "connections:more";
+          const updateLabel = () => {
+            label.textContent = more.open ? "Show fewer" : `Show ${connections.length - 6} more`;
+          };
+          more.append(label, makeGroups(connections.slice(6)));
+          more.addEventListener("toggle", updateLabel);
+          updateLabel();
+          topologyCard.body.append(more);
+        }
       } else topologyCard.body.append(text("p", "overview-empty-copy", "No connections configured."));
       if (focusedKey) {
         const replacement = [...section.querySelectorAll("[data-overview-focus]")].find((node) => node.dataset.overviewFocus === focusedKey);
@@ -8061,7 +8223,11 @@ h3 {
       registerRequest++;
       host.replaceChildren();
       shell.inert = false;
+      const key = lastOpener?.dataset.overviewFocus;
+      const replacement = key ? [...root2.querySelectorAll("[data-overview-focus]")].find((node) => node.dataset.overviewFocus === key && node.checkVisibility()) : void 0;
       if (lastOpener?.isConnected && lastOpener.checkVisibility()) lastOpener.focus();
+      else if (replacement) replacement.focus();
+      else if (overview.checkVisibility()) root2.querySelector("#infrastructure-title")?.focus();
       else focusNewDevice();
       lastOpener = null;
     };
