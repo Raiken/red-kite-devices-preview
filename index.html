@@ -4363,6 +4363,56 @@ h3 {
   background: currentColor;
   box-shadow: 0 -4px currentColor, 0 4px currentColor;
 }
+.shell-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 40px;
+  margin: 0 4px 12px;
+}
+.shell-sidebar-header .ds-app-shell-toggle {
+  display: grid;
+  place-items: center;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: #e7cced;
+}
+.shell-sidebar-header .ds-app-shell-toggle > svg {
+  display: none;
+}
+.shell-sidebar-header .ds-app-shell-toggle::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  background: currentColor;
+  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>') no-repeat center / contain;
+  -webkit-mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>') no-repeat center / contain;
+}
+.shell-sidebar-header .rkc-shell-logo {
+  width: 45px;
+  height: 24px;
+  object-fit: contain;
+  margin-right: 4px;
+}
+.ds-app-shell[data-ds-collapsed] .shell-sidebar-header {
+  margin: 0 0 12px;
+  justify-content: center;
+}
+.ds-app-shell[data-ds-collapsed] .shell-sidebar-header .rkc-shell-logo {
+  display: none;
+}
+.ds-app-shell-search {
+  border-radius: 12px;
+  border-color: transparent;
+  background: #202049;
+  box-shadow: none;
+}
+@container ds-app-shell (width < 48rem) {
+  .shell-sidebar-header {
+    display: none;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -6957,7 +7007,13 @@ h3 {
     shell.querySelectorAll('a[href^="/__rxui__/"]').forEach((link) => {
       link.setAttribute("href", "#/" + link.getAttribute("href").split("/").pop());
     });
-    shell.querySelector(".ds-app-shell-product").insertAdjacentHTML("afterbegin", '<img class="rkc-shell-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="">');
+    const navPanel = shell.querySelector(".ds-app-shell-panel");
+    const sidebarHeader = document.createElement("div");
+    sidebarHeader.className = "shell-sidebar-header";
+    const navToggle = shell.querySelector(".ds-app-shell-toggle");
+    sidebarHeader.append(navToggle);
+    sidebarHeader.insertAdjacentHTML("beforeend", '<img class="rkc-shell-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="">');
+    navPanel.prepend(sidebarHeader);
     const disposeShell = enhanceAppShell(shell);
     const tabbar = root2.querySelector(".ds-app-shell-tabbar");
     const onBatchToggle = (event) => {
