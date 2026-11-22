@@ -1522,15 +1522,9 @@
       box-shadow: inset 0 1px 0 color-mix(in oklab, light-dark(var(--ds-neutral-0), color-mix(in oklab, var(--ds-neutral-0) 12%, transparent)), transparent var(--_solid)), var(--ds-shadow-popup);
       color: var(--ds-color-text-body);
       font-family: var(--ds-font);
-      --_enter: 360ms;
+      --_enter: 200ms;
       --_exit: 160ms;
-      --_spring: cubic-bezier(.2, .8, .2, 1);
       --_radius: calc(var(--ds-control-size-m) / 2 + var(--ds-space-1));
-      --_half: calc(var(--_radius) + var(--ds-control-border-width));
-      --_edge: calc(100% + var(--_offset));
-      --_compact: inset(0 calc(50% - var(--_half)) round var(--_radius));
-      --_full: inset(0 0 round var(--_radius));
-      --_bloom: inset(calc(var(--ds-space-5) * -1.75) round calc(var(--_radius) + var(--ds-space-5) * 1.75));
       --_reach: var(--ds-space-2);
       position: relative;
       &::after {
@@ -1543,18 +1537,6 @@
         opacity: 0;
         pointer-events: none;
       }
-    }
-    & .ds-batch-bar-verbs > :nth-child(2) {
-      --_n: 1;
-    }
-    & .ds-batch-bar-verbs > :nth-child(3) {
-      --_n: 2;
-    }
-    & .ds-batch-bar-verbs > :nth-child(4) {
-      --_n: 3;
-    }
-    & .ds-batch-bar-verbs > :nth-child(n+5) {
-      --_n: 4;
     }
     & .ds-button {
       border-radius: calc(var(--_radius) - var(--ds-space-1));
@@ -1602,15 +1584,9 @@
   }
   @media (prefers-reduced-motion: no-preference) {
     .ds-batch-bar[data-ds-entering] > .ds-toolbar {
-      animation: ds-batch-bar-travel calc(var(--_enter) * .7) var(--_spring), ds-batch-bar-open calc(var(--_enter) * .5) var(--_spring) calc(var(--_enter) * .35) backwards;
-      & .ds-batch-bar-selection > :not(.ds-menu) {
-        animation: ds-batch-bar-word calc(var(--_enter) * .22) var(--ds-motion-ease-standard) calc(var(--_enter) * .5) backwards;
-      }
+      animation: ds-batch-bar-travel var(--_enter) var(--ds-motion-ease-standard);
       & :is(.ds-batch-bar-verbs, .ds-batch-bar-selection) {
         pointer-events: none;
-      }
-      & .ds-batch-bar-verbs > * {
-        animation: ds-batch-bar-word calc(var(--_enter) * .22) var(--ds-motion-ease-standard) calc(var(--_enter) * (.62 + var(--_n, 0) * .05)) backwards;
       }
     }
     .ds-batch-bar[data-ds-landed] > .ds-toolbar::after {
@@ -1622,24 +1598,8 @@
   }
   @keyframes ds-batch-bar-travel {
     from {
-      translate: 0 var(--_edge);
-    }
-  }
-  @keyframes ds-batch-bar-open {
-    from {
-      clip-path: var(--_compact);
-    }
-    80% {
-      clip-path: var(--_full);
-    }
-    to {
-      clip-path: var(--_bloom);
-    }
-  }
-  @keyframes ds-batch-bar-word {
-    from {
       opacity: 0;
-      translate: 0 var(--ds-space-1);
+      translate: 0 var(--ds-space-2);
     }
   }
   @keyframes ds-batch-bar-leave {
@@ -4470,6 +4430,27 @@ body {
   text-transform: none;
   letter-spacing: normal;
 }
+.detail-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.device-detail .detail-section-header h3 {
+  margin: 0;
+}
+.detail-edit {
+  border: 0;
+  border-radius: 4px;
+  padding: 4px 8px;
+  background: transparent;
+  color: var(--color-primary-dark);
+  font-size: 13px;
+}
+.detail-edit:hover {
+  background: var(--color-primary-lighter);
+}
 
 /* src/ion-ui/shell-scroll.css */
 .ds-app-shell {
@@ -6855,8 +6836,25 @@ body,
   background: currentColor;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10 3a7 7 0 1 0 4.9 12l4.55 4.55 1.1-1.1L16 13.9A7 7 0 0 0 10 3Zm0 1.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-[data-ds-collapsed] .shell-global-search {
-  display: none;
+@container ds-app-shell (width >= 48rem) {
+  .ds-app-shell[data-ds-collapsed][data-ds-sections=one] .ds-app-shell-panel:not(:popover-open) .shell-global-search {
+    position: relative;
+    inset-inline-start: 6px;
+    display: flex;
+    justify-content: center;
+    width: 36px;
+    min-height: 36px;
+    padding: 0;
+    background: transparent;
+    border-radius: 6px;
+  }
+  .ds-app-shell[data-ds-collapsed][data-ds-sections=one] .shell-global-search:hover {
+    background: #222249;
+  }
+  .ds-app-shell[data-ds-collapsed][data-ds-sections=one] .shell-global-search > span:not(.shell-search-icon),
+  .ds-app-shell[data-ds-collapsed][data-ds-sections=one] .shell-global-search kbd {
+    display: none;
+  }
 }
 @media (forced-colors: active) {
   .global-search-host .ds-global-search-input:has(input:focus-visible) {
@@ -7014,6 +7012,22 @@ body,
 }
 #devices-page .inventory-table .ds-data-table-select {
   cursor: default;
+}
+.ds-batch-bar .ds-button {
+  --_icon: var(--ds-icon-size-s);
+}
+@media (pointer: coarse) {
+  .ds-batch-bar .ds-button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  #bulk-host {
+    --ds-batch-bar-room: calc(2 * 44px + 3 * var(--ds-space-1) + 2 * var(--ds-control-border-width) + var(--ds-batch-bar-offset, var(--ds-space-4)) + env(safe-area-inset-bottom, 0px) + var(--ds-space-3));
+  }
+}
+.device-form-fields {
+  display: grid;
+  gap: 14px;
 }
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
@@ -8388,6 +8402,20 @@ body,
           apply(await write2(async (signal) => {
             const result = await source.create(request, signal);
             if (!result.devices.some((device) => !previousIds.has(device.id))) throw new Error("Create did not return a new device");
+            return result;
+          }));
+        });
+      },
+      canEditConnection: () => typeof source.updateConnection === "function",
+      updateConnection(change) {
+        const request = { ...change, ipAddress: change.ipAddress.trim() };
+        return enqueue(async () => {
+          requireWriteReady();
+          if (!source.updateConnection) throw new MutationNotAppliedError("Editing is unavailable");
+          apply(await write2(async (signal) => {
+            const result = await source.updateConnection(request, signal);
+            const saved = result.devices.find((device) => device.id === request.id);
+            if (!saved || saved.ipAddress !== request.ipAddress || saved.port !== request.port || saved.unitId !== request.unitId) throw new Error("Save did not return the confirmed connection");
             return result;
           }));
         });
@@ -10420,7 +10448,7 @@ body,
   var mounted6 = /* @__PURE__ */ new WeakSet();
   var STATE_KEYS = ["count", "verbs", "narrow"];
   var KEBAB = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
-  var MORPH = ["ds-batch-bar-travel", "ds-batch-bar-open", "ds-batch-bar-word"];
+  var MORPH = ["ds-batch-bar-travel"];
   var GHOST = "ds-batch-bar-ghost";
   var fill = (template, values) => template.replace(/\{(applies|count)\}/g, (match, name) => values[name] ?? match);
   var QUIET_MS = 500;
@@ -11361,7 +11389,7 @@ body,
       views: { pages: { infrastructure: overview, devices: devicesPage }, missing: missingPage },
       beforeChange: (next, previous) => {
         if (activeDialog) {
-          const currentHash = previous?.hash ?? routeById("devices").hash;
+          const currentHash = activeDialog.dataset.lockedHash || previous?.hash || routeById("devices").hash;
           if (location.hash !== currentHash) location.hash = currentHash;
           let status = activeDialog.querySelector("#dialog-navigation-status");
           if (!status) {
@@ -11455,6 +11483,8 @@ body,
     if (/Mac|iPhone|iPad/.test(navigator.platform)) searchButton.querySelector("kbd").textContent = "\u2318 K";
     searchButton.setAttribute("aria-label", "Search pages and devices");
     searchButton.setAttribute("aria-keyshortcuts", "Control+K Meta+K");
+    searchButton.title = "Search pages and devices (Ctrl+K)";
+    if (/Mac|iPhone|iPad/.test(navigator.platform)) searchButton.title = "Search pages and devices (\u2318K)";
     shell.querySelector(".ds-app-shell-panel").insertBefore(searchButton, shell.querySelector(".ds-app-shell-pages"));
     let recentSearches = [];
     const searchRoot = globalHost.querySelector(".ds-global-search");
@@ -11576,7 +11606,7 @@ body,
       let registers = [];
       let status = "all";
       const content = element("div", "device-detail");
-      content.innerHTML = `<section class="detail-section"><h3>Device information</h3><div data-device-information></div></section><section class="detail-section"><h3>Connection</h3><div data-device-connection></div></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" data-register-summary role="status"></p></div></div><label for="${prefix}-register-search">Search registers</label><input id="${prefix}-register-search" class="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p class="muted" data-result-count aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section>`;
+      content.innerHTML = `<section class="detail-section"><h3>Device information</h3><div data-device-information></div></section><section class="detail-section"><div class="detail-section-header"><h3>Connection</h3><button type="button" class="detail-edit" data-edit-connection hidden>Edit</button></div><div data-device-connection></div></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" data-register-summary role="status"></p></div></div><label for="${prefix}-register-search">Search registers</label><input id="${prefix}-register-search" class="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p class="muted" data-result-count aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section>`;
       if (sample) {
         const indicator = element("span", "detail-sample-indicator", "Sample data");
         content.querySelector(".detail-section h3").append(document.createTextNode(" \xB7 "), indicator);
@@ -11588,11 +11618,103 @@ body,
         ["In use", device.inUse ? "Yes" : "No"],
         ["Connected links", String(site.getConnections().filter((c) => c.fromId === device.id || c.toId === device.id).length)]
       ]));
-      content.querySelector("[data-device-connection]").append(createDetailList([
+      const connection = content.querySelector("[data-device-connection]");
+      const editConnection = content.querySelector("[data-edit-connection]");
+      editConnection.hidden = !site.canEditConnection();
+      record.refreshConnection = (current) => {
+        if (!content.isConnected) return;
+        connection.replaceChildren(createDetailList([
+          ["IP address", current.ipAddress ?? "\u2014"],
+          ["Port", String(current.port ?? "\u2014")],
+          ["Unit ID", String(current.unitId ?? "\u2014")]
+        ]));
+        editConnection.disabled = site.getState().pending || site.getState().status !== "ready" || mutationPending;
+        record.device = current;
+      };
+      connection.append(createDetailList([
         ["IP address", device.ipAddress ?? "\u2014"],
         ["Port", String(device.port ?? "\u2014")],
         ["Unit ID", String(device.unitId ?? "\u2014")]
       ]));
+      editConnection.addEventListener("click", () => {
+        const current = site.getDevices().find((item) => item.id === device.id);
+        if (!current || activeDialog) return;
+        const { box, close: dismiss } = dialog("Edit connection", editConnection);
+        const context = element("p", "modal-copy", current.name);
+        context.id = "connection-edit-context";
+        box.append(context);
+        box.setAttribute("aria-describedby", context.id);
+        const form = element("form", "device-form");
+        form.noValidate = true;
+        form.innerHTML = '<div class="device-form-fields" data-edit-fields><div class="field"><label for="edit-ip">IP address</label><input id="edit-ip" inputmode="decimal" aria-describedby="edit-ip-error" required><span id="edit-ip-error" class="field-error"></span></div><div class="form-grid"><div class="field"><label for="edit-port">Port</label><input id="edit-port" type="number" aria-describedby="edit-port-error" required><span id="edit-port-error" class="field-error"></span></div><div class="field"><label for="edit-unit">Unit ID</label><input id="edit-unit" type="number" aria-describedby="edit-unit-error" required><span id="edit-unit-error" class="field-error"></span></div></div></div><p class="field-error" role="alert"></p><p class="muted" role="status" tabindex="-1" hidden></p><div class="modal-actions"><button class="ion-button ion-button--primary" type="button">Cancel</button><button class="ion-button ion-button--cta" type="submit">Save</button></div>';
+        const ip = form.querySelector("#edit-ip"), port = form.querySelector("#edit-port"), unit = form.querySelector("#edit-unit");
+        const error = form.querySelector("[role=alert]"), cancel = form.querySelector("button[type=button]"), save = form.querySelector("button[type=submit]");
+        ip.value = current.ipAddress ?? "";
+        port.value = current.port === void 0 ? "" : String(current.port);
+        unit.value = current.unitId === void 0 ? "" : String(current.unitId);
+        const savingStatus = form.querySelector("[role=status]"), fields = form.querySelector("[data-edit-fields]");
+        cancel.addEventListener("click", dismiss);
+        let retryBlocked = false;
+        form.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          if (mutationPending || retryBlocked) return;
+          const parts = ip.value.trim().split("."), portValue = Number(port.value), unitValue = Number(unit.value);
+          const errors = [
+            [ip, parts.length === 4 && parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) <= 255) ? "" : "Enter a valid IPv4 address."],
+            [port, port.value && Number.isInteger(portValue) && portValue >= 1 && portValue <= 65535 ? "" : "Enter a port from 1 to 65535."],
+            [unit, unit.value && Number.isInteger(unitValue) && unitValue >= -1 && unitValue <= 247 ? "" : "Enter a unit ID from \u22121 to 247."]
+          ];
+          for (const [control, message] of errors) {
+            form.querySelector("#" + control.id + "-error").textContent = message;
+            if (message) control.setAttribute("aria-invalid", "true");
+            else control.removeAttribute("aria-invalid");
+          }
+          const firstInvalid = errors.find(([, message]) => message);
+          if (firstInvalid) {
+            error.textContent = "Check the connection fields.";
+            firstInvalid[0].focus();
+            return;
+          }
+          mutationPending = true;
+          error.textContent = "";
+          save.disabled = true;
+          cancel.disabled = true;
+          fields.setAttribute("aria-busy", "true");
+          savingStatus.hidden = false;
+          savingStatus.textContent = "Saving connection\u2026";
+          savingStatus.focus();
+          for (const control of [ip, port, unit]) control.readOnly = true;
+          try {
+            await site.updateConnection({ id: device.id, ipAddress: ip.value, port: portValue, unitId: unitValue });
+            if (!alive || !box.isConnected) return;
+            mutationPending = false;
+            const confirmed = site.getDevices().find((item) => item.id === device.id);
+            if (confirmed) record.refreshConnection?.(confirmed);
+            dismiss();
+          } catch (failure) {
+            if (!alive || !box.isConnected) return;
+            if (failure instanceof MutationUncertainError) {
+              retryBlocked = true;
+              error.textContent = failure.refreshed ? "The result is uncertain. Close this dialog and review the refreshed connection." : "The result is uncertain and the connection could not be refreshed. Reload before trying again.";
+            } else error.textContent = "Could not save the connection. Try again.";
+          } finally {
+            mutationPending = false;
+            const updated = site.getDevices().find((item) => item.id === device.id);
+            if (updated) record.refreshConnection?.(updated);
+            if (box.isConnected) {
+              fields.removeAttribute("aria-busy");
+              savingStatus.hidden = true;
+              save.disabled = retryBlocked;
+              cancel.disabled = false;
+              for (const control of [ip, port, unit]) control.readOnly = false;
+              ip.focus();
+            }
+          }
+        });
+        if (sample) form.prepend(element("p", "muted", "Changes to sample data last until reload."));
+        box.append(form);
+        ip.focus();
+      });
       const summary = content.querySelector("[data-register-summary]");
       summary.textContent = "Loading registers\u2026";
       const input = content.querySelector(".register-search");
@@ -11688,6 +11810,10 @@ body,
     function syncPanelsFromUrl() {
       if (!alive) return;
       const desired = resolveRoute(location.hash) ? readDeviceIds() : [];
+      if (activeDialog && location.hash !== activeDialog.dataset.lockedHash) {
+        if (activeDialog.dataset.lockedHash) location.hash = activeDialog.dataset.lockedHash;
+        return;
+      }
       if (site.getState().status !== "ready" && desired.length) return;
       applyingUrl = true;
       try {
@@ -11719,7 +11845,7 @@ body,
           if (record.requested !== id || !controller.isOpen || Boolean(device) !== Boolean(record.device)) {
             if (device) void showDevice(controller, device, record.opener, site.getDevices().map((item) => item.id));
             else showMissing(controller, id);
-          }
+          } else if (device) record.refreshConnection?.(device);
         }
       } finally {
         applyingUrl = false;
@@ -11838,6 +11964,7 @@ body,
     function dialog(title, opener) {
       const box = element("dialog", "modal");
       box.setAttribute("aria-labelledby", "modal-title");
+      box.dataset.lockedHash = location.hash;
       const heading = element("h2", "", title);
       heading.id = "modal-title";
       box.append(heading);
@@ -12477,6 +12604,13 @@ body,
           inUse: false
         };
         snapshot = { devices: [...snapshot.devices, device], connections: snapshot.connections };
+        return result(signal);
+      },
+      async updateConnection(change, signal) {
+        check2(signal);
+        const parts = change.ipAddress.trim().split(".");
+        if (!snapshot.devices.some((device) => device.id === change.id) || parts.length !== 4 || !parts.every((part) => /^\d{1,3}$/.test(part) && Number(part) <= 255) || !Number.isInteger(change.port) || change.port < 1 || change.port > 65535 || !Number.isInteger(change.unitId) || change.unitId < -1 || change.unitId > 247) throw new MutationNotAppliedError("Invalid connection");
+        snapshot = { ...snapshot, devices: snapshot.devices.map((device) => device.id === change.id ? { ...device, ipAddress: change.ipAddress.trim(), port: change.port, unitId: change.unitId } : device) };
         return result(signal);
       },
       async setStatuses(changes, signal) {
