@@ -6382,6 +6382,44 @@ body,
     min-height: var(--page-header-min-height);
   }
 }
+.device-title-button {
+  position: relative;
+  display: block;
+  max-width: 100%;
+  padding: 0 18px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.device-title-button::after {
+  content: "\2304";
+  position: absolute;
+  inset-inline-end: 0;
+  top: 0;
+}
+.device-title-button:hover {
+  color: var(--color-primary-primary);
+  text-decoration: underline;
+}
+.device-title-button:focus-visible {
+  outline: 2px solid var(--color-info-info);
+  outline-offset: 2px;
+}
+.panel-compare[hidden],
+.ds-global-search-scopes[hidden] {
+  display: none;
+}
+@media (max-width: 768px) {
+  .panel-compare {
+    display: none;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -7975,12 +8013,13 @@ body,
     if (view.isDirty !== void 0 && typeof view.isDirty !== "function") throw new TypeError("Side-panel isDirty must be a function: true while the view holds work that closing would lose.");
     if (view.href !== void 0) safeHref(view.href);
   }
-  function enhanceSidePanel(panel, { onClose, topBoundary, ...unknown } = {}) {
+  function enhanceSidePanel(panel, { onClose, topBoundary, preserveMoved = true, ...unknown } = {}) {
     const Element = panel?.ownerDocument?.defaultView?.HTMLElement;
     if (!Element || !(panel instanceof Element) || !panel.matches("aside.ds-side-panel")) {
       throw new TypeError('enhanceSidePanel needs the <aside class="ds-side-panel"> from renderSidePanel.');
     }
-    if (Object.keys(unknown).length) throw new TypeError(`Unknown enhanceSidePanel option: ${Object.keys(unknown).join(", ")}. Options: onClose, topBoundary.`);
+    if (Object.keys(unknown).length) throw new TypeError(`Unknown enhanceSidePanel option: ${Object.keys(unknown).join(", ")}. Options: onClose, topBoundary, preserveMoved.`);
+    if (typeof preserveMoved !== "boolean") throw new TypeError("enhanceSidePanel preserveMoved must be a boolean.");
     if (onClose !== void 0 && typeof onClose !== "function") throw new TypeError("enhanceSidePanel onClose must be a function.");
     if (topBoundary !== void 0 && (!(topBoundary instanceof Element) || topBoundary.ownerDocument !== panel.ownerDocument || panel.contains(topBoundary))) throw new TypeError("enhanceSidePanel topBoundary must be an element outside the panel in the same document.");
     if (mounted2.has(panel)) throw new TypeError("This side panel is already enhanced; dispose() the first mount before mounting it again.");
@@ -8047,7 +8086,7 @@ body,
     const clampHeight = (height) => Math.min(maxHeight(), Math.max(minHeight(), Math.round(height)));
     const setWidth = (width) => panel.style.setProperty("--_user-width", `${clampWidth(width)}px`);
     const setHeight = (height) => panel.style.setProperty("--_user-height", `${clampHeight(height)}px`);
-    let shift = { dx: 0, dy: 0 };
+    let shift = { dx: 0, dy: 0 }, initialOffset = { dx: 0, dy: 0 }, userMoved = false;
     const offset = () => ({ ...shift });
     const setOffset = (dx, dy) => {
       shift = { dx: Math.round(dx), dy: Math.round(dy) };
@@ -8213,6 +8252,7 @@ body,
           applyRect(snapRects()[moved.zone]);
           storeSize();
         }
+        if (moved.context.kind === "move") userMoved = shift.dx !== initialOffset.dx || shift.dy !== initialOffset.dy;
       },
       onCancel: (moved) => {
         finishGesture(moved);
@@ -8243,6 +8283,8 @@ body,
     head.addEventListener("dblclick", (event) => {
       if (mode() !== "floating" || event.target.closest("button, a")) return;
       setOffset(0, 0);
+      initialOffset = offset();
+      userMoved = false;
     }, { signal });
     let lastBoundary = -1;
     const syncBoundary = () => {
@@ -8314,7 +8356,10 @@ body,
     }
     function applyMode(next) {
       panel.dataset.mode = next;
-      if (next === "docked") setOffset(0, 0);
+      if (next === "docked") {
+        setOffset(0, 0);
+        userMoved = false;
+      }
       applyStoredSize();
       syncMenu();
       const wider = widerItem();
@@ -8401,6 +8446,8 @@ body,
         const next = clampOffset(rtl() ? step : -step, step);
         setOffset(next.dx, next.dy);
       }
+      initialOffset = offset();
+      userMoved = false;
       void panel.offsetWidth;
       syncScrim();
       panel.classList.add("is-open");
@@ -8529,7 +8576,7 @@ body,
       const node = box.content.firstElementChild;
       node.dataset.home = home;
       panel.parentElement.append(node);
-      const copy = enhanceSidePanel(node, { topBoundary, onClose() {
+      const copy = enhanceSidePanel(node, { topBoundary, preserveMoved, onClose() {
         settle(node).then(() => {
           if (node.classList.contains("is-open")) return;
           closed?.();
@@ -8582,6 +8629,9 @@ body,
       get mode() {
         return mode();
       },
+      get preserveOnNextOpen() {
+        return preserveMoved && mode() === "floating" && !phone() && userMoved;
+      },
       get isOpen() {
         return panel.classList.contains("is-open");
       },
@@ -8609,10 +8659,10 @@ body,
 
   // src/vendor/ui/components/global-search/global-search.js
   var mounts = /* @__PURE__ */ new WeakMap();
-  function enhanceGlobalSearch(root2, { search, onSelect, recent = () => [], clearRecent, text = {} } = {}) {
+  function enhanceGlobalSearch(root2, { search, onSelect, recent = () => [], clearRecent, searchOnEmpty = () => false, text = {} } = {}) {
     const view = root2?.ownerDocument?.defaultView;
     if (!view || !(root2 instanceof view.HTMLElement) || mounts.has(root2)) throw new TypeError("Mount global search once on its rendered root.");
-    if (typeof search !== "function" || typeof onSelect !== "function" || typeof recent !== "function") throw new TypeError("Provide search, onSelect and an optional recent function.");
+    if (typeof search !== "function" || typeof onSelect !== "function" || typeof recent !== "function" || typeof searchOnEmpty !== "function") throw new TypeError("Provide search, onSelect and an optional recent function.");
     const words = { idle: "Start typing to search.", recent: "Recent searches", loading: "Searching\u2026", empty: "No results found.", error: "Search failed. Try again.", clear: "Clear recent searches", count: (count) => `${count} ${count === 1 ? "result" : "results"}`, ...text };
     const trigger = root2.querySelector("[data-search-trigger]"), dialog = root2.querySelector("dialog"), form = root2.querySelector("form");
     const input = root2.querySelector("input[type=search]"), status = root2.querySelector("[role=status]"), results = root2.querySelector(".ds-global-search-results");
@@ -8659,7 +8709,7 @@ body,
     async function update() {
       resetRequest();
       const state = option();
-      if (!state.query) {
+      if (!state.query && !searchOnEmpty()) {
         showRecent();
         return;
       }
@@ -8710,7 +8760,7 @@ body,
     form.addEventListener("submit", (event) => {
       event.preventDefault();
       const first = results.querySelector("[data-search-result]");
-      if (first && option().query) first.click();
+      if (first && (option().query || searchOnEmpty())) first.click();
     }, { signal: listeners.signal });
     dialog.addEventListener("keydown", (event) => {
       if (!["ArrowDown", "ArrowUp"].includes(event.key) || event.target !== input && !event.target.matches("[data-search-result]")) return;
@@ -10363,8 +10413,16 @@ body,
     const trackPanel = (controller) => {
       const panel = controller.body.parentElement;
       decorateWidgetTitleBar(panel.querySelector(".ds-side-panel-head"));
-      const record = { ticket: 0, opener: null, device: null, requested: null };
+      const compare = button("Compare", "ion-button ion-button--widget-s panel-compare");
+      compare.hidden = true;
+      panel.querySelector(".ds-side-panel-actions").prepend(compare);
+      const record = { ticket: 0, opener: null, device: null, requested: null, compare };
       panels.set(controller, record);
+      compare.addEventListener("click", () => openPicker(controller, "compare", compare));
+      panel.querySelector(".ds-side-panel-title").addEventListener("click", (event) => {
+        const target = event.target;
+        if (target.closest(".device-title-button")) openPicker(controller, "replace", target.closest(".device-title-button"));
+      });
       panel.addEventListener("side-panel-closing", () => {
         record.ticket++;
         const index = openPanels2.indexOf(controller);
@@ -10392,6 +10450,7 @@ body,
       return record;
     };
     trackPanel(primaryPanel);
+    let picker = null;
     const globalHost = element("div", "global-search-host");
     globalHost.innerHTML = globalSearchMarkup;
     root2.append(globalHost);
@@ -10402,18 +10461,37 @@ body,
     searchButton.setAttribute("aria-keyshortcuts", "Control+K Meta+K");
     shell.querySelector(".ds-app-shell-panel").insertBefore(searchButton, shell.querySelector(".ds-app-shell-pages"));
     let recentSearches = [];
-    const search = enhanceGlobalSearch(globalHost.querySelector(".ds-global-search"), {
+    const searchRoot = globalHost.querySelector(".ds-global-search");
+    const searchDialog = searchRoot.querySelector("dialog");
+    const searchInput = searchRoot.querySelector("input[type=search]");
+    const searchLabel = searchRoot.querySelector("#global-search-label");
+    const searchScopes = searchRoot.querySelector(".ds-global-search-scopes");
+    const search = enhanceGlobalSearch(searchRoot, {
       search: ({ query, scope }) => {
         const term = query.toLocaleLowerCase();
-        const pages = scope === "devices" ? [] : ROUTES.filter((route) => route.label.toLocaleLowerCase().includes(term)).map((route) => ({ id: `page:${route.id}`, label: route.label, description: "Page" }));
-        const devices = scope === "pages" ? [] : site.getDevices().filter((device) => [device.name, device.vendor, device.model, device.ipAddress].some((value) => value?.toLocaleLowerCase().includes(term))).map((device) => ({ id: `device:${device.id}`, label: device.name, description: [device.vendor, device.ipAddress].filter(Boolean).join(" \xB7 ") }));
+        const pages = picker || scope === "devices" ? [] : ROUTES.filter((route) => route.label.toLocaleLowerCase().includes(term)).map((route) => ({ id: `page:${route.id}`, label: route.label, description: "Page" }));
+        const devices = !picker && scope === "pages" ? [] : site.getDevices().filter((device) => !(picker?.mode === "compare" && panels.get(picker.controller)?.requested === device.id) && [device.name, device.vendor, device.model, device.ipAddress].some((value) => value?.toLocaleLowerCase().includes(term))).map((device) => ({ id: `device:${device.id}`, label: device.name, description: [device.vendor, device.ipAddress].filter(Boolean).join(" \xB7 ") }));
         return [...pages, ...devices];
       },
+      searchOnEmpty: () => picker !== null,
       recent: () => recentSearches,
       clearRecent: () => {
         recentSearches = [];
       },
       onSelect: (item, state) => {
+        if (picker && item.id.startsWith("device:")) {
+          const chosen = site.getDevices().find((candidate) => candidate.id === item.id.slice(7));
+          const selection = picker;
+          picker = null;
+          if (chosen && selection.mode === "replace") {
+            const current = panels.get(selection.controller);
+            if (current) {
+              void showDevice(selection.controller, chosen, current.opener);
+              writePanelState();
+            }
+          } else if (chosen) open(chosen, selection.opener, [], true, selection.controller);
+          return;
+        }
         recentSearches = [state.query, ...recentSearches.filter((query) => query !== state.query)].slice(0, 5);
         if (item.id.startsWith("page:")) {
           const route = ROUTES.find((candidate) => candidate.id === item.id.slice(5));
@@ -10427,6 +10505,21 @@ body,
         }
       }
     });
+    function openPicker(controller, mode, opener) {
+      if (searchDialog.open) return;
+      picker = { controller, mode, opener };
+      searchInput.value = "";
+      searchInput.placeholder = mode === "compare" ? "Find a device to compare" : "Find a device";
+      searchLabel.textContent = mode === "compare" ? "Choose a device to compare" : "Switch device";
+      searchScopes.hidden = true;
+      search.open(opener);
+    }
+    searchDialog.addEventListener("close", () => {
+      picker = null;
+      searchInput.placeholder = "Search pages and devices";
+      searchLabel.textContent = "Search";
+      searchScopes.hidden = false;
+    });
     searchButton.addEventListener("click", () => search.open(searchButton));
     const onGlobalSearchKey = (event) => {
       if (event.defaultPrevented || event.isComposing || event.repeat || event.altKey || event.shiftKey || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "k") return;
@@ -10436,14 +10529,16 @@ body,
       search.open(document.activeElement);
     };
     document.addEventListener("keydown", onGlobalSearchKey, true);
-    function open(device, opener, candidates = [], additional = false) {
-      if (additional && openPanels2.length && !matchMedia("(max-width: 768px)").matches) {
+    function open(device, opener, candidates = [], additional = false, source) {
+      const moved = openPanels2.find((panel) => panel.preserveOnNextOpen);
+      if ((additional || moved) && openPanels2.length && !matchMedia("(max-width: 768px)").matches) {
         const existing = openPanels2.find((controller) => panels.get(controller)?.requested === device.id);
         if (existing) {
           existing.body.parentElement?.querySelector(".ds-side-panel-title")?.focus();
           return;
         }
-        const current = openPanels2[openPanels2.length - 1];
+        const current = source ?? moved ?? openPanels2[openPanels2.length - 1];
+        const origin = source?.body.parentElement?.getBoundingClientRect();
         let copy = null;
         copy = current.beside({ onClose: () => {
           if (copy) panels.delete(copy);
@@ -10451,7 +10546,19 @@ body,
         if (copy) {
           trackPanel(copy);
           openPanels2.push(copy);
-          void showDevice(copy, device, opener, candidates);
+          const newPanel = copy;
+          void showDevice(newPanel, device, opener, candidates).then(() => {
+            const target = newPanel.body.parentElement;
+            if (!origin || !target?.isConnected || !newPanel.isOpen || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+            const destination = target.getBoundingClientRect();
+            if (!destination.width || !destination.height) return;
+            const scaleX = Math.max(0.75, Math.min(1.3, origin.width / destination.width));
+            const scaleY = Math.max(0.75, Math.min(1.3, origin.height / destination.height));
+            target.animate([
+              { transformOrigin: "top left", transform: `translate(${origin.left - destination.left}px, ${origin.top - destination.top}px) scale(${scaleX}, ${scaleY})`, opacity: 0.55 },
+              { transformOrigin: "top left", transform: "none", opacity: 1 }
+            ], { duration: 220, easing: "cubic-bezier(.2,.8,.3,1)" });
+          });
           writePanelState();
           return;
         }
@@ -10466,6 +10573,7 @@ body,
       record.opener = opener;
       record.device = device;
       record.requested = device.id;
+      record.compare.hidden = false;
       const ticket = ++record.ticket;
       const panel = controller.body.parentElement;
       const prefix = panel.id;
@@ -10483,29 +10591,6 @@ body,
       }
       const summary = content.querySelector("[data-register-summary]");
       summary.textContent = "Loading registers\u2026";
-      if (candidates.length > 1) {
-        const label = element("label", "device-switch-label", "Inspect selected device");
-        const select = element("select", "device-switch");
-        select.setAttribute("aria-label", "Inspect selected device");
-        for (const id of candidates) {
-          const item = site.getDevices().find((candidate) => candidate.id === id);
-          if (item) {
-            const option = element("option", "", item.name);
-            option.value = id;
-            select.append(option);
-          }
-        }
-        select.value = device.id;
-        select.addEventListener("change", () => {
-          const next = site.getDevices().find((item) => item.id === select.value);
-          if (next) {
-            void showDevice(controller, next, opener, candidates).then(() => controller.body.querySelector(".device-switch")?.focus());
-            writePanelState();
-          }
-        });
-        label.append(select);
-        content.prepend(label);
-      }
       const input = content.querySelector(".register-search");
       const rows = content.querySelector(".register-table tbody");
       const filters = content.querySelector(".filters");
@@ -10574,7 +10659,16 @@ body,
         void loadRegisters();
       });
       const opened = await controller.open({ title: device.name, content });
-      if (opened && valid()) void loadRegisters();
+      if (opened && valid()) {
+        const title = panel.querySelector(".ds-side-panel-title");
+        const switcher = button(device.name, "device-title-button");
+        switcher.setAttribute("aria-label", device.name);
+        switcher.setAttribute("aria-description", "Choose another device");
+        switcher.title = "Switch device";
+        switcher.setAttribute("aria-haspopup", "dialog");
+        title.replaceChildren(switcher);
+        void loadRegisters();
+      }
     }
     function showMissing(controller, id) {
       const record = panels.get(controller);
@@ -10582,6 +10676,7 @@ body,
       record.ticket++;
       record.device = null;
       record.requested = id;
+      record.compare.hidden = true;
       const content = element("p", "device-detail", "This device is not available in the current data source.");
       void controller.open({ title: "Device not found", content });
     }
