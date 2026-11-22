@@ -3762,6 +3762,12 @@ body {
   .ds-side-panel {
     --ds-side-panel-host-edge:12px;
   }
+  .ds-side-panel[data-mode=docked] {
+    inset-block-end: 12px;
+    inset-inline-end: calc(var(--_dock-end, 0px) + 12px);
+    border-start-end-radius: 12px;
+    border-end-end-radius: 12px;
+  }
 }
 
 /* src/ion-ui/shell-scroll.css */
@@ -3775,6 +3781,14 @@ body {
 }
 .ds-app-shell-header {
   flex: none;
+}
+@media (min-width: 769px) and (min-height: 421px) {
+  [data-ds-docked] .ds-app-shell {
+    overflow: visible;
+  }
+  [data-ds-docked] .ds-app-shell-header {
+    inline-size: calc(100% + var(--ds-side-panel-docked-room, 0px));
+  }
 }
 .ds-app-shell-body {
   flex: 1 1 0;
