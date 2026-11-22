@@ -1242,6 +1242,204 @@
 
 /* src/ion-ui/batch-bar.css */
 
+/* src/vendor/ui/components/global-search/global-search.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  .ds-global-search-dialog {
+    box-sizing: border-box;
+    inline-size: min(42rem, calc(100vw - 2rem));
+    max-block-size: min(42rem, calc(100dvh - 2rem));
+    padding: 0;
+    border: 1px solid var(--ds-color-rim);
+    border-radius: 1rem;
+    background: var(--ds-color-surface);
+    color: var(--ds-color-text);
+    box-shadow: var(--ds-shadow-popup);
+    font: 400 var(--ds-type-control-size)/1.5 var(--ds-font);
+  }
+  .ds-global-search-dialog::backdrop {
+    background: color-mix(in srgb, var(--ds-color-veil) 45%, transparent);
+  }
+  .ds-global-search-dialog form {
+    display: flex;
+    flex-direction: column;
+    max-block-size: inherit;
+    min-block-size: min(16rem, calc(100dvh - 2rem));
+  }
+  .ds-global-search-input {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    padding: 1rem;
+    border-block-end: 1px solid var(--ds-color-divider);
+  }
+  .ds-global-search-input::before {
+    content: "";
+    flex: none;
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10 3a7 7 0 1 0 4.9 12l4.55 4.55 1.1-1.1L16 13.9A7 7 0 0 0 10 3Zm0 1.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .ds-global-search-input:has(input:focus-visible) {
+    outline: 2px solid var(--ds-color-focus);
+    outline-offset: -2px;
+  }
+  @supports selector(:has(*)) {
+    .ds-global-search-input input:focus-visible {
+      outline: none;
+    }
+  }
+  .ds-global-search-input label {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .ds-global-search-input input {
+    flex: 1;
+    min-inline-size: 0;
+    padding: .5rem;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 1.25rem;
+  }
+  .ds-global-search-input button {
+    margin-inline-start: .5rem;
+    border-inline-start: 1px solid var(--ds-color-divider);
+    flex: none;
+    inline-size: var(--ds-control-size-m);
+    block-size: var(--ds-control-size-m);
+    border-block: 0;
+    border-inline-end: 0;
+    border-radius: 0 .5rem .5rem 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 1.25rem;
+    cursor: pointer;
+  }
+  .ds-global-search-scopes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    border: 0;
+    margin: 0;
+    padding: 1rem 1rem 0;
+  }
+  .ds-global-search-scopes legend {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .ds-global-search-scope input {
+    position: absolute;
+    opacity: 0;
+  }
+  .ds-global-search-scope span {
+    display: flex;
+    align-items: center;
+    min-block-size: var(--ds-control-size-s);
+    padding-inline: .75rem;
+    border: 1px solid var(--ds-color-control-edge);
+    border-radius: .5rem;
+    background: var(--ds-color-canvas);
+    cursor: pointer;
+  }
+  .ds-global-search-scope input:checked + span {
+    background: var(--ds-color-state);
+    border-color: var(--ds-color-state);
+    color: var(--ds-color-on-state);
+  }
+  .ds-global-search-scope input:focus-visible + span,
+  .ds-global-search-dialog button:focus-visible {
+    outline: 2px solid var(--ds-color-focus);
+    outline-offset: 2px;
+  }
+  .ds-global-search-status {
+    margin: 1rem 1rem .25rem;
+    color: var(--ds-color-text-muted);
+  }
+  .ds-global-search-results {
+    display: grid;
+    gap: .125rem;
+    overflow: auto;
+    flex: 1 1 auto;
+    min-block-size: 0;
+    padding: 0 1rem;
+    overscroll-behavior: contain;
+  }
+  .ds-global-search-results button {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    min-block-size: var(--ds-control-size-m);
+    padding: .5rem;
+    border: 0;
+    border-radius: .5rem;
+    text-align: start;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .ds-global-search-results button:hover,
+  .ds-global-search-results button:focus {
+    background: var(--ds-color-neutral-hover);
+  }
+  .ds-global-search-results small,
+  .ds-global-search-help {
+    color: var(--ds-color-text-muted);
+  }
+  .ds-global-search-help {
+    margin: 1rem;
+    font-size: var(--ds-type-control-small);
+  }
+  @media (max-width: 48rem) {
+    .ds-global-search-dialog {
+      inline-size: 100%;
+      max-inline-size: none;
+      max-block-size: 100dvh;
+      block-size: 100dvh;
+      margin: 0;
+      border-radius: 0;
+      padding-block: env(safe-area-inset-top, 0px) env(safe-area-inset-bottom, 0px);
+    }
+    .ds-global-search-dialog form {
+      block-size: 100%;
+    }
+    .ds-global-search-scopes {
+      max-block-size: 30dvh;
+      overflow: auto;
+      flex: none;
+    }
+  }
+  @media (pointer: coarse) {
+    .ds-global-search-input button,
+    .ds-global-search-scope span {
+      min-block-size: var(--ds-control-min-size);
+    }
+    .ds-global-search-input button {
+      inline-size: var(--ds-control-min-size);
+    }
+  }
+  @media (forced-colors: active) {
+    .ds-global-search-input:has(input:focus-visible) {
+      outline-color: Highlight;
+    }
+    .ds-global-search-scope input:checked + span {
+      forced-color-adjust: none;
+      background: Highlight;
+      color: HighlightText;
+    }
+  }
+}
+
 /* src/ion-ui/widget-layout.css */
 .widget-layout-container {
   container-type: inline-size;
@@ -6087,6 +6285,78 @@ body,
     text-overflow: ellipsis;
   }
 }
+.global-search-host .ds-global-search {
+  --ds-font:Roboto,Arial,sans-serif;
+  --ds-color-surface:var(--color-neutral-000);
+  --ds-color-canvas:var(--color-neutral-100);
+  --ds-color-text:var(--color-neutral-600);
+  --ds-color-text-muted:var(--color-neutral-400);
+  --ds-color-divider:var(--color-neutral-200);
+  --ds-color-rim:var(--color-neutral-200);
+  --ds-color-control-edge:var(--color-neutral-200);
+  --ds-color-neutral-hover:var(--color-neutral-100);
+  --ds-color-state:var(--color-primary-primary);
+  --ds-color-on-state:#fff;
+  --ds-color-focus:var(--color-info-info);
+  --ds-shadow-popup:var(--shadow-flyout);
+}
+.global-search-host [data-search-trigger] {
+  display: none;
+}
+.global-search-host .ds-global-search-input input:focus-visible {
+  outline: none;
+}
+.global-search-host .ds-global-search-input:has(input:focus-visible) {
+  outline: 2px solid var(--color-info-info);
+  outline-offset: -2px;
+}
+.shell-global-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 12px;
+  background: #202049;
+  color: #d0cce2;
+  text-align: start;
+}
+.shell-global-search:hover {
+  background: #2b2b59;
+}
+.shell-global-search:focus-visible {
+  outline: 2px solid var(--color-info-info);
+  outline-offset: 2px;
+}
+.shell-global-search kbd {
+  margin-inline-start: auto;
+  color: inherit;
+  font: inherit;
+  font-size: 12px;
+}
+.shell-search-icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  background: currentColor;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10 3a7 7 0 1 0 4.9 12l4.55 4.55 1.1-1.1L16 13.9A7 7 0 0 0 10 3Zm0 1.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+[data-ds-collapsed] .shell-global-search {
+  display: none;
+}
+@media (forced-colors: active) {
+  .global-search-host .ds-global-search-input:has(input:focus-visible) {
+    outline-color: Highlight;
+  }
+}
+.global-search-host .ds-global-search-status {
+  margin: 16px 16px 4px;
+}
+.global-search-host .ds-global-search-help {
+  margin: 16px;
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -6470,8 +6740,8 @@ body,
     const doc = element2.ownerDocument;
     const view = doc.defaultView;
     const touchStart = touchThreshold ?? Math.max(threshold, TOUCH_THRESHOLD);
-    const navigator = view.navigator ?? {};
-    const mac = /mac/i.test(navigator.userAgentData?.platform ?? "") || /Mac|iPhone|iPad|iPod/.test(navigator.platform ?? "");
+    const navigator2 = view.navigator ?? {};
+    const mac = /mac/i.test(navigator2.userAgentData?.platform ?? "") || /Mac|iPhone|iPad|iPod/.test(navigator2.platform ?? "");
     const controller = new view.AbortController();
     const listen = (target, type, handler, options = {}) => target.addEventListener(type, handler, { ...options, signal: controller.signal });
     let gesture = null;
@@ -7848,8 +8118,8 @@ body,
       const height = Math.max(0, view.innerHeight - boundary() - space * 2 - hostEdge());
       const top = boundary() + space;
       return {
-        left: { left: space, top, width: half, height },
-        right: { left: view.innerWidth - hostEdge() - space - half, top, width: half, height }
+        left: { left: space + (rtl() ? hostEdge() : 0), top, width: half, height },
+        right: { left: view.innerWidth - (rtl() ? 0 : hostEdge()) - space - half, top, width: half, height }
       };
     };
     const zoneAt = (x) => x <= SNAP_ZONE ? "left" : x >= view.innerWidth - SNAP_ZONE ? "right" : null;
@@ -8309,6 +8579,175 @@ body,
   // src/vendor/ui/side-panel-markup.ts
   var sidePanelMarkup = '<aside class="ds-side-panel" id="device-side-panel" data-mode="floating" aria-labelledby="device-side-panel-title" style="--ds-side-panel-width: 40rem" hidden><div class="ds-side-panel-grip" data-edge="left" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize width"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="right" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize width"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="top" role="separator" tabindex="0" aria-orientation="horizontal" aria-label="Resize height"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="bottom" role="separator" tabindex="0" aria-orientation="horizontal" aria-label="Resize height"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="top-left" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="top-right" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="bottom-left" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="bottom-right" aria-hidden="true"></div><header class="ds-side-panel-head"><button hidden class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-back" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="chevron-left" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5303 4.21967C15.8232 4.51256 15.8232 4.98744 15.5303 5.28033L8.81066 12L15.5303 18.7197C15.8232 19.0126 15.8232 19.4874 15.5303 19.7803C15.2374 20.0732 14.7626 20.0732 14.4697 19.7803L7.21967 12.5303C6.92678 12.2374 6.92678 11.7626 7.21967 11.4697L14.4697 4.21967C14.7626 3.92678 15.2374 3.92678 15.5303 4.21967Z"/></svg><span data-ds-button-label>Back</span></button><h2 class="ds-side-panel-title" id="device-side-panel-title" tabindex="-1">Device details</h2><div class="ds-side-panel-actions"><button aria-haspopup="menu" aria-expanded="false" aria-controls="device-side-panel-layout-menu" class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-layout" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="more-horizontal" viewBox="0 0 24 24" fill="currentColor"><path d="M7.75 12C7.75 12.9665 6.9665 13.75 6 13.75C5.0335 13.75 4.25 12.9665 4.25 12C4.25 11.0335 5.0335 10.25 6 10.25C6.9665 10.25 7.75 11.0335 7.75 12ZM13.75 12C13.75 12.9665 12.9665 13.75 12 13.75C11.0335 13.75 10.25 12.9665 10.25 12C10.25 11.0335 11.0335 10.25 12 10.25C12.9665 10.25 13.75 11.0335 13.75 12ZM18 13.75C18.9665 13.75 19.75 12.9665 19.75 12C19.75 11.0335 18.9665 10.25 18 10.25C17.0335 10.25 16.25 11.0335 16.25 12C16.25 12.9665 17.0335 13.75 18 13.75Z"/></svg><span data-ds-button-label>Panel layout</span></button><div class="ds-menu" id="device-side-panel-layout-menu" role="menu" popover="manual" aria-labelledby="device-side-panel-layout" data-size="s" data-ds-check><div class="ds-menu-group" role="group" aria-label="Panel layout"><button type="button" class="ds-menu-item" role="menuitemradio" tabindex="-1" name="layout" value="floating" aria-checked="true"><svg data-ds-menu-check aria-hidden="true" data-icon="checkmark" viewBox="0 0 24 24" fill="currentColor"><path d="M4.53033 12.9697C4.23744 12.6768 3.76256 12.6768 3.46967 12.9697C3.17678 13.2626 3.17678 13.7374 3.46967 14.0303L7.96967 18.5303C8.26256 18.8232 8.73744 18.8232 9.03033 18.5303L20.0303 7.53033C20.3232 7.23744 20.3232 6.76256 20.0303 6.46967C19.7374 6.17678 19.2626 6.17678 18.9697 6.46967L8.5 16.9393L4.53033 12.9697Z"/></svg><span data-ds-menu-label>Floating</span></button><button type="button" class="ds-menu-item" role="menuitemradio" tabindex="-1" name="layout" value="docked" aria-checked="false"><svg data-ds-menu-check aria-hidden="true" data-icon="checkmark" viewBox="0 0 24 24" fill="currentColor"><path d="M4.53033 12.9697C4.23744 12.6768 3.76256 12.6768 3.46967 12.9697C3.17678 13.2626 3.17678 13.7374 3.46967 14.0303L7.96967 18.5303C8.26256 18.8232 8.73744 18.8232 9.03033 18.5303L20.0303 7.53033C20.3232 7.23744 20.3232 6.76256 20.0303 6.46967C19.7374 6.17678 19.2626 6.17678 18.9697 6.46967L8.5 16.9393L4.53033 12.9697Z"/></svg><span data-ds-menu-label>Docked</span></button></div><hr class="ds-menu-separator"><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" value="wider"><span data-ds-menu-label>Wider</span></button><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" value="reset-size"><span data-ds-menu-label>Reset size</span></button><hr class="ds-menu-separator" data-ds-menu-cancel hidden><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" data-ds-menu-cancel hidden><span data-ds-menu-label>Cancel</span></button></div><a hidden class="ds-button" data-variant="tertiary" data-size="s" id="device-side-panel-full" data-icon-only="true" href="/"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="open" viewBox="0 0 24 24" fill="currentColor"><path d="M6.24992 4.5C5.28344 4.5 4.49996 5.2835 4.49996 6.25V17.75C4.49996 18.7165 5.28344 19.5 6.24992 19.5H17.7496C18.7161 19.5 19.4996 18.7165 19.4996 17.75V13.75C19.4996 13.3358 19.8354 13 20.2496 13C20.6638 13 20.9995 13.3358 20.9995 13.75V17.75C20.9995 19.5449 19.5445 21 17.7496 21H6.24992C4.45504 21 3 19.5449 3 17.75V6.25C3 4.45507 4.45504 3 6.24992 3H10.2498C10.664 3 10.9998 3.33579 10.9998 3.75C10.9998 4.16421 10.664 4.5 10.2498 4.5H6.24992ZM12.9997 3.75C12.9997 3.33579 13.3355 3 13.7497 3H20.25C20.6642 3 21 3.33579 21 3.75V10.25C21 10.6642 20.6642 11 20.25 11C19.8358 11 19.5 10.6642 19.5 10.25V5.56074L14.28 10.7804C13.9871 11.0732 13.5123 11.0732 13.2194 10.7803C12.9265 10.4874 12.9265 10.0125 13.2194 9.71964L18.4395 4.5H13.7497C13.3355 4.5 12.9997 4.16421 12.9997 3.75Z"/></svg><span data-ds-button-label>Open the full page</span></a><button class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-close" data-ds-shortcut="Escape" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="panel-right-contract" viewBox="0 0 24 24" fill="currentColor"><path d="M9.19253 9.24894C9.46962 8.94112 9.94384 8.91617 10.2517 9.1932L12.7517 11.4427C12.9098 11.5849 13 11.7874 13 12C13 12.2126 12.9098 12.4152 12.7517 12.5574L10.2517 14.8068C9.94384 15.0839 9.46962 15.0589 9.19253 14.7511C8.91543 14.4433 8.94039 13.9692 9.24827 13.6922L10.2955 12.7499H6.75C6.33579 12.7499 6 12.4141 6 12C6 11.5859 6.33579 11.2502 6.75 11.2502H10.2955L9.24828 10.3079C8.94039 10.0309 8.91543 9.55675 9.19253 9.24894ZM22 17.2506C22 18.7691 20.7688 20 19.25 20L4.75 20C3.23122 20 2 18.7691 2 17.2506V6.74937C2 5.23093 3.23122 4 4.75 4H19.25C20.7688 4 22 5.23094 22 6.74937L22 17.2506ZM19.25 18.5003C19.9404 18.5003 20.5 17.9408 20.5 17.2506L20.5 6.74937C20.5 6.05917 19.9404 5.49966 19.25 5.49966L15.9958 5.49966L15.9958 18.5003H19.25ZM14.4958 18.5003L14.4958 5.49966L4.75 5.49965C4.05965 5.49965 3.5 6.05917 3.5 6.74937L3.5 17.2506C3.5 17.9408 4.05964 18.5003 4.75 18.5003L14.4958 18.5003Z"/></svg><span data-ds-button-label>Close device details<span data-ds-keys="Esc" data-ds-keys-apple="Esc" aria-hidden="true"></span></span></button></div></header><div class="ds-side-panel-discard" role="group" aria-labelledby="device-side-panel-discard" hidden><p class="ds-side-panel-discard-question" id="device-side-panel-discard">Discard unsaved changes?</p><div class="ds-side-panel-discard-actions"><button class="ds-button" data-variant="primary" data-tone="danger" data-size="s" type="button" id="device-side-panel-discard-yes"><span data-ds-button-label>Discard</span></button><button class="ds-button" data-variant="secondary" data-size="s" type="button" id="device-side-panel-discard-no" aria-describedby="device-side-panel-discard"><span data-ds-button-label>Keep editing</span></button></div></div><div class="ds-side-panel-failed" hidden><p class="ds-side-panel-failed-text" role="alert" data-text="This could not be loaded."></p><button class="ds-button" data-variant="secondary" data-size="s" type="button" id="device-side-panel-retry"><span data-ds-button-label>Try again</span></button></div><div class="ds-side-panel-body"></div><footer class="ds-side-panel-foot"></footer></aside>';
 
+  // src/vendor/ui/global-search-markup.ts
+  var globalSearchMarkup = '<div class="ds-global-search" id="global-search"><a data-search-trigger href="/search">Search</a><dialog class="ds-global-search-dialog" aria-labelledby="global-search-label"><form action="/search" method="get" role="search"><div class="ds-global-search-input"><label id="global-search-label" for="global-search-query">Search</label><input id="global-search-query" type="search" name="q" placeholder="Search pages and devices" autocomplete="off"><button type="button" data-search-close aria-label="Close search">\xD7</button></div><fieldset class="ds-global-search-scopes"><legend>Search scope</legend><label class="ds-global-search-scope"><input type="radio" name="scope" value="all" checked><span>All</span></label><label class="ds-global-search-scope"><input type="radio" name="scope" value="pages"><span>Pages</span></label><label class="ds-global-search-scope"><input type="radio" name="scope" value="devices"><span>Devices</span></label></fieldset><p class="ds-global-search-status" role="status" aria-live="polite"></p><div class="ds-global-search-results"></div><p class="ds-global-search-help">Use arrow keys to move between results; Enter opens. Escape closes.</p></form></dialog></div>';
+
+  // src/vendor/ui/components/global-search/global-search.js
+  var mounts = /* @__PURE__ */ new WeakMap();
+  function enhanceGlobalSearch(root2, { search, onSelect, recent = () => [], clearRecent, text = {} } = {}) {
+    const view = root2?.ownerDocument?.defaultView;
+    if (!view || !(root2 instanceof view.HTMLElement) || mounts.has(root2)) throw new TypeError("Mount global search once on its rendered root.");
+    if (typeof search !== "function" || typeof onSelect !== "function" || typeof recent !== "function") throw new TypeError("Provide search, onSelect and an optional recent function.");
+    const words = { idle: "Start typing to search.", recent: "Recent searches", loading: "Searching\u2026", empty: "No results found.", error: "Search failed. Try again.", clear: "Clear recent searches", count: (count) => `${count} ${count === 1 ? "result" : "results"}`, ...text };
+    const trigger = root2.querySelector("[data-search-trigger]"), dialog = root2.querySelector("dialog"), form = root2.querySelector("form");
+    const input = root2.querySelector("input[type=search]"), status = root2.querySelector("[role=status]"), results = root2.querySelector(".ds-global-search-results");
+    if (!trigger || !dialog || !form || !input || !status || !results) throw new TypeError("Expected the rendered global search markup.");
+    const listeners = new view.AbortController();
+    let request = null, ticket = 0, opener = null;
+    const option = () => ({ query: input.value.trim(), scope: form.elements.scope.value });
+    const resetRequest = () => {
+      request?.abort();
+      request = null;
+      ticket++;
+    };
+    function row(label, click, description) {
+      const b = root2.ownerDocument.createElement("button");
+      b.type = "button";
+      b.dataset.searchResult = "";
+      const title = root2.ownerDocument.createElement("span");
+      title.textContent = label;
+      b.append(title);
+      if (description) {
+        const detail = root2.ownerDocument.createElement("small");
+        detail.textContent = description;
+        b.append(detail);
+      }
+      b.addEventListener("click", click);
+      results.append(b);
+    }
+    function showRecent() {
+      results.replaceChildren();
+      const items = recent();
+      if (!Array.isArray(items)) throw new TypeError("recent() must return an array of search strings.");
+      status.textContent = items.length ? words.recent : words.idle;
+      for (const value of items) if (typeof value === "string" && value.trim()) row(value, () => {
+        input.value = value;
+        input.focus();
+        update();
+      });
+      if (items.length && typeof clearRecent === "function") row(words.clear, () => {
+        clearRecent();
+        showRecent();
+        input.focus();
+      });
+    }
+    async function update() {
+      resetRequest();
+      const state = option();
+      if (!state.query) {
+        showRecent();
+        return;
+      }
+      const current = ticket;
+      request = new view.AbortController();
+      const signal = request.signal;
+      results.replaceChildren();
+      status.textContent = words.loading;
+      try {
+        const found = await search({ ...state, signal });
+        if (signal.aborted || current !== ticket) return;
+        if (!Array.isArray(found)) throw new TypeError("search() must return an array.");
+        const usable = found.filter((x) => x && typeof x.id === "string" && typeof x.label === "string");
+        status.textContent = usable.length ? words.count(usable.length) : words.empty;
+        for (const item of usable) row(item.label, () => {
+          opener = null;
+          dialog.close();
+          onSelect(item, state);
+        }, typeof item.description === "string" ? item.description : "");
+      } catch (error) {
+        if (!signal.aborted && current === ticket) status.textContent = words.error;
+      }
+    }
+    function open(from = root2.ownerDocument.activeElement) {
+      if (dialog.open) {
+        input.focus();
+        return;
+      }
+      opener = from;
+      dialog.showModal();
+      input.focus();
+      update();
+    }
+    trigger.addEventListener("click", (event) => {
+      if (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      open(trigger);
+    }, { signal: listeners.signal });
+    root2.querySelector("[data-search-close]").addEventListener("click", () => dialog.close(), { signal: listeners.signal });
+    dialog.addEventListener("close", () => {
+      resetRequest();
+      if (opener?.isConnected) opener.focus();
+    }, { signal: listeners.signal });
+    input.addEventListener("input", update, { signal: listeners.signal });
+    form.addEventListener("change", (event) => {
+      if (event.target.name === "scope") update();
+    }, { signal: listeners.signal });
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const first = results.querySelector("[data-search-result]");
+      if (first && option().query) first.click();
+    }, { signal: listeners.signal });
+    dialog.addEventListener("keydown", (event) => {
+      if (!["ArrowDown", "ArrowUp"].includes(event.key) || event.target !== input && !event.target.matches("[data-search-result]")) return;
+      const rows = [...results.querySelectorAll("[data-search-result]")];
+      if (!rows.length) return;
+      const index = rows.indexOf(root2.ownerDocument.activeElement), next = event.key === "ArrowDown" ? Math.min(index + 1, rows.length - 1) : index <= 0 ? -1 : index - 1;
+      event.preventDefault();
+      (rows[next] || input).focus();
+    }, { signal: listeners.signal });
+    const dispose2 = () => {
+      resetRequest();
+      if (dialog.open) dialog.close();
+      listeners.abort();
+      mounts.delete(root2);
+    };
+    mounts.set(root2, dispose2);
+    return { open, dispose: dispose2 };
+  }
+
+  // src/platform/hash-state.ts
+  function splitHash(hash) {
+    const at = hash.indexOf("?");
+    return { path: at < 0 ? hash : hash.slice(0, at), params: new URLSearchParams(at < 0 ? "" : hash.slice(at + 1)) };
+  }
+  function hashWithValues(hash, key, values, defaultPath = "#/devices") {
+    const { path, params } = splitHash(hash);
+    params.delete(key);
+    for (const value of values) params.append(key, value);
+    const query = params.toString();
+    return (path && path !== "#" ? path : defaultPath) + (query ? "?" + query : "");
+  }
+  function setHashValues(key, values, defaultPath = "#/devices") {
+    const next = hashWithValues(location.hash, key, values, defaultPath);
+    if (next !== location.hash) location.hash = next;
+  }
+  function onHashStateChange(listener2) {
+    window.addEventListener("hashchange", listener2);
+    return () => window.removeEventListener("hashchange", listener2);
+  }
+
+  // src/app/registry.ts
+  var ROUTES = [
+    { id: "infrastructure", hash: "#/infrastructure", label: "Infrastructure", icon: "grid", headingId: "infrastructure-title" },
+    { id: "devices", hash: "#/devices", label: "Devices", icon: "list", headingId: "devices-title", parent: "infrastructure" }
+  ];
+  var DEFAULT_ROUTE = "devices";
+  function routeById(id) {
+    const route = ROUTES.find((candidate) => candidate.id === id);
+    if (!route) throw new Error(`Unknown route id: ${id}`);
+    return route;
+  }
+  function resolveRoute(hash) {
+    const path = splitHash(hash).path;
+    if (path === "" || path === "#") return routeById(DEFAULT_ROUTE);
+    return ROUTES.find((candidate) => candidate.hash === path);
+  }
+  function navigationDirection(from, to) {
+    if (to.parent === from.id) return "deeper";
+    if (from.parent === to.id) return "back";
+    return "same-level";
+  }
+
   // src/ion-ui/widget-header.ts
   function decorateWidgetTitleBar(header) {
     header.classList.add("widget-titlebar");
@@ -8350,27 +8789,6 @@ body,
     }
     decorateWidgetTitleBar(header);
     return header;
-  }
-
-  // src/platform/hash-state.ts
-  function splitHash(hash) {
-    const at = hash.indexOf("?");
-    return { path: at < 0 ? hash : hash.slice(0, at), params: new URLSearchParams(at < 0 ? "" : hash.slice(at + 1)) };
-  }
-  function hashWithValues(hash, key, values, defaultPath = "#/devices") {
-    const { path, params } = splitHash(hash);
-    params.delete(key);
-    for (const value of values) params.append(key, value);
-    const query = params.toString();
-    return (path && path !== "#" ? path : defaultPath) + (query ? "?" + query : "");
-  }
-  function setHashValues(key, values, defaultPath = "#/devices") {
-    const next = hashWithValues(location.hash, key, values, defaultPath);
-    if (next !== location.hash) location.hash = next;
-  }
-  function onHashStateChange(listener2) {
-    window.addEventListener("hashchange", listener2);
-    return () => window.removeEventListener("hashchange", listener2);
   }
 
   // src/vendor/ui/components/app-shell/app-shell.js
@@ -8727,28 +9145,6 @@ body,
   // src/vendor/ui/shell-markup.ts
   var shellMarkup = '<div class="ds-app-shell" id="app" data-ds-app-shell data-ds-sections="one"><a class="ds-app-shell-skip" href="#app-main">Skip to content</a><div class="ds-app-shell-sidebar"><div class="ds-app-shell-panel" id="app-panel" popover><div class="ds-app-shell-search" hidden><svg class="ds-icon" aria-hidden="true" data-icon="search" viewBox="0 0 24 24" fill="currentColor"><path d="M16.1017 17.1624C14.717 18.3101 12.9391 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11C19 12.9391 18.3101 14.717 17.1624 16.1018L21.7803 20.7197C22.0732 21.0126 22.0732 21.4874 21.7803 21.7803C21.4874 22.0732 21.0125 22.0732 20.7196 21.7803L16.1017 17.1624ZM17.5 11C17.5 7.41015 14.5899 4.5 11 4.5C7.41015 4.5 4.5 7.41015 4.5 11C4.5 14.5899 7.41015 17.5 11 17.5C14.5899 17.5 17.5 14.5899 17.5 11Z"/></svg><input type="search" id="app-search" aria-label="Search pages" placeholder="Search pages" autocomplete="off" enterkeyhint="go" spellcheck="false"><kbd class="ds-app-shell-kbd" aria-hidden="true">Ctrl K</kbd></div><nav class="ds-app-shell-pages" aria-label="Navigation"><section class="ds-app-shell-group" data-ds-section="0" data-ds-active><ul class="ds-app-shell-rows" data-ds-level="2" aria-label="Navigation"><li><a class="ds-app-shell-row" href="/__rxui__/infrastructure"><svg class="ds-icon" aria-hidden="true" data-icon="grid" viewBox="0 0 24 24" fill="currentColor"><path d="M8.75 13C9.99264 13 11 14.0074 11 15.25V18.75C11 19.9926 9.99264 21 8.75 21H5.25C4.00736 21 3 19.9926 3 18.75V15.25C3 14.0074 4.00736 13 5.25 13H8.75ZM18.75 13C19.9926 13 21 14.0074 21 15.25V18.75C21 19.9926 19.9926 21 18.75 21H15.25C14.0074 21 13 19.9926 13 18.75V15.25C13 14.0074 14.0074 13 15.25 13H18.75ZM8.75 14.5H5.25C4.83579 14.5 4.5 14.8358 4.5 15.25V18.75C4.5 19.1642 4.83579 19.5 5.25 19.5H8.75C9.16421 19.5 9.5 19.1642 9.5 18.75V15.25C9.5 14.8358 9.16421 14.5 8.75 14.5ZM18.75 14.5H15.25C14.8358 14.5 14.5 14.8358 14.5 15.25V18.75C14.5 19.1642 14.8358 19.5 15.25 19.5H18.75C19.1642 19.5 19.5 19.1642 19.5 18.75V15.25C19.5 14.8358 19.1642 14.5 18.75 14.5ZM8.75 3C9.99264 3 11 4.00736 11 5.25V8.75C11 9.99264 9.99264 11 8.75 11H5.25C4.00736 11 3 9.99264 3 8.75V5.25C3 4.00736 4.00736 3 5.25 3H8.75ZM18.75 3C19.9926 3 21 4.00736 21 5.25V8.75C21 9.99264 19.9926 11 18.75 11H15.25C14.0074 11 13 9.99264 13 8.75V5.25C13 4.00736 14.0074 3 15.25 3H18.75ZM8.75 4.5H5.25C4.83579 4.5 4.5 4.83579 4.5 5.25V8.75C4.5 9.16421 4.83579 9.5 5.25 9.5H8.75C9.16421 9.5 9.5 9.16421 9.5 8.75V5.25C9.5 4.83579 9.16421 4.5 8.75 4.5ZM18.75 4.5H15.25C14.8358 4.5 14.5 4.83579 14.5 5.25V8.75C14.5 9.16421 14.8358 9.5 15.25 9.5H18.75C19.1642 9.5 19.5 9.16421 19.5 8.75V5.25C19.5 4.83579 19.1642 4.5 18.75 4.5Z"/></svg><span class="ds-app-shell-label">Infrastructure</span></a></li><li><a class="ds-app-shell-row" href="/__rxui__/devices" aria-current="page"><svg class="ds-icon" aria-hidden="true" data-icon="list" viewBox="0 0 24 24" fill="currentColor"><path d="M2 5.75C2 5.33579 2.33579 5 2.75 5H18.25C18.6642 5 19 5.33579 19 5.75C19 6.16421 18.6642 6.5 18.25 6.5H2.75C2.33579 6.5 2 6.16421 2 5.75ZM2 17.75C2 17.3358 2.33579 17 2.75 17H15.25C15.6642 17 16 17.3358 16 17.75C16 18.1642 15.6642 18.5 15.25 18.5H2.75C2.33579 18.5 2 18.1642 2 17.75ZM2.75 11C2.33579 11 2 11.3358 2 11.75C2 12.1642 2.33579 12.5 2.75 12.5H21.25C21.6642 12.5 22 12.1642 22 11.75C22 11.3358 21.6642 11 21.25 11H2.75Z"/></svg><span class="ds-app-shell-label">Devices</span></a></li></ul></section><p class="ds-app-shell-empty" role="status" data-ds-words="Nothing matches." data-ds-found="{count} pages found" data-ds-found-one="1 page found"></p></nav><button class="ds-app-shell-row ds-app-shell-cancel" type="button" data-ds-menu-cancel hidden>Cancel</button></div></div><div class="ds-app-shell-content"><header class="ds-app-shell-header"><button class="ds-button ds-app-shell-toggle" aria-controls="app-panel" aria-expanded="true" data-ds-collapse="Hide navigation" data-ds-expand="Show navigation" hidden data-variant="tertiary" data-size="m" type="button" id="app-toggle" data-ds-shortcut="Mod+B" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="panel-right-contract" viewBox="0 0 24 24" fill="currentColor"><path d="M9.19253 9.24894C9.46962 8.94112 9.94384 8.91617 10.2517 9.1932L12.7517 11.4427C12.9098 11.5849 13 11.7874 13 12C13 12.2126 12.9098 12.4152 12.7517 12.5574L10.2517 14.8068C9.94384 15.0839 9.46962 15.0589 9.19253 14.7511C8.91543 14.4433 8.94039 13.9692 9.24827 13.6922L10.2955 12.7499H6.75C6.33579 12.7499 6 12.4141 6 12C6 11.5859 6.33579 11.2502 6.75 11.2502H10.2955L9.24828 10.3079C8.94039 10.0309 8.91543 9.55675 9.19253 9.24894ZM22 17.2506C22 18.7691 20.7688 20 19.25 20L4.75 20C3.23122 20 2 18.7691 2 17.2506V6.74937C2 5.23093 3.23122 4 4.75 4H19.25C20.7688 4 22 5.23094 22 6.74937L22 17.2506ZM19.25 18.5003C19.9404 18.5003 20.5 17.9408 20.5 17.2506L20.5 6.74937C20.5 6.05917 19.9404 5.49966 19.25 5.49966L15.9958 5.49966L15.9958 18.5003H19.25ZM14.4958 18.5003L14.4958 5.49966L4.75 5.49965C4.05965 5.49965 3.5 6.05917 3.5 6.74937L3.5 17.2506C3.5 17.9408 4.05964 18.5003 4.75 18.5003L14.4958 18.5003Z"/></svg><span data-ds-button-label>Hide navigation<span data-ds-keys="Ctrl+B" data-ds-keys-apple="\u2318B" aria-hidden="true"></span></span></button><div class="ds-app-shell-identity"><a class="ds-app-shell-product" href="/__rxui__/infrastructure">Satellite</a></div><div class="ds-app-shell-end"><div class="ds-app-shell-tools"><span class="demo">Sample data</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to dark theme"><svg class="theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4v16M12 4a8 8 0 0 1 0 16Z" fill="currentColor"/></svg></button></div></div></header><div class="ds-app-shell-body"><main class="ds-app-shell-main" id="app-main" tabindex="-1"><div id="app-content"></div></main></div></div><nav class="ds-app-shell-tabbar" aria-label="Navigation"><ul><li><a class="ds-app-shell-tab" href="/__rxui__/infrastructure"><svg class="ds-icon" aria-hidden="true" data-icon="grid" viewBox="0 0 24 24" fill="currentColor"><path d="M8.75 13C9.99264 13 11 14.0074 11 15.25V18.75C11 19.9926 9.99264 21 8.75 21H5.25C4.00736 21 3 19.9926 3 18.75V15.25C3 14.0074 4.00736 13 5.25 13H8.75ZM18.75 13C19.9926 13 21 14.0074 21 15.25V18.75C21 19.9926 19.9926 21 18.75 21H15.25C14.0074 21 13 19.9926 13 18.75V15.25C13 14.0074 14.0074 13 15.25 13H18.75ZM8.75 14.5H5.25C4.83579 14.5 4.5 14.8358 4.5 15.25V18.75C4.5 19.1642 4.83579 19.5 5.25 19.5H8.75C9.16421 19.5 9.5 19.1642 9.5 18.75V15.25C9.5 14.8358 9.16421 14.5 8.75 14.5ZM18.75 14.5H15.25C14.8358 14.5 14.5 14.8358 14.5 15.25V18.75C14.5 19.1642 14.8358 19.5 15.25 19.5H18.75C19.1642 19.5 19.5 19.1642 19.5 18.75V15.25C19.5 14.8358 19.1642 14.5 18.75 14.5ZM8.75 3C9.99264 3 11 4.00736 11 5.25V8.75C11 9.99264 9.99264 11 8.75 11H5.25C4.00736 11 3 9.99264 3 8.75V5.25C3 4.00736 4.00736 3 5.25 3H8.75ZM18.75 3C19.9926 3 21 4.00736 21 5.25V8.75C21 9.99264 19.9926 11 18.75 11H15.25C14.0074 11 13 9.99264 13 8.75V5.25C13 4.00736 14.0074 3 15.25 3H18.75ZM8.75 4.5H5.25C4.83579 4.5 4.5 4.83579 4.5 5.25V8.75C4.5 9.16421 4.83579 9.5 5.25 9.5H8.75C9.16421 9.5 9.5 9.16421 9.5 8.75V5.25C9.5 4.83579 9.16421 4.5 8.75 4.5ZM18.75 4.5H15.25C14.8358 4.5 14.5 4.83579 14.5 5.25V8.75C14.5 9.16421 14.8358 9.5 15.25 9.5H18.75C19.1642 9.5 19.5 9.16421 19.5 8.75V5.25C19.5 4.83579 19.1642 4.5 18.75 4.5Z"/></svg><span class="ds-truncate" title="Infrastructure"><span class="ds-truncate-text" dir="auto">Infrastructure</span></span></a></li><li><a class="ds-app-shell-tab" href="/__rxui__/devices" aria-current="page"><svg class="ds-icon" aria-hidden="true" data-icon="list" viewBox="0 0 24 24" fill="currentColor"><path d="M2 5.75C2 5.33579 2.33579 5 2.75 5H18.25C18.6642 5 19 5.33579 19 5.75C19 6.16421 18.6642 6.5 18.25 6.5H2.75C2.33579 6.5 2 6.16421 2 5.75ZM2 17.75C2 17.3358 2.33579 17 2.75 17H15.25C15.6642 17 16 17.3358 16 17.75C16 18.1642 15.6642 18.5 15.25 18.5H2.75C2.33579 18.5 2 18.1642 2 17.75ZM2.75 11C2.33579 11 2 11.3358 2 11.75C2 12.1642 2.33579 12.5 2.75 12.5H21.25C21.6642 12.5 22 12.1642 22 11.75C22 11.3358 21.6642 11 21.25 11H2.75Z"/></svg><span class="ds-truncate" title="Devices"><span class="ds-truncate-text" dir="auto">Devices</span></span></a></li><li><button class="ds-app-shell-tab" type="button" popovertarget="app-panel"><svg class="ds-icon" aria-hidden="true" data-icon="more-horizontal" viewBox="0 0 24 24" fill="currentColor"><path d="M7.75 12C7.75 12.9665 6.9665 13.75 6 13.75C5.0335 13.75 4.25 12.9665 4.25 12C4.25 11.0335 5.0335 10.25 6 10.25C6.9665 10.25 7.75 11.0335 7.75 12ZM13.75 12C13.75 12.9665 12.9665 13.75 12 13.75C11.0335 13.75 10.25 12.9665 10.25 12C10.25 11.0335 11.0335 10.25 12 10.25C12.9665 10.25 13.75 11.0335 13.75 12ZM18 13.75C18.9665 13.75 19.75 12.9665 19.75 12C19.75 11.0335 18.9665 10.25 18 10.25C17.0335 10.25 16.25 11.0335 16.25 12C16.25 12.9665 17.0335 13.75 18 13.75Z"/></svg><span class="ds-truncate" title="More"><span class="ds-truncate-text" dir="auto">More</span></span></button></li></ul></nav></div>';
 
-  // src/app/registry.ts
-  var ROUTES = [
-    { id: "infrastructure", hash: "#/infrastructure", label: "Infrastructure", icon: "grid", headingId: "infrastructure-title" },
-    { id: "devices", hash: "#/devices", label: "Devices", icon: "list", headingId: "devices-title", parent: "infrastructure" }
-  ];
-  var DEFAULT_ROUTE = "devices";
-  function routeById(id) {
-    const route = ROUTES.find((candidate) => candidate.id === id);
-    if (!route) throw new Error(`Unknown route id: ${id}`);
-    return route;
-  }
-  function resolveRoute(hash) {
-    const path = splitHash(hash).path;
-    if (path === "" || path === "#") return routeById(DEFAULT_ROUTE);
-    return ROUTES.find((candidate) => candidate.hash === path);
-  }
-  function navigationDirection(from, to) {
-    if (to.parent === from.id) return "deeper";
-    if (from.parent === to.id) return "back";
-    return "same-level";
-  }
-
   // src/app/shell.ts
   function mountShell(root2, kind) {
     root2.innerHTML = shellMarkup;
@@ -8803,6 +9199,7 @@ body,
     sidebarHeader.append(navToggle);
     sidebarHeader.insertAdjacentHTML("beforeend", '<img class="rkc-shell-logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIHZpZXdCb3g9IjAgMCAyNDYgODYiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgeG1sbnM6c2VyaWY9Imh0dHA6Ly93d3cuc2VyaWYuY29tLyIgc3R5bGU9ImZpbGwtcnVsZTpldmVub2RkO2NsaXAtcnVsZTpldmVub2RkO3N0cm9rZS1saW5lam9pbjpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoyOyI+PGcgaWQ9IkFydHdvcmsiPjxwYXRoIGQ9Ik0xNDcuMjU4LDcuNzg5YzUuMTc2LDAuMzQ0IDYuOTUzLDQuNDY0IDYuOTUzLDQuNDY0YzAsMCAtOC44NDksLTIuNzUxIC0xNC43MjUsOC44ODRjNy4xNjYsLTAuNDk2IDE2LjYwNiwtMC45ODUgMjYuMDEsLTAuOTg1YzE5LjEwNiwwIDM3LjE2MiwxNi41MjYgNzQuNjQ3LDIzLjQ1OGMtMCwwIC0xMC4zOTksLTEuMTI4IC0zMy4zNzMsLTUuMTU5Yy0yMi45NzUsLTQuMDMgLTM5LjMzOSwtMS41MzEgLTUzLjQ0NiwyLjU4Yy03LjM0OSwyLjE0MiAtMTYuOTE4LDYuMjg0IC0yNy4yOTksNi44NjJjLTQuMDM3LDEwLjE2IC03Ljc0LDIzLjE4OCAtOC40NjYsMzcuODUxYy0wLDAgLTkuODg4LC0yMi4yNDkgLTM4LjM3MSwtMjYuMzM0Yy0wLDAgMTUuMTYyLC0yLjMxMyAyNi43MjcsLTE1Ljk4OGMtMy4xODUsLTEuNzgyIC02LjM2NSwtNC4xNyAtOS41MDMsLTcuMzA5Yy0yMC41MTYsLTIwLjUxNSAtNDQuNTc5LC0yNS4zMTEgLTUzLjIwNCwtMjcuNDg4Yy04LjYyNiwtMi4xNzcgLTIyLjQ5MSwtMy43ODkgLTMyLjg4OSwtNi42MWMwLDAgMTQuMTA2LDIuNDE5IDMwLjMwOSwyLjQxOWMxNi4yMDMsMCAxNy44OTcsLTAuMzI0IDMyLjgxLC0wLjMyNGMxNC43MjgsMCAzMy4wMjcsMTEuNTk1IDQ1LjU2NSwxNi4yMDFjMTMuMDg0LC0yNC44NDggMjguMjU1LC0xMi41MjIgMjguMjU1LC0xMi41MjIiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI5Ljk4Nyw4LjA2MWMyMS40NywzLjczNSAzNy41NjUsMTQuMTA3IDM3LjU2NSwxNC4xMDdjMC4wMDEsLTAgLTguOTQ3LC0xLjY5MyAtMjQuMjY0LC0yLjc0MWMtMTUuMzE2LC0xLjA0OCAtMzQuNDIsLTQuODM2IC00My4yODcsLTE5LjQyN2MtMCwtMCA5Ljk2OCw0LjU3OSAyOS45ODcsOC4wNjEiIHN0eWxlPSJmaWxsOiNmZmY7ZmlsbC1ydWxlOm5vbnplcm87Ii8+PHBhdGggZD0iTTI0NS43MDUsNDQuNjk0YzAsLTAgLTguMzk1LDguNDMgLTIyLjk3NSw4LjQzYy0xNC41NzksLTAgLTQyLjU0NiwtMTAuOTI5IC01Mi43NTMsLTEwLjE1OGMwLC0wIDE2LjM4MSwtNC45NjEgNDIuNjI0LC0wLjg0NWMyNi4yNDMsNC4xMTYgMzMuMTA0LDIuNTczIDMzLjEwNCwyLjU3MyIgc3R5bGU9ImZpbGw6I2ZmZjtmaWxsLXJ1bGU6bm9uemVybzsiLz48L2c+PC9zdmc+" alt="">');
     navPanel.prepend(sidebarHeader);
+    shell.querySelector(".ds-app-shell-search")?.remove();
     const disposeSharedShell = enhanceAppShell(shell);
     const tabbar = root2.querySelector(".ds-app-shell-tabbar");
     tabbar.querySelector("button.ds-app-shell-tab")?.setAttribute("aria-label", "More");
@@ -9980,6 +10377,50 @@ body,
       return record;
     };
     trackPanel(primaryPanel);
+    const globalHost = element("div", "global-search-host");
+    globalHost.innerHTML = globalSearchMarkup;
+    root2.append(globalHost);
+    const searchButton = button("Search pages and devices", "shell-global-search");
+    searchButton.innerHTML = '<span aria-hidden="true" class="shell-search-icon"></span><span>Search</span><kbd aria-hidden="true">Ctrl K</kbd>';
+    if (/Mac|iPhone|iPad/.test(navigator.platform)) searchButton.querySelector("kbd").textContent = "\u2318 K";
+    searchButton.setAttribute("aria-label", "Search pages and devices");
+    searchButton.setAttribute("aria-keyshortcuts", "Control+K Meta+K");
+    shell.querySelector(".ds-app-shell-panel").insertBefore(searchButton, shell.querySelector(".ds-app-shell-pages"));
+    let recentSearches = [];
+    const search = enhanceGlobalSearch(globalHost.querySelector(".ds-global-search"), {
+      search: ({ query, scope }) => {
+        const term = query.toLocaleLowerCase();
+        const pages = scope === "devices" ? [] : ROUTES.filter((route) => route.label.toLocaleLowerCase().includes(term)).map((route) => ({ id: `page:${route.id}`, label: route.label, description: "Page" }));
+        const devices = scope === "pages" ? [] : site.getDevices().filter((device) => [device.name, device.vendor, device.model, device.ipAddress].some((value) => value?.toLocaleLowerCase().includes(term))).map((device) => ({ id: `device:${device.id}`, label: device.name, description: [device.vendor, device.ipAddress].filter(Boolean).join(" \xB7 ") }));
+        return [...pages, ...devices];
+      },
+      recent: () => recentSearches,
+      clearRecent: () => {
+        recentSearches = [];
+      },
+      onSelect: (item, state) => {
+        recentSearches = [state.query, ...recentSearches.filter((query) => query !== state.query)].slice(0, 5);
+        if (item.id.startsWith("page:")) {
+          const route = ROUTES.find((candidate) => candidate.id === item.id.slice(5));
+          if (route) location.hash = route.hash;
+        } else if (item.id.startsWith("device:")) {
+          const device = site.getDevices().find((candidate) => candidate.id === item.id.slice(7));
+          if (device) {
+            location.hash = routeById("devices").hash;
+            open(device, searchButton);
+          }
+        }
+      }
+    });
+    searchButton.addEventListener("click", () => search.open(searchButton));
+    const onGlobalSearchKey = (event) => {
+      if (event.defaultPrevented || event.isComposing || event.repeat || event.altKey || event.shiftKey || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "k") return;
+      const target = event.target;
+      if (target.isContentEditable || target.closest("textarea") || document.querySelector("dialog[open]:not(.ds-global-search-dialog)")) return;
+      event.preventDefault();
+      search.open(document.activeElement);
+    };
+    document.addEventListener("keydown", onGlobalSearchKey, true);
     function open(device, opener, candidates = []) {
       if (!openPanels2.includes(primaryPanel)) openPanels2.push(primaryPanel);
       void showDevice(primaryPanel, device, opener, candidates);
@@ -10470,6 +10911,8 @@ body,
     void site.load().catch(() => {
     });
     return () => {
+      document.removeEventListener("keydown", onGlobalSearchKey, true);
+      search.dispose();
       alive = false;
       stopPanelUrlListener();
       unsubscribe();
