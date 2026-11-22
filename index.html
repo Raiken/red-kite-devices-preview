@@ -3882,11 +3882,6 @@ body {
   background: var(--color-neutral-000);
   color: var(--color-neutral-600);
 }
-@media (max-width: 768px) {
-  .ds-side-panel-actions .compare-device {
-    display: none;
-  }
-}
 .ds-side-panel > .widget-titlebar {
   min-height: 58px;
   padding: 8px 16px;
@@ -3945,11 +3940,6 @@ body {
 }
 :root {
   --ds-side-panel-scrim-strength: 0%;
-}
-@media (max-width: 768px) {
-  .ds-side-panel .compare-device {
-    display: none;
-  }
 }
 .ds-side-panel .side-panel-close svg {
   display: none;
@@ -8612,7 +8602,7 @@ body,
   }
 
   // src/vendor/ui/side-panel-markup.ts
-  var sidePanelMarkup = '<aside class="ds-side-panel" id="device-side-panel" data-mode="floating" aria-labelledby="device-side-panel-title" style="--ds-side-panel-width: 40rem" hidden><div class="ds-side-panel-grip" data-edge="left" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize width"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="right" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize width"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="top" role="separator" tabindex="0" aria-orientation="horizontal" aria-label="Resize height"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="bottom" role="separator" tabindex="0" aria-orientation="horizontal" aria-label="Resize height"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="top-left" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="top-right" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="bottom-left" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="bottom-right" aria-hidden="true"></div><header class="ds-side-panel-head"><button hidden class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-back" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="chevron-left" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5303 4.21967C15.8232 4.51256 15.8232 4.98744 15.5303 5.28033L8.81066 12L15.5303 18.7197C15.8232 19.0126 15.8232 19.4874 15.5303 19.7803C15.2374 20.0732 14.7626 20.0732 14.4697 19.7803L7.21967 12.5303C6.92678 12.2374 6.92678 11.7626 7.21967 11.4697L14.4697 4.21967C14.7626 3.92678 15.2374 3.92678 15.5303 4.21967Z"/></svg><span data-ds-button-label>Back</span></button><h2 class="ds-side-panel-title" id="device-side-panel-title" tabindex="-1">Device details</h2><div class="ds-side-panel-actions"><button aria-haspopup="menu" aria-expanded="false" aria-controls="device-side-panel-layout-menu" class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-layout" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="more-horizontal" viewBox="0 0 24 24" fill="currentColor"><path d="M7.75 12C7.75 12.9665 6.9665 13.75 6 13.75C5.0335 13.75 4.25 12.9665 4.25 12C4.25 11.0335 5.0335 10.25 6 10.25C6.9665 10.25 7.75 11.0335 7.75 12ZM13.75 12C13.75 12.9665 12.9665 13.75 12 13.75C11.0335 13.75 10.25 12.9665 10.25 12C10.25 11.0335 11.0335 10.25 12 10.25C12.9665 10.25 13.75 11.0335 13.75 12ZM18 13.75C18.9665 13.75 19.75 12.9665 19.75 12C19.75 11.0335 18.9665 10.25 18 10.25C17.0335 10.25 16.25 11.0335 16.25 12C16.25 12.9665 17.0335 13.75 18 13.75Z"/></svg><span data-ds-button-label>Panel layout</span></button><div class="ds-menu" id="device-side-panel-layout-menu" role="menu" popover="manual" aria-labelledby="device-side-panel-layout" data-size="s" data-ds-check><div class="ds-menu-group" role="group" aria-label="Panel layout"><button type="button" class="ds-menu-item" role="menuitemradio" tabindex="-1" name="layout" value="floating" aria-checked="true"><svg data-ds-menu-check aria-hidden="true" data-icon="checkmark" viewBox="0 0 24 24" fill="currentColor"><path d="M4.53033 12.9697C4.23744 12.6768 3.76256 12.6768 3.46967 12.9697C3.17678 13.2626 3.17678 13.7374 3.46967 14.0303L7.96967 18.5303C8.26256 18.8232 8.73744 18.8232 9.03033 18.5303L20.0303 7.53033C20.3232 7.23744 20.3232 6.76256 20.0303 6.46967C19.7374 6.17678 19.2626 6.17678 18.9697 6.46967L8.5 16.9393L4.53033 12.9697Z"/></svg><span data-ds-menu-label>Floating</span></button><button type="button" class="ds-menu-item" role="menuitemradio" tabindex="-1" name="layout" value="docked" aria-checked="false"><svg data-ds-menu-check aria-hidden="true" data-icon="checkmark" viewBox="0 0 24 24" fill="currentColor"><path d="M4.53033 12.9697C4.23744 12.6768 3.76256 12.6768 3.46967 12.9697C3.17678 13.2626 3.17678 13.7374 3.46967 14.0303L7.96967 18.5303C8.26256 18.8232 8.73744 18.8232 9.03033 18.5303L20.0303 7.53033C20.3232 7.23744 20.3232 6.76256 20.0303 6.46967C19.7374 6.17678 19.2626 6.17678 18.9697 6.46967L8.5 16.9393L4.53033 12.9697Z"/></svg><span data-ds-menu-label>Docked</span></button></div><hr class="ds-menu-separator"><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" value="wider"><span data-ds-menu-label>Wider</span></button><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" value="reset-size"><span data-ds-menu-label>Reset size</span></button><hr class="ds-menu-separator" data-ds-menu-cancel hidden><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" data-ds-menu-cancel hidden><span data-ds-menu-label>Cancel</span></button></div><a hidden class="ds-button" data-variant="tertiary" data-size="s" id="device-side-panel-full" data-icon-only="true" href="/"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="open" viewBox="0 0 24 24" fill="currentColor"><path d="M6.24992 4.5C5.28344 4.5 4.49996 5.2835 4.49996 6.25V17.75C4.49996 18.7165 5.28344 19.5 6.24992 19.5H17.7496C18.7161 19.5 19.4996 18.7165 19.4996 17.75V13.75C19.4996 13.3358 19.8354 13 20.2496 13C20.6638 13 20.9995 13.3358 20.9995 13.75V17.75C20.9995 19.5449 19.5445 21 17.7496 21H6.24992C4.45504 21 3 19.5449 3 17.75V6.25C3 4.45507 4.45504 3 6.24992 3H10.2498C10.664 3 10.9998 3.33579 10.9998 3.75C10.9998 4.16421 10.664 4.5 10.2498 4.5H6.24992ZM12.9997 3.75C12.9997 3.33579 13.3355 3 13.7497 3H20.25C20.6642 3 21 3.33579 21 3.75V10.25C21 10.6642 20.6642 11 20.25 11C19.8358 11 19.5 10.6642 19.5 10.25V5.56074L14.28 10.7804C13.9871 11.0732 13.5123 11.0732 13.2194 10.7803C12.9265 10.4874 12.9265 10.0125 13.2194 9.71964L18.4395 4.5H13.7497C13.3355 4.5 12.9997 4.16421 12.9997 3.75Z"/></svg><span data-ds-button-label>Open the full page</span></a><button class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-close" data-ds-shortcut="Escape" data-icon-only="true"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="panel-right-contract" viewBox="0 0 24 24" fill="currentColor"><path d="M9.19253 9.24894C9.46962 8.94112 9.94384 8.91617 10.2517 9.1932L12.7517 11.4427C12.9098 11.5849 13 11.7874 13 12C13 12.2126 12.9098 12.4152 12.7517 12.5574L10.2517 14.8068C9.94384 15.0839 9.46962 15.0589 9.19253 14.7511C8.91543 14.4433 8.94039 13.9692 9.24827 13.6922L10.2955 12.7499H6.75C6.33579 12.7499 6 12.4141 6 12C6 11.5859 6.33579 11.2502 6.75 11.2502H10.2955L9.24828 10.3079C8.94039 10.0309 8.91543 9.55675 9.19253 9.24894ZM22 17.2506C22 18.7691 20.7688 20 19.25 20L4.75 20C3.23122 20 2 18.7691 2 17.2506V6.74937C2 5.23093 3.23122 4 4.75 4H19.25C20.7688 4 22 5.23094 22 6.74937L22 17.2506ZM19.25 18.5003C19.9404 18.5003 20.5 17.9408 20.5 17.2506L20.5 6.74937C20.5 6.05917 19.9404 5.49966 19.25 5.49966L15.9958 5.49966L15.9958 18.5003H19.25ZM14.4958 18.5003L14.4958 5.49966L4.75 5.49965C4.05965 5.49965 3.5 6.05917 3.5 6.74937L3.5 17.2506C3.5 17.9408 4.05964 18.5003 4.75 18.5003L14.4958 18.5003Z"/></svg><span data-ds-button-label>Close device details<span data-ds-keys="Esc" data-ds-keys-apple="Esc" aria-hidden="true"></span></span></button></div></header><div class="ds-side-panel-discard" role="group" aria-labelledby="device-side-panel-discard" hidden><p class="ds-side-panel-discard-question" id="device-side-panel-discard">Discard unsaved changes?</p><div class="ds-side-panel-discard-actions"><button class="ds-button" data-variant="primary" data-tone="danger" data-size="s" type="button" id="device-side-panel-discard-yes"><span data-ds-button-label>Discard</span></button><button class="ds-button" data-variant="secondary" data-size="s" type="button" id="device-side-panel-discard-no" aria-describedby="device-side-panel-discard"><span data-ds-button-label>Keep editing</span></button></div></div><div class="ds-side-panel-failed" hidden><p class="ds-side-panel-failed-text" role="alert" data-text="This could not be loaded."></p><button class="ds-button" data-variant="secondary" data-size="s" type="button" id="device-side-panel-retry"><span data-ds-button-label>Try again</span></button></div><div class="ds-side-panel-body"></div><footer class="ds-side-panel-foot"></footer></aside>';
+  var sidePanelMarkup = '<aside class="ds-side-panel" id="device-side-panel" data-mode="floating" aria-labelledby="device-side-panel-title" style="--ds-side-panel-width: 40rem" hidden><div class="ds-side-panel-grip" data-edge="left" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize width"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="right" role="separator" tabindex="0" aria-orientation="vertical" aria-label="Resize width"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="top" role="separator" tabindex="0" aria-orientation="horizontal" aria-label="Resize height"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="bottom" role="separator" tabindex="0" aria-orientation="horizontal" aria-label="Resize height"><span class="ds-side-panel-grip-bar"></span></div><div class="ds-side-panel-grip" data-edge="top-left" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="top-right" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="bottom-left" aria-hidden="true"></div><div class="ds-side-panel-grip" data-edge="bottom-right" aria-hidden="true"></div><header class="ds-side-panel-head"><button hidden class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-back" data-icon-only="true" data-ds-tooltip-side="below"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="chevron-left" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5303 4.21967C15.8232 4.51256 15.8232 4.98744 15.5303 5.28033L8.81066 12L15.5303 18.7197C15.8232 19.0126 15.8232 19.4874 15.5303 19.7803C15.2374 20.0732 14.7626 20.0732 14.4697 19.7803L7.21967 12.5303C6.92678 12.2374 6.92678 11.7626 7.21967 11.4697L14.4697 4.21967C14.7626 3.92678 15.2374 3.92678 15.5303 4.21967Z"/></svg><span data-ds-button-label>Back</span></button><h2 class="ds-side-panel-title" id="device-side-panel-title" tabindex="-1">Device details</h2><div class="ds-side-panel-actions"><button aria-haspopup="menu" aria-expanded="false" aria-controls="device-side-panel-layout-menu" class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-layout" data-icon-only="true" data-ds-tooltip-side="below"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="more-horizontal" viewBox="0 0 24 24" fill="currentColor"><path d="M7.75 12C7.75 12.9665 6.9665 13.75 6 13.75C5.0335 13.75 4.25 12.9665 4.25 12C4.25 11.0335 5.0335 10.25 6 10.25C6.9665 10.25 7.75 11.0335 7.75 12ZM13.75 12C13.75 12.9665 12.9665 13.75 12 13.75C11.0335 13.75 10.25 12.9665 10.25 12C10.25 11.0335 11.0335 10.25 12 10.25C12.9665 10.25 13.75 11.0335 13.75 12ZM18 13.75C18.9665 13.75 19.75 12.9665 19.75 12C19.75 11.0335 18.9665 10.25 18 10.25C17.0335 10.25 16.25 11.0335 16.25 12C16.25 12.9665 17.0335 13.75 18 13.75Z"/></svg><span data-ds-button-label>Panel layout</span></button><div class="ds-menu" id="device-side-panel-layout-menu" role="menu" popover="manual" aria-labelledby="device-side-panel-layout" data-size="s" data-ds-check><div class="ds-menu-group" role="group" aria-label="Panel layout"><button type="button" class="ds-menu-item" role="menuitemradio" tabindex="-1" name="layout" value="floating" aria-checked="true"><svg data-ds-menu-check aria-hidden="true" data-icon="checkmark" viewBox="0 0 24 24" fill="currentColor"><path d="M4.53033 12.9697C4.23744 12.6768 3.76256 12.6768 3.46967 12.9697C3.17678 13.2626 3.17678 13.7374 3.46967 14.0303L7.96967 18.5303C8.26256 18.8232 8.73744 18.8232 9.03033 18.5303L20.0303 7.53033C20.3232 7.23744 20.3232 6.76256 20.0303 6.46967C19.7374 6.17678 19.2626 6.17678 18.9697 6.46967L8.5 16.9393L4.53033 12.9697Z"/></svg><span data-ds-menu-label>Floating</span></button><button type="button" class="ds-menu-item" role="menuitemradio" tabindex="-1" name="layout" value="docked" aria-checked="false"><svg data-ds-menu-check aria-hidden="true" data-icon="checkmark" viewBox="0 0 24 24" fill="currentColor"><path d="M4.53033 12.9697C4.23744 12.6768 3.76256 12.6768 3.46967 12.9697C3.17678 13.2626 3.17678 13.7374 3.46967 14.0303L7.96967 18.5303C8.26256 18.8232 8.73744 18.8232 9.03033 18.5303L20.0303 7.53033C20.3232 7.23744 20.3232 6.76256 20.0303 6.46967C19.7374 6.17678 19.2626 6.17678 18.9697 6.46967L8.5 16.9393L4.53033 12.9697Z"/></svg><span data-ds-menu-label>Docked</span></button></div><hr class="ds-menu-separator"><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" value="wider"><span data-ds-menu-label>Wider</span></button><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" value="reset-size"><span data-ds-menu-label>Reset size</span></button><hr class="ds-menu-separator" data-ds-menu-cancel hidden><button type="button" class="ds-menu-item" role="menuitem" tabindex="-1" data-ds-menu-cancel hidden><span data-ds-menu-label>Cancel</span></button></div><a hidden class="ds-button" data-variant="tertiary" data-size="s" id="device-side-panel-full" data-icon-only="true" data-ds-tooltip-side="below" href="/"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="open" viewBox="0 0 24 24" fill="currentColor"><path d="M6.24992 4.5C5.28344 4.5 4.49996 5.2835 4.49996 6.25V17.75C4.49996 18.7165 5.28344 19.5 6.24992 19.5H17.7496C18.7161 19.5 19.4996 18.7165 19.4996 17.75V13.75C19.4996 13.3358 19.8354 13 20.2496 13C20.6638 13 20.9995 13.3358 20.9995 13.75V17.75C20.9995 19.5449 19.5445 21 17.7496 21H6.24992C4.45504 21 3 19.5449 3 17.75V6.25C3 4.45507 4.45504 3 6.24992 3H10.2498C10.664 3 10.9998 3.33579 10.9998 3.75C10.9998 4.16421 10.664 4.5 10.2498 4.5H6.24992ZM12.9997 3.75C12.9997 3.33579 13.3355 3 13.7497 3H20.25C20.6642 3 21 3.33579 21 3.75V10.25C21 10.6642 20.6642 11 20.25 11C19.8358 11 19.5 10.6642 19.5 10.25V5.56074L14.28 10.7804C13.9871 11.0732 13.5123 11.0732 13.2194 10.7803C12.9265 10.4874 12.9265 10.0125 13.2194 9.71964L18.4395 4.5H13.7497C13.3355 4.5 12.9997 4.16421 12.9997 3.75Z"/></svg><span data-ds-button-label>Open the full page</span></a><button class="ds-button" data-variant="tertiary" data-size="s" type="button" id="device-side-panel-close" data-ds-shortcut="Escape" data-icon-only="true" data-ds-tooltip-side="below"><svg data-ds-button-icon="leading" aria-hidden="true" data-icon="panel-right-contract" viewBox="0 0 24 24" fill="currentColor"><path d="M9.19253 9.24894C9.46962 8.94112 9.94384 8.91617 10.2517 9.1932L12.7517 11.4427C12.9098 11.5849 13 11.7874 13 12C13 12.2126 12.9098 12.4152 12.7517 12.5574L10.2517 14.8068C9.94384 15.0839 9.46962 15.0589 9.19253 14.7511C8.91543 14.4433 8.94039 13.9692 9.24827 13.6922L10.2955 12.7499H6.75C6.33579 12.7499 6 12.4141 6 12C6 11.5859 6.33579 11.2502 6.75 11.2502H10.2955L9.24828 10.3079C8.94039 10.0309 8.91543 9.55675 9.19253 9.24894ZM22 17.2506C22 18.7691 20.7688 20 19.25 20L4.75 20C3.23122 20 2 18.7691 2 17.2506V6.74937C2 5.23093 3.23122 4 4.75 4H19.25C20.7688 4 22 5.23094 22 6.74937L22 17.2506ZM19.25 18.5003C19.9404 18.5003 20.5 17.9408 20.5 17.2506L20.5 6.74937C20.5 6.05917 19.9404 5.49966 19.25 5.49966L15.9958 5.49966L15.9958 18.5003H19.25ZM14.4958 18.5003L14.4958 5.49966L4.75 5.49965C4.05965 5.49965 3.5 6.05917 3.5 6.74937L3.5 17.2506C3.5 17.9408 4.05964 18.5003 4.75 18.5003L14.4958 18.5003Z"/></svg><span data-ds-button-label>Close device details<span data-ds-keys="Esc" data-ds-keys-apple="Esc" aria-hidden="true"></span></span></button></div></header><div class="ds-side-panel-discard" role="group" aria-labelledby="device-side-panel-discard" hidden><p class="ds-side-panel-discard-question" id="device-side-panel-discard">Discard unsaved changes?</p><div class="ds-side-panel-discard-actions"><button class="ds-button" data-variant="primary" data-tone="danger" data-size="s" type="button" id="device-side-panel-discard-yes"><span data-ds-button-label>Discard</span></button><button class="ds-button" data-variant="secondary" data-size="s" type="button" id="device-side-panel-discard-no" aria-describedby="device-side-panel-discard"><span data-ds-button-label>Keep editing</span></button></div></div><div class="ds-side-panel-failed" hidden><p class="ds-side-panel-failed-text" role="alert" data-text="This could not be loaded."></p><button class="ds-button" data-variant="secondary" data-size="s" type="button" id="device-side-panel-retry"><span data-ds-button-label>Try again</span></button></div><div class="ds-side-panel-body"></div><footer class="ds-side-panel-foot"></footer></aside>';
 
   // src/vendor/ui/global-search-markup.ts
   var globalSearchMarkup = '<div class="ds-global-search" id="global-search"><a data-search-trigger href="/search">Search</a><dialog class="ds-global-search-dialog" aria-labelledby="global-search-label"><form action="/search" method="get" role="search"><div class="ds-global-search-input"><label id="global-search-label" for="global-search-query">Search</label><input id="global-search-query" type="search" name="q" placeholder="Search pages and devices" autocomplete="off"><button type="button" data-search-close aria-label="Close search">\xD7</button></div><fieldset class="ds-global-search-scopes"><legend>Search scope</legend><label class="ds-global-search-scope"><input type="radio" name="scope" value="all" checked><span>All</span></label><label class="ds-global-search-scope"><input type="radio" name="scope" value="pages"><span>Pages</span></label><label class="ds-global-search-scope"><input type="radio" name="scope" value="devices"><span>Devices</span></label></fieldset><p class="ds-global-search-status" role="status" aria-live="polite"></p><div class="ds-global-search-results"></div><p class="ds-global-search-help">Use arrow keys to move between results; Enter opens. Escape closes.</p></form></dialog></div>';
@@ -9873,6 +9863,19 @@ body,
     return "Loads";
   }
 
+  // src/features/devices/inspect-activation.ts
+  function bindInspectActivation(button2, activate) {
+    button2.title = "Shift+click or Shift+Enter opens in another panel on desktop";
+    button2.setAttribute("aria-description", "Shift+Enter opens in another panel on desktop");
+    button2.setAttribute("aria-keyshortcuts", "Shift+Enter");
+    button2.addEventListener("click", (event) => activate(event.shiftKey));
+    button2.addEventListener("keydown", (event) => {
+      if (event.key !== "Enter" || !event.shiftKey || event.ctrlKey || event.altKey || event.metaKey || event.repeat) return;
+      event.preventDefault();
+      activate(true);
+    });
+  }
+
   // src/platform/page-transition.ts
   function createPageTransition({ enabled = true, duration = 160 } = {}) {
     let active;
@@ -10179,7 +10182,7 @@ body,
           identity.append(text("strong", "", device.name), text("span", "overview-device-meta", [device.nodeType ?? device.type, device.ipAddress].filter(Boolean).join(" \xB7 ")));
           open.append(identity, text("span", `overview-badge ${device.status === "Offline" ? "overview-badge--offline" : ""}`, device.status), text("span", "overview-chevron", "\u203A"));
           open.dataset.overviewFocus = `device:${device.id}`;
-          open.addEventListener("click", () => inspect(device, open));
+          bindInspectActivation(open, (additional) => inspect(device, open, additional));
           item.append(open);
           (index < 5 ? list : moreList).append(item);
         }
@@ -10214,7 +10217,7 @@ body,
             b.className = "overview-endpoint";
             b.textContent = device.name;
             b.dataset.overviewFocus = focusKey;
-            b.addEventListener("click", () => inspect(device, b));
+            bindInspectActivation(b, (additional) => inspect(device, b, additional));
             return b;
           };
           const source = endpoint(byId.get(sourceId), `link:${group[0].id}:from`);
@@ -10286,7 +10289,7 @@ body,
     const { shell, dispose: disposeShell } = mountShell(root2, site.getState().kind);
     root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div id="inventory-header"></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll" role="region" aria-label="Device inventory table, scroll horizontally for more columns"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
     root2.querySelector("#inventory-header").replaceWith(createWidgetHeader({ title: "Inventory", captionId: "device-count" }));
-    const infrastructure = createInfrastructureView(site, (device, opener) => open(device, opener));
+    const infrastructure = createInfrastructureView(site, (device, opener, additional) => open(device, opener, [], additional));
     root2.querySelector("#app-content").prepend(infrastructure.element);
     for (const [selector, label] of [["#infrastructure-overview .page-content", "Infrastructure content"], ["#devices-page .page-content", "Device inventory content"], ["#route-missing .page-content", "Page not found content"]]) {
       const region = root2.querySelector(selector);
@@ -10360,31 +10363,8 @@ body,
     const trackPanel = (controller) => {
       const panel = controller.body.parentElement;
       decorateWidgetTitleBar(panel.querySelector(".ds-side-panel-head"));
-      const compare = button("Compare device", "ion-button ion-button--widget-s compare-device");
-      compare.hidden = true;
-      compare.setAttribute("aria-keyshortcuts", "Alt+Shift+C");
-      compare.title = "Compare device (Alt+Shift+C)";
-      const record = { ticket: 0, opener: null, device: null, requested: null, compare };
+      const record = { ticket: 0, opener: null, device: null, requested: null };
       panels.set(controller, record);
-      panel.querySelector(".ds-side-panel-actions").prepend(compare);
-      compare.addEventListener("click", () => {
-        if (!record.device) return;
-        let copy = null;
-        copy = controller.beside({ onClose: () => {
-          if (copy) panels.delete(copy);
-        } });
-        if (!copy) return;
-        trackPanel(copy);
-        openPanels2.push(copy);
-        void showDevice(copy, record.device, compare, site.getDevices().map((item) => item.id));
-        writePanelState();
-      });
-      panel.addEventListener("keydown", (event) => {
-        const target = event.target;
-        if (event.code !== "KeyC" || !event.altKey || !event.shiftKey || event.ctrlKey || event.metaKey || event.repeat || event.isComposing || !compare.checkVisibility() || !record.device || target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role=menu]')) return;
-        event.preventDefault();
-        compare.click();
-      });
       panel.addEventListener("side-panel-closing", () => {
         record.ticket++;
         const index = openPanels2.indexOf(controller);
@@ -10456,7 +10436,26 @@ body,
       search.open(document.activeElement);
     };
     document.addEventListener("keydown", onGlobalSearchKey, true);
-    function open(device, opener, candidates = []) {
+    function open(device, opener, candidates = [], additional = false) {
+      if (additional && openPanels2.length && !matchMedia("(max-width: 768px)").matches) {
+        const existing = openPanels2.find((controller) => panels.get(controller)?.requested === device.id);
+        if (existing) {
+          existing.body.parentElement?.querySelector(".ds-side-panel-title")?.focus();
+          return;
+        }
+        const current = openPanels2[openPanels2.length - 1];
+        let copy = null;
+        copy = current.beside({ onClose: () => {
+          if (copy) panels.delete(copy);
+        } });
+        if (copy) {
+          trackPanel(copy);
+          openPanels2.push(copy);
+          void showDevice(copy, device, opener, candidates);
+          writePanelState();
+          return;
+        }
+      }
       if (!openPanels2.includes(primaryPanel)) openPanels2.push(primaryPanel);
       void showDevice(primaryPanel, device, opener, candidates);
       writePanelState();
@@ -10467,7 +10466,6 @@ body,
       record.opener = opener;
       record.device = device;
       record.requested = device.id;
-      record.compare.hidden = false;
       const ticket = ++record.ticket;
       const panel = controller.body.parentElement;
       const prefix = panel.id;
@@ -10584,7 +10582,6 @@ body,
       record.ticket++;
       record.device = null;
       record.requested = id;
-      record.compare.hidden = true;
       const content = element("p", "device-detail", "This device is not available in the current data source.");
       void controller.open({ title: "Device not found", content });
     }
@@ -10695,7 +10692,7 @@ body,
         const nameCell = element("td");
         const openButton = button(device.name, "device-link");
         openButton.dataset.overviewFocus = `device:${device.id}`;
-        openButton.addEventListener("click", () => open(device, openButton));
+        bindInspectActivation(openButton, (additional) => open(device, openButton, [], additional));
         nameCell.append(openButton);
         row.append(nameCell);
         for (const value of [device.vendor, device.model, device.ipAddress, device.port, device.unitId, device.nodeType ?? device.type, device.inUse ? "Yes" : "No", device.status]) row.append(element("td", "", String(value ?? "\u2014")));
