@@ -5447,6 +5447,9 @@ h3 {
     margin-bottom: 19.5px;
   }
 }
+:root {
+  --page-header-min-height:72px;
+}
 .ds-app-shell-main {
   padding: 0;
 }
@@ -5455,7 +5458,7 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  min-height: 72px;
+  min-height: var(--page-header-min-height);
   padding: 16px 24px;
   background: var(--color-neutral-000);
   border-radius: 12px 12px 0 0;
@@ -6382,6 +6385,11 @@ body,
   }
   .page-header {
     border-start-end-radius: 0;
+  }
+}
+@media (min-width: 769px) {
+  .ds-side-panel[data-mode=docked] > .widget-titlebar {
+    min-height: var(--page-header-min-height);
   }
 }
 </style></head><body><div id="app"></div><script>"use strict";
