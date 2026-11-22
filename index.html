@@ -7080,6 +7080,38 @@ body,
 [data-theme=dark] .global-search-host .ds-global-search-help {
   color: var(--ds-neutral-300);
 }
+.connection-edit-form .device-form-fields {
+  gap: 8px;
+}
+.connection-edit-form .form-grid {
+  display: contents;
+}
+.connection-edit-form .field {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(0, 2fr);
+  column-gap: 16px;
+  align-items: center;
+}
+.connection-edit-form .field label {
+  font-size: 11px;
+  font-weight: 400;
+}
+.connection-edit-form .field input {
+  background: var(--color-neutral-100);
+  border-color: var(--color-neutral-200);
+}
+.connection-edit-form .field .field-error {
+  grid-column: 2;
+}
+.connection-edit-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+.connection-edit-form .field-error:empty {
+  display: none;
+}
+.connection-edit-form .modal-actions {
+  margin-top: 8px;
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -11414,6 +11446,8 @@ body,
     let mutationPending = false;
     let createDraftDirty = false;
     let createLockedHash = "";
+    let editingConnection = false;
+    let editLockedHash = "";
     const sample = site.getState().kind === "sample";
     const { shell, dispose: disposeShell } = mountShell(root2, site.getState().kind);
     root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div id="inventory-header"></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll ds-data-table" role="region" tabindex="0" aria-label="Device inventory table, scroll horizontally for more columns"><table class="ion-shared-table inventory-table" aria-label="Device inventory"><thead><tr><th class="ds-data-table-select"><span class="ds-select-all"><span class="ds-choice"><input class="ds-choice-control" data-ds-select-all type="checkbox" id="select-all" aria-label="Select all devices"></span></span></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
@@ -11443,6 +11477,11 @@ body,
       shell,
       views: { pages: { infrastructure: overview, devices: devicesPage }, missing: missingPage },
       beforeChange: (next, previous) => {
+        if (editingConnection && location.hash !== editLockedHash) {
+          location.hash = editLockedHash;
+          announce2("Save or cancel the connection edit before leaving.");
+          return false;
+        }
         if (createPanel.isOpen && (createDraftDirty || mutationPending) && next?.id !== "devices") {
           if (location.hash !== createLockedHash) location.hash = createLockedHash;
           announce2("Finish or cancel the new device before leaving.");
@@ -11633,6 +11672,10 @@ body,
     };
     document.addEventListener("keydown", onGlobalSearchKey, true);
     function open(device, opener, candidates = [], additional = false, source) {
+      if (editingConnection) {
+        announce2("Save or cancel the connection edit first.");
+        return;
+      }
       const moved = openPanels2.find((panel) => panel.preserveOnNextOpen);
       if ((additional || moved) && openPanels2.length && !matchMedia("(max-width: 768px)").matches) {
         const existing = openPanels2.find((controller) => panels.get(controller)?.requested === device.id);
@@ -11680,6 +11723,15 @@ body,
       const ticket = ++record.ticket;
       const panel = controller.body.parentElement;
       const prefix = panel.id;
+      const guardEdit = (event) => {
+        if (!editingConnection || !panel.querySelector(".connection-edit-form")) return;
+        const target = event.target;
+        if (event.type === "side-panel-escape" || target.closest(`#${prefix}-close, #${prefix}-back`) || target.closest(".device-title-button, .panel-compare")) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          announce2("Save or cancel the connection edit first.");
+        }
+      };
       let registers = [];
       let status = "all";
       const content = element("div", "device-detail");
@@ -11700,7 +11752,7 @@ body,
       editConnection.hidden = !site.canEditConnection();
       record.refreshConnection = (current) => {
         if (!content.isConnected) return;
-        connection.replaceChildren(createDetailList([
+        if (!editingConnection || !connection.querySelector("form")) connection.replaceChildren(createDetailList([
           ["IP address", current.ipAddress ?? "\u2014"],
           ["Port", String(current.port ?? "\u2014")],
           ["Unit ID", String(current.unitId ?? "\u2014")]
@@ -11716,15 +11768,29 @@ body,
       editConnection.addEventListener("click", () => {
         const current = site.getDevices().find((item) => item.id === device.id);
         if (!current || activeDialog) return;
-        const { box, close: dismiss } = dialog("Edit connection", editConnection);
-        const context = element("p", "modal-copy", current.name);
-        context.id = "connection-edit-context";
-        box.append(context);
-        box.setAttribute("aria-describedby", context.id);
-        const form = element("form", "device-form");
+        if (editingConnection || mutationPending) return;
+        editingConnection = true;
+        editLockedHash = location.hash;
+        editConnection.hidden = true;
+        const box = panel;
+        const dismiss = () => {
+          if (mutationPending) return;
+          editingConnection = false;
+          editConnection.hidden = false;
+          const updated = site.getDevices().find((item) => item.id === device.id);
+          if (updated) record.refreshConnection?.(updated);
+          editConnection.focus();
+        };
+        const form = element("form", "device-form connection-edit-form");
         form.noValidate = true;
         form.innerHTML = '<div class="device-form-fields" data-edit-fields><div class="field"><label for="edit-ip">IP address</label><input id="edit-ip" inputmode="decimal" aria-describedby="edit-ip-error" required><span id="edit-ip-error" class="field-error"></span></div><div class="form-grid"><div class="field"><label for="edit-port">Port</label><input id="edit-port" type="number" aria-describedby="edit-port-error" required><span id="edit-port-error" class="field-error"></span></div><div class="field"><label for="edit-unit">Unit ID</label><input id="edit-unit" type="number" aria-describedby="edit-unit-error" required><span id="edit-unit-error" class="field-error"></span></div></div></div><p class="field-error" role="alert"></p><p class="muted" role="status" tabindex="-1" hidden></p><div class="modal-actions"><button class="ion-button ion-button--primary" type="button">Cancel</button><button class="ion-button ion-button--cta" type="submit">Save</button></div>';
-        const ip = form.querySelector("#edit-ip"), port = form.querySelector("#edit-port"), unit = form.querySelector("#edit-unit");
+        for (const node of form.querySelectorAll("[id], [for], [aria-describedby]")) {
+          for (const attr of ["id", "for", "aria-describedby"]) {
+            const value = node.getAttribute(attr);
+            if (value) node.setAttribute(attr, prefix + "-" + value);
+          }
+        }
+        const ip = form.querySelector("#" + prefix + "-edit-ip"), port = form.querySelector("#" + prefix + "-edit-port"), unit = form.querySelector("#" + prefix + "-edit-unit");
         const error = form.querySelector("[role=alert]"), cancel = form.querySelector("button[type=button]"), save = form.querySelector("button[type=submit]");
         ip.value = current.ipAddress ?? "";
         port.value = current.port === void 0 ? "" : String(current.port);
@@ -11772,7 +11838,7 @@ body,
             if (!alive || !box.isConnected) return;
             if (failure instanceof MutationUncertainError) {
               retryBlocked = true;
-              error.textContent = failure.refreshed ? "The result is uncertain. Close this dialog and review the refreshed connection." : "The result is uncertain and the connection could not be refreshed. Reload before trying again.";
+              error.textContent = failure.refreshed ? "The result is uncertain. Cancel editing and review the refreshed connection." : "The result is uncertain and the connection could not be refreshed. Reload before trying again.";
             } else error.textContent = "Could not save the connection. Try again.";
           } finally {
             mutationPending = false;
@@ -11789,7 +11855,7 @@ body,
           }
         });
         if (sample) form.prepend(element("p", "muted", "Changes to sample data last until reload."));
-        box.append(form);
+        connection.replaceChildren(form);
         ip.focus();
       });
       const summary = content.querySelector("[data-register-summary]");
@@ -11866,6 +11932,12 @@ body,
       });
       const opened = await controller.open({ title: device.name, content });
       if (opened && valid()) {
+        panel.addEventListener("click", guardEdit, true);
+        panel.addEventListener("side-panel-escape", guardEdit, true);
+        panel.addEventListener("side-panel-before-render", () => {
+          panel.removeEventListener("click", guardEdit, true);
+          panel.removeEventListener("side-panel-escape", guardEdit, true);
+        }, { once: true });
         registerTable = enhanceDataTable(content.querySelector(".register-table-region"));
         panel.addEventListener("side-panel-before-render", () => registerTable?.dispose(), { once: true });
         const title = panel.querySelector(".ds-side-panel-title");
@@ -11890,6 +11962,10 @@ body,
     }
     function syncPanelsFromUrl() {
       if (!alive) return;
+      if (editingConnection && location.hash !== editLockedHash) {
+        location.hash = editLockedHash;
+        return;
+      }
       if (createPanel.isOpen && !panelValues().includes("create-device")) {
         if (mutationPending) {
           location.hash = createLockedHash;
@@ -12146,6 +12222,10 @@ body,
       cancel.focus();
     }
     function createDevice(updateUrl = true) {
+      if (editingConnection) {
+        announce2("Save or cancel the connection edit first.");
+        return;
+      }
       if (createPanel.isOpen) return;
       if (updateUrl && !panelValues().includes("create-device")) setHashValues("panel", [...panelValues(), "create-device"]);
       createLockedHash = location.hash;
