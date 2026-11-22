@@ -7112,6 +7112,45 @@ body,
 .connection-edit-form .modal-actions {
   margin-top: 8px;
 }
+.ds-side-panel-scrim:has(+ #create-device-panel.is-open) {
+  display: block;
+  inset: 0;
+  inline-size: auto;
+  mask-image: none;
+  opacity: 1;
+  z-index: 41;
+  background: rgb(3 3 16 / 32%);
+  pointer-events: auto;
+}
+[data-theme=dark] .ds-side-panel-scrim:has(+ #create-device-panel.is-open) {
+  background: rgb(0 0 0 / 55%);
+}
+.ds-side-panel .device-form .ion-button--small {
+  position: relative;
+  min-height: 32px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.ds-side-panel .device-form .field input,
+.ds-side-panel .device-form .field select {
+  height: 32px;
+  font-size: 13px;
+}
+@media (pointer: coarse) {
+  .ds-side-panel .device-form .ion-button--small::before {
+    content: "";
+    position: absolute;
+    inset: -6px 0;
+  }
+  .ds-side-panel .device-form .field input,
+  .ds-side-panel .device-form .field select {
+    height: 44px;
+  }
+}
+#create-device-panel.is-open {
+  z-index: 42;
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -11523,7 +11562,36 @@ body,
     decorateWidgetTitleBar(createPanelElement.querySelector(".ds-side-panel-head"));
     createPanelElement.querySelector("#create-device-panel-close [data-ds-button-label]").firstChild.textContent = "Close new device";
     const createPanel = enhanceSidePanel(createPanelElement, { topBoundary: root2.querySelector(".ds-app-shell-header") });
+    let createBackground = [];
+    const releaseCreateBackground = () => {
+      for (const { node, inert } of createBackground) node.inert = inert;
+      createBackground = [];
+      createPanelElement.removeAttribute("aria-modal");
+      createPanelElement.removeAttribute("role");
+    };
+    const blockCreateBackground = () => {
+      const others = [...root2.children, ...host.children].filter((node) => node instanceof HTMLElement && node !== host && node !== createPanelElement && !node.matches(".ds-side-panel-scrim"));
+      createBackground = others.map((node) => ({ node, inert: node.inert }));
+      for (const { node } of createBackground) node.inert = true;
+      createPanelElement.setAttribute("role", "dialog");
+      createPanelElement.setAttribute("aria-modal", "true");
+    };
+    createPanelElement.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab" || event.defaultPrevented) return;
+      const controls = [...createPanelElement.querySelectorAll("button, a[href], input, select, textarea, [tabindex]")].filter((node) => node.tabIndex >= 0 && !node.matches(":disabled") && !node.closest("[inert], [hidden]") && node.getClientRects().length > 0);
+      if (!controls.length) {
+        event.preventDefault();
+        createPanelElement.focus();
+        return;
+      }
+      const index = controls.indexOf(document.activeElement);
+      if (!event.shiftKey && index === controls.length - 1 || event.shiftKey && index <= 0) {
+        event.preventDefault();
+        controls[event.shiftKey ? controls.length - 1 : 0].focus();
+      }
+    });
     createPanelElement.addEventListener("side-panel-closing", () => {
+      releaseCreateBackground();
       createDraftDirty = false;
       if (alive && panelValues().includes("create-device")) setHashValues("panel", panelValues().filter((value) => value !== "create-device"));
     });
@@ -11664,7 +11732,7 @@ body,
     });
     searchButton.addEventListener("click", () => search.open(searchButton));
     const onGlobalSearchKey = (event) => {
-      if (event.defaultPrevented || event.isComposing || event.repeat || event.altKey || event.shiftKey || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "k") return;
+      if (createPanel.isOpen || event.defaultPrevented || event.isComposing || event.repeat || event.altKey || event.shiftKey || !(event.ctrlKey || event.metaKey) || event.key.toLowerCase() !== "k") return;
       const target = event.target;
       if (target.isContentEditable || target.closest("textarea") || document.querySelector("dialog[open]:not(.ds-global-search-dialog)")) return;
       event.preventDefault();
@@ -11783,7 +11851,7 @@ body,
         };
         const form = element("form", "device-form connection-edit-form");
         form.noValidate = true;
-        form.innerHTML = '<div class="device-form-fields" data-edit-fields><div class="field"><label for="edit-ip">IP address</label><input id="edit-ip" inputmode="decimal" aria-describedby="edit-ip-error" required><span id="edit-ip-error" class="field-error"></span></div><div class="form-grid"><div class="field"><label for="edit-port">Port</label><input id="edit-port" type="number" aria-describedby="edit-port-error" required><span id="edit-port-error" class="field-error"></span></div><div class="field"><label for="edit-unit">Unit ID</label><input id="edit-unit" type="number" aria-describedby="edit-unit-error" required><span id="edit-unit-error" class="field-error"></span></div></div></div><p class="field-error" role="alert"></p><p class="muted" role="status" tabindex="-1" hidden></p><div class="modal-actions"><button class="ion-button ion-button--primary" type="button">Cancel</button><button class="ion-button ion-button--cta" type="submit">Save</button></div>';
+        form.innerHTML = '<div class="device-form-fields" data-edit-fields><div class="field"><label for="edit-ip">IP address</label><input id="edit-ip" inputmode="decimal" aria-describedby="edit-ip-error" required><span id="edit-ip-error" class="field-error"></span></div><div class="form-grid"><div class="field"><label for="edit-port">Port</label><input id="edit-port" type="number" aria-describedby="edit-port-error" required><span id="edit-port-error" class="field-error"></span></div><div class="field"><label for="edit-unit">Unit ID</label><input id="edit-unit" type="number" aria-describedby="edit-unit-error" required><span id="edit-unit-error" class="field-error"></span></div></div></div><p class="field-error" role="alert"></p><p class="muted" role="status" tabindex="-1" hidden></p><div class="modal-actions"><button class="ion-button ion-button--primary ion-button--small" type="button">Cancel</button><button class="ion-button ion-button--cta ion-button--small" type="submit">Save</button></div>';
         for (const node of form.querySelectorAll("[id], [for], [aria-describedby]")) {
           for (const attr of ["id", "for", "aria-describedby"]) {
             const value = node.getAttribute(attr);
@@ -12236,7 +12304,7 @@ body,
       };
       const form = element("form", "device-form");
       form.noValidate = true;
-      form.innerHTML = '<div class="field"><label for="device-name">Name</label><input id="device-name" name="name" required><span class="field-error" id="name-error"></span></div><div class="form-grid"><div class="field"><label for="device-vendor">Vendor (optional)</label><select id="device-vendor" name="vendor"><option value="">Select vendor</option></select><span class="field-error" id="vendor-error"></span></div><div class="field"><label for="device-model">Model (optional)</label><select id="device-model" name="model" disabled><option value="">Select vendor first</option></select><span class="field-error" id="model-error"></span></div></div><div class="field"><label for="device-ip">IP address</label><input id="device-ip" name="ip" inputmode="decimal" placeholder="192.168.1.10" required aria-describedby="ip-error"><span class="field-error" id="ip-error"></span></div><div class="form-grid"><div class="field"><label for="device-port">Port</label><input id="device-port" name="port" type="number" value="502" required><span class="field-error" id="port-error"></span></div><div class="field"><label for="device-unit">Unit ID</label><input id="device-unit" name="unit" type="number" value="-1" required><span class="field-error" id="unit-error"></span></div></div><div class="modal-actions"><button class="ion-button ion-button--primary" type="button" id="cancel-create">Cancel</button><button class="ion-button ion-button--cta" type="submit">Add device</button></div>';
+      form.innerHTML = '<div class="field"><label for="device-name">Name</label><input id="device-name" name="name" required><span class="field-error" id="name-error"></span></div><div class="form-grid"><div class="field"><label for="device-vendor">Vendor (optional)</label><select id="device-vendor" name="vendor"><option value="">Select vendor</option></select><span class="field-error" id="vendor-error"></span></div><div class="field"><label for="device-model">Model (optional)</label><select id="device-model" name="model" disabled><option value="">Select vendor first</option></select><span class="field-error" id="model-error"></span></div></div><div class="field"><label for="device-ip">IP address</label><input id="device-ip" name="ip" inputmode="decimal" placeholder="192.168.1.10" required aria-describedby="ip-error"><span class="field-error" id="ip-error"></span></div><div class="form-grid"><div class="field"><label for="device-port">Port</label><input id="device-port" name="port" type="number" value="502" required><span class="field-error" id="port-error"></span></div><div class="field"><label for="device-unit">Unit ID</label><input id="device-unit" name="unit" type="number" value="-1" required><span class="field-error" id="unit-error"></span></div></div><div class="modal-actions"><button class="ion-button ion-button--primary ion-button--small" type="button" id="cancel-create">Cancel</button><button class="ion-button ion-button--cta ion-button--small" type="submit">Add device</button></div>';
       const vendor = form.querySelector("#device-vendor");
       const model = form.querySelector("#device-model");
       for (const item of VENDORS) {
@@ -12337,7 +12405,9 @@ body,
           if (alive) renderInventory();
         }
       });
-      void createPanel.open({ title: "New device", content: form, isDirty: () => createDraftDirty }).then(() => {
+      const opening = createPanel.open({ title: "New device", content: form, isDirty: () => createDraftDirty });
+      blockCreateBackground();
+      void opening.then(() => {
         if (createPanel.isOpen) form.querySelector("#device-name").focus();
       });
     }
@@ -12416,6 +12486,7 @@ body,
       activeDialog?.close();
       activeDialog?.remove();
       activeDialog = null;
+      releaseCreateBackground();
       createPanel.dispose();
       host.replaceChildren();
       root2.replaceChildren();
