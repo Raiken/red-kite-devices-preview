@@ -1,4 +1,490 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Devices · Red Kite Satellite</title><style>/* src/vendor/ui/tokens/tokens.css */
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Devices · Red Kite Satellite</title><style>/* src/vendor/ui/components/data-table/data-table.css */
+@layer ds.tokens, ds.base, ds.components;
+@layer ds.components {
+  :where(.ds-data-table) {
+    container: ds-data-table / inline-size;
+    position: relative;
+    max-inline-size: 100%;
+    padding-block: var(--ds-focus-width);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    color: var(--ds-color-text-body);
+    font-family: var(--ds-font);
+    &:focus-visible {
+      outline: var(--ds-focus-width) solid var(--ds-color-focus);
+      outline-offset: var(--ds-focus-offset);
+    }
+    & > table {
+      inline-size: 100%;
+      border-collapse: collapse;
+      font-size: var(--ds-type-control-small);
+      line-height: 1.45;
+      font-variant-numeric: tabular-nums;
+    }
+    & tbody tr {
+      block-size: calc(var(--ds-control-size-m) + var(--ds-space-2));
+    }
+    & :is(th, td) {
+      padding: var(--ds-space-2) var(--ds-space-3);
+      border-block-end: var(--ds-control-border-width) solid var(--ds-color-divider);
+      text-align: start;
+      vertical-align: middle;
+    }
+    & thead .ds-data-table-sortby {
+      display: none;
+    }
+    & thead th {
+      color: var(--ds-color-text-muted);
+      font-weight: var(--ds-type-label-weight);
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    & tbody th {
+      font-weight: inherit;
+    }
+    & tbody tr:last-child > * {
+      border-block-end: 0;
+    }
+    & [data-align=end] {
+      text-align: end;
+      white-space: nowrap;
+    }
+    & td[data-kind=date] {
+      color: var(--ds-color-text-muted);
+      white-space: nowrap;
+    }
+    & :is(th, td, .ds-data-table-title) > a:any-link {
+      color: var(--ds-color-text-strong);
+      text-decoration: underline;
+      text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+      text-underline-offset: .2em;
+      &:hover {
+        text-decoration-color: currentColor;
+      }
+      &:focus-visible {
+        outline: var(--ds-focus-width) solid var(--ds-color-focus);
+        outline-offset: var(--ds-focus-offset);
+        border-radius: 2px;
+      }
+    }
+    & :is(td, th):has(> .ds-tag) {
+      white-space: nowrap;
+    }
+    & :is(.ds-data-table-title, .ds-data-table-detail) {
+      display: block;
+    }
+    & .ds-data-table-title {
+      color: var(--ds-color-text-strong);
+      font-weight: var(--ds-type-label-weight);
+    }
+    & .ds-data-table-detail {
+      color: var(--ds-color-text-muted);
+    }
+    & tbody tr[data-void] {
+      color: var(--ds-color-text-muted);
+    }
+    & tbody tr[data-void] > th :is(.ds-data-table-title, a:any-link) {
+      color: inherit;
+    }
+    & tbody tr[data-void] > th:not(:has(> .ds-data-table-title)),
+    & tbody tr[data-void] .ds-data-table-title {
+      text-decoration-line: line-through;
+    }
+    & .ds-data-table-blank {
+      color: var(--ds-color-text-muted);
+    }
+    & .ds-data-table-actions {
+      display: inline-flex;
+      flex-wrap: nowrap;
+      gap: var(--ds-space-1);
+      vertical-align: middle;
+    }
+    & :is(.ds-data-table-actions, .ds-data-table-actions > form) > * {
+      flex: none;
+      white-space: nowrap;
+      overflow-wrap: normal;
+    }
+    & .ds-data-table-actions > form {
+      display: inline-flex;
+      margin: 0;
+    }
+    & td:has(> .ds-data-table-actions) {
+      inline-size: 1%;
+      padding-block: var(--ds-space-1);
+      white-space: nowrap;
+      text-align: end;
+    }
+    & .ds-data-table-select {
+      inline-size: var(--ds-choice-size);
+      padding-inline-end: 0;
+      user-select: none;
+    }
+    & .ds-data-table-select > .ds-choice {
+      inline-size: max-content;
+    }
+    & tbody tr:has(> .ds-data-table-select .ds-choice-control:checked) {
+      background: var(--ds-color-state-tint);
+    }
+    & tbody tr:has(> .ds-data-table-select .ds-choice-control:checked) .ds-tag {
+      background: var(--ds-color-surface);
+    }
+    @media (hover: hover) {
+      & tbody tr:not(.ds-data-table-note):hover {
+        background: color-mix(in srgb, var(--ds-color-ghost-hover) 50%, transparent);
+      }
+      & tbody tr:has(> .ds-data-table-select .ds-choice-control:checked):hover {
+        background: var(--ds-color-state-tint);
+      }
+    }
+    & .ds-data-table-note > td {
+      padding: var(--ds-space-4) var(--ds-space-3);
+      color: var(--ds-color-text-muted);
+      white-space: normal;
+    }
+    & .ds-data-table-note .ds-message {
+      color: var(--ds-color-text-body);
+    }
+    & .ds-data-table-note .ds-empty {
+      padding-block: var(--ds-space-3);
+    }
+    & .ds-data-table-sort {
+      display: inline-grid;
+      vertical-align: middle;
+      grid-auto-flow: column;
+      align-items: center;
+      column-gap: var(--ds-space-1);
+      margin: calc(-1 * var(--ds-space-1));
+      padding: var(--ds-space-1);
+      border: 0;
+      border-radius: var(--ds-radius-control);
+      background: none;
+      color: inherit;
+      font: inherit;
+      text-align: inherit;
+      white-space: inherit;
+      cursor: pointer;
+      & > [data-ds-sort] {
+        grid-row: 1;
+        grid-column: 2;
+        inline-size: var(--ds-icon-size-s);
+        block-size: var(--ds-icon-size-s);
+        visibility: hidden;
+      }
+      &:disabled {
+        cursor: inherit;
+      }
+      &:not(:disabled):hover {
+        background: var(--ds-color-ghost-hover);
+      }
+      &:focus-visible {
+        outline: var(--ds-focus-width) solid var(--ds-color-focus);
+        outline-offset: var(--ds-focus-offset);
+      }
+    }
+    & th[data-align=end] > .ds-data-table-sort > [data-ds-sort] {
+      grid-column: 1;
+    }
+    & th:not([aria-sort], [data-sort-first=desc]) > .ds-data-table-sort:not(:disabled):is(:hover, :focus-visible) > [data-ds-sort=ascending],
+    & th[data-sort-first=desc]:not([aria-sort]) > .ds-data-table-sort:not(:disabled):is(:hover, :focus-visible) > [data-ds-sort=descending] {
+      visibility: visible;
+    }
+    & th[aria-sort=ascending] > .ds-data-table-sort > [data-ds-sort=ascending],
+    & th[aria-sort=descending] > .ds-data-table-sort > [data-ds-sort=descending] {
+      visibility: visible;
+    }
+    & th[aria-sort] {
+      color: var(--ds-color-text-strong);
+    }
+    & > .ds-data-table-scroller {
+      position: sticky;
+      inset-inline-start: 0;
+      z-index: 2;
+      block-size: 0;
+      pointer-events: none;
+    }
+    & .ds-data-table-fade {
+      position: absolute;
+      inset-block-start: 0;
+      inline-size: 3.5rem;
+      block-size: var(--_table-h, 0);
+      opacity: 0;
+      transition: opacity var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+      &[data-edge=start] {
+        inset-inline-start: 0;
+        background:
+          linear-gradient(
+            to var(--_start, right),
+            var(--ds-color-surface) 30%,
+            transparent);
+      }
+      &[data-edge=end] {
+        inset-inline-end: 0;
+        background:
+          linear-gradient(
+            to var(--_end, left),
+            var(--ds-color-surface) 30%,
+            transparent);
+      }
+    }
+    & .ds-data-table-steer {
+      position: absolute;
+      inset-block-start: var(--_steer-y, var(--ds-space-1));
+      inset-inline-end: var(--ds-space-2);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      border: var(--ds-control-border-width) solid var(--ds-color-control-edge);
+      border-radius: 999px;
+      background: var(--ds-color-surface);
+      box-shadow: var(--ds-shadow-raised);
+      opacity: 0;
+      translate: var(--_pull, 0) 0;
+      transition: translate .34s cubic-bezier(.18, 1.6, .38, 1), opacity var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+      cursor: grab;
+      user-select: none;
+      touch-action: none;
+      &[data-dragging] {
+        transition: opacity var(--ds-motion-duration-state) var(--ds-motion-ease-standard);
+        cursor: grabbing;
+      }
+    }
+    & .ds-data-table-step {
+      display: grid;
+      place-items: center;
+      inline-size: var(--ds-control-size-s);
+      block-size: var(--ds-control-size-s);
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--ds-color-text-strong);
+      cursor: inherit;
+      & > .ds-icon {
+        inline-size: var(--ds-icon-size-s);
+        block-size: var(--ds-icon-size-s);
+        rotate: var(--_turn);
+      }
+      &[data-step=back] {
+        --_turn: -90deg;
+      }
+      &[data-step=forward] {
+        --_turn: 90deg;
+      }
+      &:hover:not([data-end]) {
+        background: var(--ds-color-ghost-hover);
+      }
+      &:active:not([data-end]) {
+        background: var(--ds-color-ghost-pressed);
+      }
+      &[data-end] {
+        color: var(--ds-color-disabled-text);
+      }
+    }
+    & .ds-data-table-grip {
+      inline-size: var(--ds-space-3);
+      block-size: 2px;
+      border-radius: 1px;
+      background: currentColor;
+      box-shadow: 0 -4px 0 currentColor, 0 4px 0 currentColor;
+      color: var(--ds-color-text-muted);
+    }
+    &:dir(rtl) {
+      --_start: left;
+      --_end: right;
+    }
+    &:dir(rtl) .ds-data-table-step[data-step=back] {
+      --_turn: 90deg;
+    }
+    &:dir(rtl) .ds-data-table-step[data-step=forward] {
+      --_turn: -90deg;
+    }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    :where(.ds-data-table)[data-overflow] {
+      &[data-overflow~=start] .ds-data-table-fade[data-edge=start],
+      &[data-overflow~=end] .ds-data-table-fade[data-edge=end] {
+        opacity: 1;
+      }
+      &:hover .ds-data-table-steer,
+      & .ds-data-table-steer[data-dragging] {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :where(.ds-data-table) .ds-data-table-steer {
+      transition: none;
+    }
+  }
+  @container ds-data-table (inline-size < 40rem) {
+    :where(.ds-data-table) {
+      & > table,
+      & tbody,
+      & thead {
+        display: block;
+      }
+      & thead tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: var(--ds-space-1) var(--ds-space-3);
+        padding: var(--ds-space-2) var(--ds-space-3);
+        border-block-end: var(--ds-control-border-width) solid var(--ds-color-divider);
+      }
+      & thead th {
+        display: block;
+        padding: 0;
+        border: 0;
+      }
+      & thead th:not([data-sort], .ds-data-table-select),
+      & thead tr:not(:has(> :is([data-sort], .ds-data-table-select))) {
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
+        margin: -1px;
+        padding: 0;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+      }
+      & thead .ds-data-table-select {
+        margin-inline-end: auto;
+      }
+      & thead .ds-data-table-sortby:not([hidden]) {
+        display: block;
+        min-inline-size: 0;
+        margin-inline-start: auto;
+        padding: 0;
+        border: 0;
+      }
+      & thead tr:has(> .ds-data-table-sortby:not([hidden])) > th[data-sort] {
+        display: none;
+      }
+      & .ds-data-table-sortby .ds-button {
+        max-inline-size: 100%;
+      }
+      & thead .ds-data-table-select .ds-choice {
+        --_pad: 0px;
+      }
+      & th[data-align=end] > .ds-data-table-sort > [data-ds-sort] {
+        grid-column: 2;
+      }
+      & th:not([aria-sort], [data-sort-first=desc]) > .ds-data-table-sort:not(:disabled) > [data-ds-sort=ascending],
+      & th[data-sort-first=desc]:not([aria-sort]) > .ds-data-table-sort:not(:disabled) > [data-ds-sort=descending] {
+        visibility: visible;
+      }
+      & tbody tr {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: baseline;
+        gap: var(--ds-space-1) var(--ds-space-3);
+        padding: var(--ds-space-3);
+        border-block-end: var(--ds-control-border-width) solid var(--ds-color-divider);
+      }
+      & tbody tr:last-child {
+        border-block-end: 0;
+      }
+      & tbody tr:has(> .ds-data-table-select) {
+        padding-inline-start: calc(var(--ds-space-3) * 2 + var(--ds-choice-size));
+      }
+      & tbody tr {
+        block-size: auto;
+      }
+      & tbody :is(th, td) {
+        display: block;
+        min-inline-size: 0;
+        padding: 0;
+        border: 0;
+        text-align: start;
+        white-space: normal;
+      }
+      & tbody [data-align=end]:not([data-stack=end]) {
+        text-align: start;
+      }
+      & tbody .ds-data-table-select {
+        position: absolute;
+        inset-block-start: calc(var(--ds-space-3) + .75lh - var(--ds-control-size-s) / 2);
+        inset-inline-start: var(--ds-space-3);
+      }
+      & tbody th {
+        order: 1;
+        flex: 1 1 0;
+        min-inline-size: min(12ch, 100%);
+      }
+      & tbody [data-stack=end] {
+        order: 2;
+        flex: none;
+        margin-inline-start: auto;
+        text-align: end;
+        white-space: nowrap;
+      }
+      & tbody tr::after {
+        content: "";
+        order: 3;
+        flex-basis: 100%;
+      }
+      & tbody [data-stack=inline] {
+        order: 4;
+        flex: none;
+      }
+      & tbody td:not([data-stack], .ds-data-table-select) {
+        order: 5;
+        display: flex;
+        flex-basis: 100%;
+        gap: var(--ds-space-3);
+        white-space: normal;
+      }
+      & tbody td[data-label]::before {
+        content: attr(data-label);
+        content: attr(data-label) / "";
+        flex: none;
+        min-inline-size: min(8rem, 40%);
+        color: var(--ds-color-text-label);
+        font-weight: var(--ds-type-label-weight);
+      }
+      & tbody td:is([data-stack=end], [data-stack=inline]):has(> .ds-data-table-blank) > .ds-data-table-blank {
+        display: none;
+      }
+      & tbody td:is([data-stack=end], [data-stack=inline]):has(> .ds-data-table-blank) {
+        position: absolute;
+      }
+      & .ds-data-table-actions {
+        flex-wrap: wrap;
+      }
+      & tbody td:has(> .ds-data-table-actions) {
+        inline-size: auto;
+        white-space: normal;
+        text-align: start;
+      }
+      & tbody .ds-data-table-note {
+        display: block;
+        padding: 0;
+      }
+      & tbody .ds-data-table-note::after {
+        content: none;
+      }
+      & tbody .ds-data-table-note > td {
+        display: block;
+        padding: var(--ds-space-4) var(--ds-space-3);
+      }
+    }
+  }
+  @media (forced-colors: active) {
+    :where(.ds-data-table) {
+      & tbody tr:has(> .ds-data-table-select .ds-choice-control:checked) {
+        outline: var(--ds-focus-width) solid Highlight;
+        outline-offset: calc(-1 * var(--ds-focus-width));
+      }
+      & .ds-data-table-sort:focus-visible {
+        outline-color: Highlight;
+      }
+    }
+  }
+}
+
+/* src/vendor/ui/tokens/tokens.css */
 @layer ds.tokens, ds.base, ds.components;
 @layer ds.tokens {
   :root {
@@ -6479,6 +6965,77 @@ body,
   min-height: 0;
   margin-block: 0;
 }
+#devices-page .ds-data-table {
+  container-type: normal;
+  padding-block: 0;
+  --ds-font:
+    Roboto,
+    Arial,
+    sans-serif;
+  --ds-color-text-body: var(--color-neutral-400);
+  --ds-color-text-strong: var(--color-neutral-600);
+  --ds-color-text-muted: var(--color-neutral-400);
+  --ds-color-divider: var(--color-neutral-200);
+  --ds-color-focus: var(--color-info-info);
+  --ds-color-state-tint: var(--color-primary-lighter);
+}
+#devices-page .inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: nowrap;
+}
+#devices-page .inventory-table thead th {
+  height: 44px;
+  padding: 0 12px;
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-400);
+  font-size: 13px;
+  font-weight: 500;
+}
+#devices-page .inventory-table tbody tr {
+  height: 48px;
+}
+#devices-page .inventory-table tbody :is(th, td) {
+  padding: 0 12px;
+  border-bottom: 1px solid var(--color-neutral-200);
+  color: var(--color-neutral-400);
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+}
+#devices-page .inventory-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--color-neutral-000) 75%, var(--color-neutral-100));
+}
+#devices-page .inventory-table tbody tr:has(.ds-choice-control:checked) {
+  background: var(--color-primary-lighter);
+}
+#devices-page .inventory-table input[type=checkbox] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-primary-primary);
+}
+#devices-page .inventory-table .device-link {
+  color: var(--color-primary-dark);
+}
+.ds-app-shell[data-ds-collapsed][data-ds-sections=one] .shell-sidebar-header,
+.ds-app-shell[data-ds-collapsed][data-ds-sections=one] .ds-app-shell-pages {
+  position: relative;
+  inset-inline-start: 6px;
+}
+@media (hover: hover) {
+  #devices-page .inventory-table tbody tr:not(:has(.ds-choice-control:checked)):hover {
+    background: var(--color-neutral-100);
+  }
+}
+.ds-batch-bar > .ds-toolbar {
+  --_enter: 360ms;
+  --_spring: cubic-bezier(.2,.8,.2,1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ds-batch-bar[data-ds-landed] > .ds-toolbar::after {
+    animation-duration: 180ms;
+  }
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -7897,6 +8454,393 @@ body,
     };
   }
 
+  // src/vendor/ui/components/data-table/data-table.js
+  init_click_burst();
+
+  // src/vendor/ui/components/field/select-all.js
+  init_click_burst();
+  function setChecked(inputs, checked, signal) {
+    const changed = inputs.filter((input) => input.checked !== checked);
+    changed.forEach((input) => {
+      input.checked = checked;
+    });
+    for (const input of changed) {
+      for (const type of ["input", "change"]) {
+        if (signal?.aborted) return changed;
+        input.dispatchEvent(new input.ownerDocument.defaultView.Event(type, { bubbles: true }));
+      }
+    }
+    return changed;
+  }
+  function bindSelectAll({ root: root2, master, choices, owns, signal }) {
+    const view = root2.ownerDocument.defaultView;
+    const box = master.closest(".ds-select-all");
+    let applying = false;
+    let resetTimer;
+    function refresh() {
+      if (signal.aborted) return;
+      const inputs = choices(), count = inputs.filter((input) => input.checked).length;
+      master.checked = inputs.length > 0 && count === inputs.length;
+      master.indeterminate = count > 0 && count < inputs.length;
+      master.disabled = inputs.length === 0;
+    }
+    const guardBurst = (event) => {
+      if (isRepeatClick(event) && event.target.closest(".ds-choice") && owns(event.target)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    };
+    for (const type of ["mousedown", "click", "dblclick"]) root2.addEventListener(type, guardBurst, { capture: true, signal });
+    root2.addEventListener("change", (event) => {
+      if (applying || !owns(event.target)) return;
+      if (event.target !== master) {
+        refresh();
+        return;
+      }
+      applying = true;
+      try {
+        setChecked(choices(), master.checked, signal);
+      } finally {
+        applying = false;
+        refresh();
+      }
+    }, { capture: true, signal });
+    master.form?.addEventListener("reset", (event) => {
+      view.clearTimeout(resetTimer);
+      resetTimer = view.setTimeout(() => {
+        resetTimer = void 0;
+        if (!event.defaultPrevented) refresh();
+      }, 0);
+    }, { signal });
+    signal.addEventListener("abort", () => {
+      view.clearTimeout(resetTimer);
+      box.hidden = true;
+      master.disabled = true;
+      master.checked = false;
+      master.indeterminate = false;
+    }, { once: true });
+    refresh();
+    box.hidden = false;
+    return refresh;
+  }
+
+  // src/vendor/ui/components/data-table/data-table.js
+  var mounted2 = /* @__PURE__ */ new WeakSet();
+  var DIRECTIONS = { asc: "ascending", desc: "descending" };
+  var parseDate = (value) => Date.parse(/T/.test(value) ? value : `${value}T00:00`);
+  function enhanceDataTable(root2, { onSort, onSelect } = {}) {
+    const view = root2?.ownerDocument?.defaultView;
+    const table = view && root2 instanceof view.HTMLElement && root2.matches(".ds-data-table") ? root2.querySelector(":scope > table") : null;
+    if (!table?.tHead || !table.tBodies[0]) throw new TypeError("enhanceDataTable needs the region renderDataTable wrote (div.ds-data-table with its table).");
+    for (const [name, fn] of Object.entries({ onSort, onSelect })) {
+      if (fn !== void 0 && typeof fn !== "function") throw new TypeError(`enhanceDataTable ${name} must be a function.`);
+    }
+    if (mounted2.has(root2)) throw new Error("This data table is already enhanced; dispose before mounting again.");
+    mounted2.add(root2);
+    const controller = new view.AbortController();
+    const { signal } = controller;
+    const tbody = table.tBodies[0];
+    const owns = (node) => node.closest(".ds-data-table") === root2;
+    const rows = () => [...tbody.rows].filter((row) => !row.classList.contains("ds-data-table-note"));
+    const buttons = [...table.tHead.querySelectorAll("th > .ds-data-table-sort")];
+    const collator = new view.Intl.Collator(root2.closest("[lang]")?.lang || void 0, { numeric: true, sensitivity: "base" });
+    let chosen = null;
+    function sortBy(header, direction) {
+      const index = header.cellIndex;
+      const type = header.dataset.sort;
+      const parse = type === "number" ? Number : type === "date" ? parseDate : (value) => value;
+      const keyed = rows().map((row) => {
+        const raw = row.cells[index]?.dataset.sortValue ?? "";
+        return { row, blank: raw === "", key: raw === "" ? raw : parse(raw) };
+      });
+      const sign = direction === "ascending" ? 1 : -1;
+      keyed.sort((a, b) => a.blank || b.blank ? a.blank - b.blank : sign * (type === "text" ? collator.compare(a.key, b.key) : a.key - b.key));
+      tbody.append(...keyed.map((entry) => entry.row));
+      for (const cell of header.parentElement.cells) if (cell !== header) cell.removeAttribute("aria-sort");
+      header.setAttribute("aria-sort", direction);
+      syncMenu();
+    }
+    function choose2(header, direction) {
+      sortBy(header, direction);
+      chosen = header;
+      onSort?.({ key: header.dataset.key, direction: direction === "ascending" ? "asc" : "desc" });
+    }
+    table.tHead.addEventListener("click", (event) => {
+      const button2 = event.target.closest(".ds-data-table-sort");
+      if (!button2 || !buttons.includes(button2) || button2.disabled || isRepeatClick(event)) return;
+      const header = button2.parentElement;
+      const now = header.getAttribute("aria-sort");
+      choose2(header, now === "ascending" ? "descending" : now === "descending" ? "ascending" : DIRECTIONS[header.dataset.sortFirst ?? "asc"]);
+    }, { signal });
+    for (const button2 of buttons) button2.disabled = false;
+    const headers = buttons.map((button2) => button2.parentElement);
+    const sortCell = table.tHead.querySelector(":scope > tr > .ds-data-table-sortby");
+    const markup = sortCell?.innerHTML;
+    let syncMenu = () => {
+    };
+    let disposeMenu = () => {
+    };
+    if (sortCell) {
+      Promise.resolve().then(() => (init_menu(), menu_exports)).then(({ enhanceMenuButton: enhanceMenuButton2 }) => {
+        if (signal.aborted) return;
+        const trigger = sortCell.querySelector('[aria-haspopup="menu"]');
+        const radios = (name) => [...sortCell.querySelectorAll(`[role="menuitemradio"][name="${name}"]`)];
+        const onSelect2 = (item) => {
+          const current = headers.find((cell) => cell.hasAttribute("aria-sort"));
+          if (item.name === "column") {
+            const header = headers.find((cell) => cell.dataset.key === item.value);
+            if (header) choose2(header, DIRECTIONS[header.dataset.sortFirst ?? "asc"]);
+          } else if (item.name === "order") {
+            const header = current ?? headers.find((cell) => cell.dataset.key === (radios("column").find((radio) => radio.ariaChecked === "true")?.value ?? headers[0].dataset.key));
+            if (header) choose2(header, DIRECTIONS[item.value]);
+          }
+        };
+        try {
+          disposeMenu = enhanceMenuButton2(trigger, { onSelect: onSelect2 });
+        } catch {
+          return;
+        }
+        syncMenu = () => {
+          const current = headers.find((cell) => cell.hasAttribute("aria-sort"));
+          if (!current) return;
+          const way = current.getAttribute("aria-sort") === "ascending" ? "asc" : "desc";
+          const first = current.dataset.sortFirst ?? "asc";
+          const words = (to) => sortCell.dataset[current.dataset.sort + (to === "asc" ? "Asc" : "Desc")];
+          for (const radio of radios("column")) radio.ariaChecked = String(radio.value === current.dataset.key);
+          radios("order").forEach((radio, k) => {
+            radio.value = k === 0 ? first : first === "asc" ? "desc" : "asc";
+            radio.querySelector("[data-ds-menu-label]").textContent = words(radio.value);
+            radio.ariaChecked = String(radio.value === way);
+          });
+          const text = sortCell.dataset.label.replace("{column}", current.querySelector(".ds-data-table-sort").textContent.trim()).replace("{order}", words(way));
+          const line = Object.assign(root2.ownerDocument.createElement("span"), { className: "ds-truncate", title: text });
+          line.append(Object.assign(root2.ownerDocument.createElement("span"), { className: "ds-truncate-text", dir: "auto", textContent: text }));
+          trigger.querySelector("[data-ds-button-label]").replaceChildren(line);
+        };
+        sortCell.hidden = false;
+        syncMenu();
+      }, () => {
+      });
+    }
+    const master = table.tHead.querySelector(".ds-data-table-select input[data-ds-select-all]");
+    const boxes = () => [...tbody.querySelectorAll(':scope > tr > td.ds-data-table-select input[type="checkbox"]')];
+    const selected = () => boxes().filter((box) => box.checked).map((box) => box.value);
+    let refreshMaster = () => {
+    };
+    let reported = selected().join("\n");
+    const report = () => {
+      if (signal.aborted) return;
+      const ids = selected();
+      if (ids.join("\n") === reported) return;
+      reported = ids.join("\n");
+      onSelect?.(ids);
+    };
+    if (master) {
+      refreshMaster = bindSelectAll({ root: root2, master, choices: () => boxes().filter((box) => !box.disabled), owns, signal });
+      let anchor = null;
+      tbody.addEventListener("click", (event) => {
+        const box = event.target;
+        if (!(box instanceof view.HTMLInputElement) || !box.matches("td.ds-data-table-select input")) return;
+        const list = boxes();
+        const from = event.shiftKey && anchor !== box ? list.indexOf(anchor) : -1;
+        if (from >= 0) {
+          const to = list.indexOf(box);
+          setChecked(list.slice(Math.min(from, to), Math.max(from, to) + 1).filter((input) => input !== box && !input.disabled), box.checked, signal);
+        }
+        anchor = box;
+      }, { signal });
+      root2.addEventListener("change", (event) => {
+        if (event.target instanceof view.HTMLInputElement && owns(event.target)) view.queueMicrotask(report);
+      }, { signal });
+    }
+    function clearSelection() {
+      if (signal.aborted) return;
+      setChecked(boxes(), false, signal);
+      refreshMaster();
+    }
+    const written = Object.fromEntries(["tabindex", "role", "aria-labelledby"].map((name) => [name, root2.getAttribute(name)]));
+    const restore = () => {
+      for (const [name, value] of Object.entries(written)) if (value !== null) root2.setAttribute(name, value);
+    };
+    const scroll = scroller(root2, table, signal);
+    function fit() {
+      if (signal.aborted) return;
+      if (root2.scrollWidth > root2.clientWidth + 1) restore();
+      else if (root2.ownerDocument.activeElement !== root2) for (const name of Object.keys(written)) root2.removeAttribute(name);
+      scroll.measure();
+    }
+    const observer = new view.ResizeObserver(fit);
+    observer.observe(root2);
+    observer.observe(table);
+    root2.addEventListener("focusout", () => view.queueMicrotask(fit), { signal });
+    return {
+      selected,
+      clearSelection,
+      refresh() {
+        if (signal.aborted) return;
+        if (chosen?.isConnected) sortBy(chosen, chosen.getAttribute("aria-sort"));
+        refreshMaster();
+        report();
+        fit();
+      },
+      dispose() {
+        if (signal.aborted) return;
+        controller.abort();
+        observer.disconnect();
+        scroll.dispose();
+        mounted2.delete(root2);
+        restore();
+        for (const button2 of buttons) button2.disabled = true;
+        disposeMenu();
+        if (sortCell) {
+          sortCell.innerHTML = markup;
+          sortCell.hidden = true;
+        }
+      }
+    };
+  }
+  var STEP = 0.75;
+  var HOLD_MS = 320;
+  var HOLD_PX = 14;
+  var DRAG_DEAD = 8;
+  var DRAG_FULL = 90;
+  var DRAG_MAX_PX = 33;
+  var PULL_LIMIT = 96;
+  var PULL_REBOUND = 0.12;
+  function scroller(root2, table, signal) {
+    const view = root2.ownerDocument.defaultView;
+    const rail = root2.querySelector(":scope > .ds-data-table-scroller");
+    if (!rail) return { measure() {
+    }, dispose() {
+    } };
+    const steer = rail.querySelector(".ds-data-table-steer");
+    const steps = [...rail.querySelectorAll(".ds-data-table-step")];
+    let speed = 0, frame = 0, timer = 0, held = false;
+    const way = (step) => (step.dataset.step === "back" ? -1 : 1) * (view.getComputedStyle(root2).direction === "rtl" ? -1 : 1);
+    const loop = () => {
+      if (!speed) {
+        frame = 0;
+        return;
+      }
+      root2.scrollLeft += speed;
+      frame = view.requestAnimationFrame(loop);
+    };
+    const go = (px) => {
+      speed = px;
+      if (px && !frame) frame = view.requestAnimationFrame(loop);
+    };
+    const stop = () => {
+      view.clearTimeout(timer);
+      view.cancelAnimationFrame(frame);
+      speed = 0;
+      frame = 0;
+      timer = 0;
+    };
+    function sides() {
+      if (signal.aborted) return;
+      const max = root2.scrollWidth - root2.clientWidth, at = Math.abs(root2.scrollLeft);
+      const open = max > 1 ? [at > 1 && "start", at < max - 1 && "end"].filter(Boolean) : [];
+      if (open.length) root2.dataset.overflow = open.join(" ");
+      else delete root2.dataset.overflow;
+      for (const step of steps) step.toggleAttribute("data-end", !open.includes(step.dataset.step === "back" ? "start" : "end"));
+    }
+    let loading = null;
+    function measure() {
+      sides();
+      if (signal.aborted) return;
+      if (!root2.dataset.overflow) {
+        for (const name of ["--_table-h", "--_steer-y"]) root2.style.removeProperty(name);
+        return;
+      }
+      loading ?? (loading = Promise.resolve().then(() => (init_pointer_gesture(), pointer_gesture_exports)).then(wire, () => {
+      }));
+      root2.style.setProperty("--_table-h", `${table.offsetHeight}px`);
+      if (rail.hidden) return;
+      const head = table.tHead?.rows[0]?.getBoundingClientRect(), pill = steer.offsetHeight;
+      if (head && head.height > pill) root2.style.setProperty("--_steer-y", `${Math.round(head.top - rail.getBoundingClientRect().top + (head.height - pill) / 2)}px`);
+      else root2.style.removeProperty("--_steer-y");
+    }
+    function room() {
+      const region = root2.getBoundingClientRect(), box = steer.getBoundingClientRect();
+      const shift = parseFloat(view.getComputedStyle(steer).translate) || 0;
+      const left = Math.max(0, box.left - shift - region.left - 2), right = Math.max(0, region.right - (box.right - shift) - 2);
+      return { left: Math.min(left, PULL_LIMIT, right / PULL_REBOUND), right: Math.min(right, PULL_LIMIT, left / PULL_REBOUND) };
+    }
+    const pull = (dx, { left, right }) => {
+      const limit = dx < 0 ? left : right;
+      return limit > 0 ? Math.sign(dx) * limit * Math.tanh(Math.abs(dx) / Math.max(40, limit * 2.2)) : 0;
+    };
+    root2.addEventListener("scroll", sides, { passive: true, signal });
+    const release = () => {
+      stop();
+      steer.removeAttribute("data-dragging");
+      steer.style.removeProperty("--_pull");
+    };
+    function wire({ attachPointerGesture: attachPointerGesture2, prefersReducedMotion: prefersReducedMotion2 }) {
+      if (signal.aborted) return;
+      const behavior = () => prefersReducedMotion2(root2.ownerDocument) ? "auto" : "smooth";
+      steer.addEventListener("mousedown", (event) => event.preventDefault(), { signal });
+      steer.addEventListener("pointerdown", (event) => {
+        const step = event.target.closest(".ds-data-table-step");
+        held = false;
+        stop();
+        if (!step || event.button !== 0 || step.hasAttribute("data-end")) return;
+        timer = view.setTimeout(() => {
+          held = true;
+          go(way(step) * HOLD_PX);
+        }, HOLD_MS);
+      }, { signal });
+      for (const type of ["pointerup", "pointercancel", "pointerleave"]) steer.addEventListener(type, () => {
+        if (!steer.hasAttribute("data-dragging")) stop();
+      }, { signal });
+      steer.addEventListener("click", (event) => {
+        const step = event.target.closest(".ds-data-table-step");
+        if (held) {
+          held = false;
+          return;
+        }
+        if (!step || step.hasAttribute("data-end") || isRepeatClick(event)) return;
+        root2.scrollBy({ left: way(step) * root2.clientWidth * STEP, behavior: behavior() });
+      }, { signal });
+      steer.addEventListener("dblclick", (event) => {
+        const step = event.target.closest(".ds-data-table-step");
+        if (!step) return;
+        root2.scrollTo({ left: step.dataset.step === "back" ? 0 : way(step) * root2.scrollWidth, behavior: behavior() });
+      }, { signal });
+      let reach = { left: 0, right: 0 };
+      attachPointerGesture2(steer, {
+        axis: "x",
+        threshold: DRAG_DEAD,
+        signal,
+        onStart: () => {
+          stop();
+          held = false;
+          reach = room();
+          steer.setAttribute("data-dragging", "");
+        },
+        onMove: (gesture) => {
+          const ratio = Math.min(1, Math.max(0, Math.abs(gesture.dx) - DRAG_DEAD) / (DRAG_FULL - DRAG_DEAD));
+          go(Math.sign(gesture.dx) * ratio ** 1.6 * DRAG_MAX_PX);
+          if (!prefersReducedMotion2(root2.ownerDocument)) steer.style.setProperty("--_pull", `${pull(gesture.dx, reach).toFixed(1)}px`);
+        },
+        onEnd: release,
+        onCancel: release
+      });
+      rail.hidden = false;
+      measure();
+    }
+    return {
+      measure,
+      dispose() {
+        release();
+        rail.hidden = true;
+        delete root2.dataset.overflow;
+        for (const name of ["--_table-h", "--_steer-y"]) root2.style.removeProperty(name);
+        for (const step of steps) step.removeAttribute("data-end");
+      }
+    };
+  }
+
   // src/ion-ui/detail-list.ts
   function createDetailList(rows) {
     const list = document.createElement("dl");
@@ -8029,7 +8973,7 @@ body,
   var KEY_STEP = 16;
   var WIDER_STEP = 160;
   var VIEW_KEYS = ["title", "section", "content", "foot", "isDirty", "href"];
-  var mounted2 = /* @__PURE__ */ new WeakSet();
+  var mounted3 = /* @__PURE__ */ new WeakSet();
   var openPanels = /* @__PURE__ */ new WeakMap();
   var escapeHeard = /* @__PURE__ */ new WeakSet();
   var openIn = (document2) => {
@@ -8095,8 +9039,8 @@ body,
     if (typeof preserveMoved !== "boolean") throw new TypeError("enhanceSidePanel preserveMoved must be a boolean.");
     if (onClose !== void 0 && typeof onClose !== "function") throw new TypeError("enhanceSidePanel onClose must be a function.");
     if (topBoundary !== void 0 && (!(topBoundary instanceof Element) || topBoundary.ownerDocument !== panel.ownerDocument || panel.contains(topBoundary))) throw new TypeError("enhanceSidePanel topBoundary must be an element outside the panel in the same document.");
-    if (mounted2.has(panel)) throw new TypeError("This side panel is already enhanced; dispose() the first mount before mounting it again.");
-    mounted2.add(panel);
+    if (mounted3.has(panel)) throw new TypeError("This side panel is already enhanced; dispose() the first mount before mounting it again.");
+    mounted3.add(panel);
     const blank = panel.outerHTML;
     const document2 = panel.ownerDocument;
     const view = document2.defaultView;
@@ -8719,7 +9663,7 @@ body,
         state.asking?.(false);
         const list = openIn(document2);
         if (list.includes(panel)) list.splice(list.indexOf(panel), 1);
-        mounted2.delete(panel);
+        mounted3.delete(panel);
       }
     };
   }
@@ -8959,7 +9903,7 @@ body,
   }
 
   // src/vendor/ui/components/app-shell/app-shell.js
-  var mounted3 = /* @__PURE__ */ new WeakSet();
+  var mounted4 = /* @__PURE__ */ new WeakSet();
   var isApple2 = (view) => /Mac|iPhone|iPad/.test(view.navigator.platform || view.navigator.userAgent || "");
   var normalizeText = (text) => (text || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ß/g, "ss").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, " ").trim();
   function editDistance(a, b) {
@@ -8997,9 +9941,9 @@ body,
   }
   function enhanceAppShell(shell, { storage = defaultStorage(shell), onPreference } = {}) {
     if (!shell?.matches?.("[data-ds-app-shell]")) throw new TypeError("enhanceAppShell needs the shell renderAppShell wrote ([data-ds-app-shell]).");
-    if (mounted3.has(shell)) throw new Error("This app shell is already enhanced; call its dispose() first.");
+    if (mounted4.has(shell)) throw new Error("This app shell is already enhanced; call its dispose() first.");
     if (onPreference !== void 0 && typeof onPreference !== "function") throw new TypeError("onPreference is a function.");
-    mounted3.add(shell);
+    mounted4.add(shell);
     const controller = new AbortController();
     const { signal } = controller;
     const doc = shell.ownerDocument, view = doc.defaultView;
@@ -9279,7 +10223,7 @@ body,
           else element2.setAttribute(name, value);
         }
       }
-      mounted3.delete(shell);
+      mounted4.delete(shell);
     };
   }
   function defaultStorage(shell) {
@@ -9387,14 +10331,14 @@ body,
   var CONTROLS = 'button, a[href], input:not([type="hidden"]), select, textarea';
   var OWNERS = '[role="toolbar"], [popover], dialog, [role="dialog"], [role="menu"], [role="listbox"]';
   var OWN_KEYS = 'input:not([type="button"], [type="submit"], [type="reset"], [type="checkbox"], [type="image"], [type="file"], [type="color"]), select, textarea';
-  var mounted4 = /* @__PURE__ */ new WeakSet();
+  var mounted5 = /* @__PURE__ */ new WeakSet();
   function enhanceToolbar(toolbar) {
     const view = toolbar?.ownerDocument?.defaultView;
     if (!view || !(toolbar instanceof view.Element) || toolbar.getAttribute("role") !== "toolbar") {
       throw new TypeError('enhanceToolbar needs the role="toolbar" element from renderToolbar.');
     }
-    if (mounted4.has(toolbar)) throw new Error("This toolbar is already enhanced; dispose before remounting.");
-    mounted4.add(toolbar);
+    if (mounted5.has(toolbar)) throw new Error("This toolbar is already enhanced; dispose before remounting.");
+    mounted5.add(toolbar);
     const doc = toolbar.ownerDocument;
     const controller = new AbortController();
     const { signal } = controller;
@@ -9489,12 +10433,12 @@ body,
         if (value === null) control.removeAttribute("tabindex");
         else control.setAttribute("tabindex", value);
       }
-      mounted4.delete(toolbar);
+      mounted5.delete(toolbar);
     };
   }
 
   // src/vendor/ui/components/batch-bar/batch-bar.js
-  var mounted5 = /* @__PURE__ */ new WeakSet();
+  var mounted6 = /* @__PURE__ */ new WeakSet();
   var STATE_KEYS = ["count", "verbs", "narrow"];
   var KEBAB = /^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/;
   var MORPH = ["ds-batch-bar-travel", "ds-batch-bar-open", "ds-batch-bar-word"];
@@ -9516,8 +10460,8 @@ body,
     if (text !== void 0 && (!text || typeof text !== "object" || Object.entries(text).some(([key, value]) => !["count", "reach"].includes(key) || typeof value !== "function"))) {
       throw new TypeError("Batch bar text takes count(count) and reach(applies, count) functions.");
     }
-    if (mounted5.has(bar)) throw new Error("This batch bar is already enhanced; dispose before remounting.");
-    mounted5.add(bar);
+    if (mounted6.has(bar)) throw new Error("This batch bar is already enhanced; dispose before remounting.");
+    mounted6.add(bar);
     const doc = bar.ownerDocument;
     const controller = new AbortController();
     const { signal } = controller;
@@ -9768,7 +10712,7 @@ body,
         endEntering();
         controller.abort();
         for (const dispose2 of disposers.reverse()) dispose2();
-        mounted5.delete(bar);
+        mounted6.delete(bar);
       }
     };
   }
@@ -9779,21 +10723,21 @@ body,
   // src/vendor/ui/components/scroll-steering/scroll-steering.js
   init_pointer_gesture();
   init_click_burst();
-  var mounted6 = /* @__PURE__ */ new WeakSet();
-  var STEP = 0.75;
-  var HOLD_MS = 320;
-  var HOLD_PX = 14;
-  var DRAG_DEAD = 8;
-  var DRAG_FULL = 90;
-  var DRAG_MAX_PX = 33;
-  function mountScrollSteering(scroller, host, { label = "Scroll horizontally", backLabel = "Scroll backward", forwardLabel = "Scroll forward" } = {}) {
-    const view = scroller?.ownerDocument?.defaultView;
-    if (!view || !(scroller instanceof view.HTMLElement) || !(host instanceof view.HTMLElement) || host.ownerDocument !== scroller.ownerDocument) throw new TypeError("mountScrollSteering needs a scroll region and host in the same document.");
-    if (mounted6.has(scroller)) throw new Error("This scroll region already has a steering control.");
+  var mounted7 = /* @__PURE__ */ new WeakSet();
+  var STEP2 = 0.75;
+  var HOLD_MS2 = 320;
+  var HOLD_PX2 = 14;
+  var DRAG_DEAD2 = 8;
+  var DRAG_FULL2 = 90;
+  var DRAG_MAX_PX2 = 33;
+  function mountScrollSteering(scroller2, host, { label = "Scroll horizontally", backLabel = "Scroll backward", forwardLabel = "Scroll forward" } = {}) {
+    const view = scroller2?.ownerDocument?.defaultView;
+    if (!view || !(scroller2 instanceof view.HTMLElement) || !(host instanceof view.HTMLElement) || host.ownerDocument !== scroller2.ownerDocument) throw new TypeError("mountScrollSteering needs a scroll region and host in the same document.");
+    if (mounted7.has(scroller2)) throw new Error("This scroll region already has a steering control.");
     if ([label, backLabel, forwardLabel].some((value) => typeof value !== "string" || !value.trim())) throw new TypeError("Scroll steering labels must be non-empty text.");
-    mounted6.add(scroller);
+    mounted7.add(scroller2);
     const controller = new view.AbortController(), { signal } = controller;
-    const originalTabindex = scroller.getAttribute("tabindex");
+    const originalTabindex = scroller2.getAttribute("tabindex");
     const control = view.document.createElement("div");
     control.className = "ds-scroll-steering";
     control.setAttribute("role", "group");
@@ -9814,7 +10758,7 @@ body,
     control.append(back, grip, forward);
     host.append(control);
     let speed = 0, frame = 0, timer = 0, lastFrame = 0, held = false, disposed = false;
-    const rtl = () => view.getComputedStyle(scroller).direction === "rtl";
+    const rtl = () => view.getComputedStyle(scroller2).direction === "rtl";
     const way = (button2) => (button2 === back ? -1 : 1) * (rtl() ? -1 : 1);
     const stop = () => {
       view.clearTimeout(timer);
@@ -9832,7 +10776,7 @@ body,
       }
       const elapsed = lastFrame ? Math.min(32, time - lastFrame) : 16.67;
       lastFrame = time;
-      scroller.scrollLeft += speed * elapsed / 16.67;
+      scroller2.scrollLeft += speed * elapsed / 16.67;
       frame = view.requestAnimationFrame(tick);
     };
     const go = (value) => {
@@ -9840,26 +10784,26 @@ body,
       if (value && !frame) frame = view.requestAnimationFrame(tick);
     };
     const restoreTabindex = () => {
-      if (originalTabindex === null) scroller.removeAttribute("tabindex");
-      else scroller.setAttribute("tabindex", originalTabindex);
+      if (originalTabindex === null) scroller2.removeAttribute("tabindex");
+      else scroller2.setAttribute("tabindex", originalTabindex);
     };
     function refresh() {
       if (disposed) return;
       control.dir = rtl() ? "rtl" : "ltr";
-      const max = Math.max(0, scroller.scrollWidth - scroller.clientWidth), at = Math.abs(scroller.scrollLeft);
+      const max = Math.max(0, scroller2.scrollWidth - scroller2.clientWidth), at = Math.abs(scroller2.scrollLeft);
       const overflow = max > 1;
       control.hidden = !overflow;
       back.setAttribute("aria-disabled", String(at <= 1));
       forward.setAttribute("aria-disabled", String(at >= max - 1));
-      if (overflow && originalTabindex === null) scroller.setAttribute("tabindex", "0");
-      else if (!overflow && view.document.activeElement !== scroller) restoreTabindex();
+      if (overflow && originalTabindex === null) scroller2.setAttribute("tabindex", "0");
+      else if (!overflow && view.document.activeElement !== scroller2) restoreTabindex();
       if (!overflow) {
         stop();
         control.removeAttribute("data-dragging");
         control.style.removeProperty("--ds-scroll-steering-pull");
       }
     }
-    const behavior = () => prefersReducedMotion(scroller.ownerDocument) ? "auto" : "smooth";
+    const behavior = () => prefersReducedMotion(scroller2.ownerDocument) ? "auto" : "smooth";
     control.addEventListener("pointerdown", (event) => {
       held = false;
       stop();
@@ -9867,8 +10811,8 @@ body,
       if (!button2 || event.button !== 0 || button2.getAttribute("aria-disabled") === "true") return;
       timer = view.setTimeout(() => {
         held = true;
-        go(way(button2) * HOLD_PX);
-      }, HOLD_MS);
+        go(way(button2) * HOLD_PX2);
+      }, HOLD_MS2);
     }, { signal });
     for (const type of ["pointerup", "pointercancel", "pointerleave"]) control.addEventListener(type, () => {
       if (!control.hasAttribute("data-dragging")) stop();
@@ -9880,12 +10824,12 @@ body,
         return;
       }
       if (!button2 || button2.getAttribute("aria-disabled") === "true" || isRepeatClick(event)) return;
-      scroller.scrollBy({ left: way(button2) * scroller.clientWidth * STEP, behavior: behavior() });
+      scroller2.scrollBy({ left: way(button2) * scroller2.clientWidth * STEP2, behavior: behavior() });
     }, { signal });
     control.addEventListener("dblclick", (event) => {
       const button2 = event.target.closest?.(".ds-scroll-steering-step");
       if (!button2) return;
-      scroller.scrollTo({ left: button2 === back ? 0 : way(button2) * scroller.scrollWidth, behavior: behavior() });
+      scroller2.scrollTo({ left: button2 === back ? 0 : way(button2) * scroller2.scrollWidth, behavior: behavior() });
     }, { signal });
     const release = () => {
       stop();
@@ -9895,7 +10839,7 @@ body,
     let reach = { left: 0, right: 0 };
     attachPointerGesture(control, {
       axis: "x",
-      threshold: DRAG_DEAD,
+      threshold: DRAG_DEAD2,
       signal,
       onStart: () => {
         stop();
@@ -9905,9 +10849,9 @@ body,
         control.setAttribute("data-dragging", "");
       },
       onMove: (gesture) => {
-        const ratio = Math.min(1, Math.max(0, Math.abs(gesture.dx) - DRAG_DEAD) / (DRAG_FULL - DRAG_DEAD));
-        go(Math.sign(gesture.dx) * ratio ** 1.6 * DRAG_MAX_PX);
-        if (!prefersReducedMotion(scroller.ownerDocument)) {
+        const ratio = Math.min(1, Math.max(0, Math.abs(gesture.dx) - DRAG_DEAD2) / (DRAG_FULL2 - DRAG_DEAD2));
+        go(Math.sign(gesture.dx) * ratio ** 1.6 * DRAG_MAX_PX2);
+        if (!prefersReducedMotion(scroller2.ownerDocument)) {
           const limit = gesture.dx < 0 ? reach.left : reach.right;
           const offset = Math.sign(gesture.dx) * Math.min(limit, Math.abs(gesture.dx) * 0.4);
           control.style.setProperty("--ds-scroll-steering-pull", `${offset}px`);
@@ -9916,11 +10860,11 @@ body,
       onEnd: release,
       onCancel: release
     });
-    scroller.addEventListener("scroll", refresh, { passive: true, signal });
-    scroller.addEventListener("focusout", () => view.queueMicrotask(refresh), { signal });
+    scroller2.addEventListener("scroll", refresh, { passive: true, signal });
+    scroller2.addEventListener("focusout", () => view.queueMicrotask(refresh), { signal });
     const observer = new view.ResizeObserver(refresh);
-    observer.observe(scroller);
-    if (scroller.firstElementChild) observer.observe(scroller.firstElementChild);
+    observer.observe(scroller2);
+    if (scroller2.firstElementChild) observer.observe(scroller2.firstElementChild);
     refresh();
     return {
       refresh,
@@ -9932,7 +10876,7 @@ body,
         release();
         restoreTabindex();
         control.remove();
-        mounted6.delete(scroller);
+        mounted7.delete(scroller2);
       }
     };
   }
@@ -10410,7 +11354,7 @@ body,
     let mutationPending = false;
     const sample = site.getState().kind === "sample";
     const { shell, dispose: disposeShell } = mountShell(root2, site.getState().kind);
-    root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div id="inventory-header"></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll" role="region" aria-label="Device inventory table, scroll horizontally for more columns"><table class="ion-table"><thead><tr><th><input type="checkbox" id="select-all" aria-label="Select all devices"></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
+    root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div id="inventory-header"></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll ds-data-table" role="region" tabindex="0" aria-label="Device inventory table, scroll horizontally for more columns"><table class="inventory-table" aria-label="Device inventory"><thead><tr><th class="ds-data-table-select"><span class="ds-select-all"><span class="ds-choice"><input class="ds-choice-control" data-ds-select-all type="checkbox" id="select-all" aria-label="Select all devices"></span></span></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
     root2.querySelector("#inventory-header").replaceWith(createWidgetHeader({ title: "Inventory", captionId: "device-count" }));
     const infrastructure = createInfrastructureView(site, (device, opener, additional) => open(device, opener, [], additional));
     root2.querySelector("#app-content").prepend(infrastructure.element);
@@ -10809,6 +11753,7 @@ body,
     const newButton = root2.querySelector("#new-device");
     const focusNewDevice = () => (newButton.checkVisibility() ? newButton : root2.querySelector("#devices-header .page-header-mobile-actions summary"))?.focus();
     const selectAll = root2.querySelector("#select-all");
+    let inventoryTable;
     const notice = root2.querySelector("#notice");
     const announce2 = (message) => {
       notice.textContent = message;
@@ -10848,25 +11793,27 @@ body,
       selectAll.disabled = !ready || busy || devices.length === 0;
       newButton.classList.toggle("ion-button--cta", selected.size === 0);
       newButton.classList.toggle("ion-button--primary", selected.size > 0);
+      const focused = document.activeElement instanceof HTMLElement && body.contains(document.activeElement) ? document.activeElement : null;
+      const focusedDevice = focused?.dataset.deviceId ?? focused?.dataset.overviewFocus?.replace(/^device:/, "");
+      const focusedCheckbox = focused instanceof HTMLInputElement;
       body.replaceChildren();
       for (const device of devices) {
         const row = element("tr");
-        const selectionCell = element("td");
+        const selectionCell = element("td", "ds-data-table-select");
         const checkbox = element("input");
         checkbox.type = "checkbox";
+        checkbox.className = "ds-choice-control";
+        checkbox.value = device.id;
         checkbox.disabled = !ready || busy;
         checkbox.checked = selected.has(device.id);
         checkbox.setAttribute("aria-label", "Select " + device.name);
-        checkbox.addEventListener("change", () => {
-          if (checkbox.checked) selected.add(device.id);
-          else selected.delete(device.id);
-          renderInventory();
-          body.querySelector(`input[data-device-id="${CSS.escape(device.id)}"]`)?.focus();
-        });
         checkbox.dataset.deviceId = device.id;
-        selectionCell.append(checkbox);
+        const choice = element("span", "ds-choice");
+        choice.append(checkbox);
+        selectionCell.append(choice);
         row.append(selectionCell);
-        const nameCell = element("td");
+        const nameCell = element("th");
+        nameCell.scope = "row";
         const openButton = button(device.name, "device-link");
         openButton.dataset.overviewFocus = `device:${device.id}`;
         bindInspectActivation(openButton, (additional) => open(device, openButton, [], additional));
@@ -10876,12 +11823,24 @@ body,
         body.append(row);
       }
       if (!devices.length) {
-        const row = element("tr");
+        const row = element("tr", "ds-data-table-note");
         const cell = element("td", "empty", "No devices. Add a device to begin.");
         cell.colSpan = 10;
         row.append(cell);
         body.append(row);
       }
+      inventoryTable?.refresh();
+      if (focused && focusedDevice) {
+        const selector = focusedCheckbox ? `input[data-device-id="${CSS.escape(focusedDevice)}"]` : `button[data-overview-focus="device:${CSS.escape(focusedDevice)}"]`;
+        const replacement = body.querySelector(selector);
+        if (replacement && !(replacement instanceof HTMLInputElement && replacement.disabled)) replacement.focus({ preventScroll: true });
+        else root2.querySelector("#devices-page .page-content")?.focus({ preventScroll: true });
+      }
+      updateSelectionControls(ready, busy);
+    }
+    function updateSelectionControls(ready, busy) {
+      newButton.classList.toggle("ion-button--cta", selected.size === 0);
+      newButton.classList.toggle("ion-button--primary", selected.size > 0);
       const countLabel = bulk.querySelector(".ds-batch-bar-count");
       countLabel.dataset.compactCount = selected.size + "\xD7";
       countLabel.setAttribute("aria-label", selected.size + " selected");
@@ -10890,12 +11849,6 @@ body,
         control.disabled = !ready || busy;
       });
     }
-    selectAll.addEventListener("change", () => {
-      selected.clear();
-      if (selectAll.checked) site.getDevices().forEach((device) => selected.add(device.id));
-      renderInventory();
-      selectAll.focus();
-    });
     function dialog(title, opener) {
       const box = element("dialog", "modal");
       box.setAttribute("aria-labelledby", "modal-title");
@@ -11109,6 +12062,15 @@ body,
       }
     });
     newButton.addEventListener("click", createDevice);
+    inventoryTable = enhanceDataTable(root2.querySelector("#devices-page .ds-data-table"), {
+      onSelect(ids) {
+        if (ids.length === selected.size && ids.every((id) => selected.has(id))) return;
+        selected.clear();
+        ids.forEach((id) => selected.add(id));
+        const state = site.getState();
+        updateSelectionControls(state.status === "ready", state.pending || mutationPending);
+      }
+    });
     const unsubscribe = site.subscribe(() => {
       if (alive) {
         renderInventory();
@@ -11133,6 +12095,7 @@ body,
       disposeShell();
       batch.dispose();
       disposeRouter();
+      inventoryTable?.dispose();
       tableSteering.dispose();
       activeDialog?.close();
       activeDialog?.remove();
