@@ -11931,12 +11931,12 @@ body,
         if (editingConnection || mutationPending) return;
         editingConnection = true;
         editLockedHash = location.hash;
-        editConnection.hidden = true;
+        editConnection.style.visibility = "hidden";
         const box = panel;
         const dismiss = () => {
           if (mutationPending) return;
           editingConnection = false;
-          editConnection.hidden = false;
+          editConnection.style.visibility = "";
           const updated = site.getDevices().find((item) => item.id === device.id);
           if (updated) record.refreshConnection?.(updated);
           editConnection.focus();
