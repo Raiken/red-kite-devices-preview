@@ -3913,6 +3913,23 @@ body {
         margin: 0;
       }
     }
+    & > .ds-side-panel-head > .ds-button[id$=-close] > [data-ds-button-label] {
+      left: 0;
+      translate: var(--_tooltip-shift, 0px) 0;
+      &:dir(rtl) {
+        left: auto;
+        right: 0;
+      }
+    }
+    & > .ds-side-panel-head .ds-button[id$=-layout] > [data-ds-button-label] {
+      left: auto;
+      right: 0;
+      translate: var(--_tooltip-shift, 0px) 0;
+      &:dir(rtl) {
+        left: 0;
+        right: auto;
+      }
+    }
     & > .ds-side-panel-discard {
       position: absolute;
       inset: 0;
@@ -3924,7 +3941,7 @@ body {
       gap: var(--ds-space-4);
       padding: 1.25rem;
       border-radius: inherit;
-      background: color-mix(in srgb, var(--ds-color-surface) 94%, transparent);
+      background: var(--ds-color-surface);
       text-align: center;
       &[hidden] {
         display: none;
@@ -4310,6 +4327,7 @@ body {
 
 /* src/ion-ui/side-panel-bridge.css */
 .ds-side-panel {
+  color-scheme: light;
   --ds-font:
     Roboto,
     Arial,
@@ -4333,6 +4351,9 @@ body {
   --ds-color-neutral-pressed: var(--color-neutral-200);
   --ds-color-ghost-hover: var(--color-neutral-100);
   --ds-color-ghost-pressed: var(--color-neutral-200);
+}
+[data-theme=dark] .ds-side-panel {
+  color-scheme: dark;
 }
 .device-detail section {
   margin-top: 24px;
@@ -9619,12 +9640,15 @@ body,
     function ask() {
       state.asking?.(false);
       const before = document2.activeElement;
+      const underlying = [...panel.children].filter((node) => node !== question).map((node) => [node, node.inert]);
+      for (const [node] of underlying) node.inert = true;
       question.hidden = false;
       question.querySelector(`#${panel.id}-discard-no`)?.focus();
       return new Promise((resolve) => {
         state.asking = (discard) => {
           state.asking = null;
           question.hidden = true;
+          for (const [node, wasInert] of underlying) node.inert = wasInert;
           if (!discard && before?.isConnected && before.getClientRects().length) before.focus({ preventScroll: true });
           resolve(discard);
         };
@@ -11990,7 +12014,6 @@ body,
             }
           }
         });
-        if (sample) form.prepend(element("p", "muted", "Changes to sample data last until reload."));
         connection.replaceChildren(form);
         ip.focus();
       });
