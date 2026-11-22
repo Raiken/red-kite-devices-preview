@@ -1758,8 +1758,12 @@
     cursor: pointer;
   }
   .ds-global-search-scopes {
+    box-sizing: border-box;
     display: flex;
     flex-wrap: wrap;
+    flex: none;
+    max-block-size: 25dvh;
+    overflow: auto;
     gap: .5rem;
     border: 0;
     margin: 0;
@@ -1881,6 +1885,17 @@
       background: Highlight;
       color: HighlightText;
     }
+  }
+}
+@media (max-height: 420px) {
+  .ds-global-search-input {
+    padding-block: .5rem;
+  }
+  .ds-global-search-status {
+    margin-block: .5rem .25rem;
+  }
+  .ds-global-search-help {
+    margin-block: .5rem;
   }
 }
 
@@ -9649,6 +9664,7 @@ body,
         writeTitle(state.view ?? { title: text });
       },
       setMode,
+      refreshBoundary: syncBoundary,
       beside,
       get mode() {
         return mode();
@@ -9774,6 +9790,7 @@ body,
     }, { signal: listeners.signal });
     root2.querySelector("[data-search-close]").addEventListener("click", () => dialog.close(), { signal: listeners.signal });
     dialog.addEventListener("close", () => {
+      if (dialog.open) return;
       resetRequest();
       if (opener?.isConnected) opener.focus();
     }, { signal: listeners.signal });
