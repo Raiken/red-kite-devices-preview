@@ -4286,6 +4286,27 @@ body {
     }
   }
 }
+:where(dialog.ds-side-panel-modal) {
+  position: fixed;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  max-block-size: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+  pointer-events: none;
+  &::backdrop {
+    background: var(--ds-side-panel-backdrop, light-dark(rgb(0 0 0 / .5), rgb(0 0 0 / .8)));
+    pointer-events: auto;
+  }
+  & > .ds-side-panel {
+    pointer-events: auto;
+  }
+}
 
 /* src/ion-ui/side-panel-bridge.css */
 .ds-side-panel {
@@ -7112,19 +7133,6 @@ body,
 .connection-edit-form .modal-actions {
   margin-top: 8px;
 }
-.ds-side-panel-scrim:has(+ #create-device-panel.is-open) {
-  display: block;
-  inset: 0;
-  inline-size: auto;
-  mask-image: none;
-  opacity: 1;
-  z-index: 41;
-  background: rgb(3 3 16 / 32%);
-  pointer-events: auto;
-}
-[data-theme=dark] .ds-side-panel-scrim:has(+ #create-device-panel.is-open) {
-  background: rgb(0 0 0 / 55%);
-}
 .ds-side-panel .device-form .ion-button--small {
   position: relative;
   min-height: 32px;
@@ -7148,8 +7156,11 @@ body,
     height: 44px;
   }
 }
-#create-device-panel.is-open {
-  z-index: 42;
+.ds-side-panel-modal {
+  --ds-side-panel-backdrop:rgb(3 3 16 / 32%);
+}
+[data-theme=dark] .ds-side-panel-modal {
+  --ds-side-panel-backdrop:rgb(0 0 0 / 55%);
 }
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
@@ -9159,12 +9170,13 @@ body,
     if (view.isDirty !== void 0 && typeof view.isDirty !== "function") throw new TypeError("Side-panel isDirty must be a function: true while the view holds work that closing would lose.");
     if (view.href !== void 0) safeHref(view.href);
   }
-  function enhanceSidePanel(panel, { onClose, topBoundary, preserveMoved = true, ...unknown } = {}) {
+  function enhanceSidePanel(panel, { onClose, topBoundary, preserveMoved = true, modal = false, ...unknown } = {}) {
     const Element2 = panel?.ownerDocument?.defaultView?.HTMLElement;
     if (!Element2 || !(panel instanceof Element2) || !panel.matches("aside.ds-side-panel")) {
       throw new TypeError('enhanceSidePanel needs the <aside class="ds-side-panel"> from renderSidePanel.');
     }
-    if (Object.keys(unknown).length) throw new TypeError(`Unknown enhanceSidePanel option: ${Object.keys(unknown).join(", ")}. Options: onClose, topBoundary, preserveMoved.`);
+    if (Object.keys(unknown).length) throw new TypeError(`Unknown enhanceSidePanel option: ${Object.keys(unknown).join(", ")}. Options: onClose, topBoundary, preserveMoved, modal.`);
+    if (typeof modal !== "boolean") throw new TypeError("Side-panel modal must be a boolean.");
     if (typeof preserveMoved !== "boolean") throw new TypeError("enhanceSidePanel preserveMoved must be a boolean.");
     if (onClose !== void 0 && typeof onClose !== "function") throw new TypeError("enhanceSidePanel onClose must be a function.");
     if (topBoundary !== void 0 && (!(topBoundary instanceof Element2) || topBoundary.ownerDocument !== panel.ownerDocument || panel.contains(topBoundary))) throw new TypeError("enhanceSidePanel topBoundary must be an element outside the panel in the same document.");
@@ -9465,6 +9477,47 @@ body,
     scrim.setAttribute("aria-hidden", "true");
     panel.before(scrim);
     cleanups.push(() => scrim.remove());
+    const modalHost = modal ? document2.createElement("dialog") : null;
+    if (modalHost) {
+      modalHost.className = "ds-side-panel-modal";
+      modalHost.setAttribute("aria-labelledby", title.id);
+      panel.before(modalHost);
+      modalHost.addEventListener("keydown", (event) => {
+        if (event.key !== "Tab" || event.defaultPrevented) return;
+        const controls = [...panel.querySelectorAll("button, a[href], input, select, textarea, [tabindex]")].filter((node) => node.tabIndex >= 0 && !node.matches(":disabled") && !node.closest("[inert], [hidden]") && node.getClientRects().length);
+        if (!controls.length) {
+          event.preventDefault();
+          title.focus();
+          return;
+        }
+        const index = controls.indexOf(document2.activeElement);
+        if (!event.shiftKey && index === controls.length - 1 || event.shiftKey && index <= 0) {
+          event.preventDefault();
+          controls[event.shiftKey ? controls.length - 1 : 0].focus();
+        }
+      }, { signal });
+      modalHost.addEventListener("submit", (event) => {
+        if (!(event.target instanceof view.HTMLFormElement)) return;
+        const method = event.submitter?.getAttribute("formmethod") ?? event.target.getAttribute("method");
+        if (method?.toLowerCase() !== "dialog") return;
+        event.preventDefault();
+        panel.dispatchEvent(new view.CustomEvent("side-panel-escape", { cancelable: true }));
+      }, { signal });
+      modalHost.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        panel.dispatchEvent(new view.CustomEvent("side-panel-escape", { cancelable: true }));
+      }, { signal });
+      cleanups.push(() => {
+        if (modalHost.open) modalHost.close();
+        if (modalHost.contains(panel)) modalHost.before(panel);
+        modalHost.remove();
+      });
+    }
+    const leaveModal = () => {
+      if (!modalHost) return;
+      if (modalHost.open) modalHost.close();
+      if (modalHost.contains(panel)) modalHost.before(panel);
+    };
     syncBoundary();
     if (topBoundary) {
       const boundaryObserver = new view.ResizeObserver(syncBoundary);
@@ -9584,6 +9637,10 @@ body,
     }
     function reveal() {
       panel.hidden = false;
+      if (modalHost && !modalHost.open) {
+        modalHost.append(panel);
+        modalHost.showModal();
+      }
       applyStoredSize();
       const others = openIn(document2).filter((other) => other !== panel && other.dataset.mode === "floating").length;
       setOffset(0, 0);
@@ -9696,6 +9753,7 @@ body,
       body.classList.remove("is-loading");
       body.inert = false;
       panel.classList.remove("is-open", "is-dragging", "is-resizing");
+      leaveModal();
       hideGhost();
       syncNeighbours();
       const opener = state.opener;
@@ -9716,7 +9774,7 @@ body,
     let made = 0;
     function beside({ onClose: closed, ...rest2 } = {}) {
       if (Object.keys(rest2).length) throw new TypeError(`Unknown side-panel beside option: ${Object.keys(rest2).join(", ")}. Options: onClose.`);
-      if (phone()) return null;
+      if (modal || phone()) return null;
       const box = document2.createElement("template");
       box.innerHTML = blank.replaceAll(panel.id, `${panel.id}-${++made}`);
       const node = box.content.firstElementChild;
@@ -11561,37 +11619,8 @@ body,
     const createPanelElement = host.querySelector("#create-device-panel");
     decorateWidgetTitleBar(createPanelElement.querySelector(".ds-side-panel-head"));
     createPanelElement.querySelector("#create-device-panel-close [data-ds-button-label]").firstChild.textContent = "Close new device";
-    const createPanel = enhanceSidePanel(createPanelElement, { topBoundary: root2.querySelector(".ds-app-shell-header") });
-    let createBackground = [];
-    const releaseCreateBackground = () => {
-      for (const { node, inert } of createBackground) node.inert = inert;
-      createBackground = [];
-      createPanelElement.removeAttribute("aria-modal");
-      createPanelElement.removeAttribute("role");
-    };
-    const blockCreateBackground = () => {
-      const others = [...root2.children, ...host.children].filter((node) => node instanceof HTMLElement && node !== host && node !== createPanelElement && !node.matches(".ds-side-panel-scrim"));
-      createBackground = others.map((node) => ({ node, inert: node.inert }));
-      for (const { node } of createBackground) node.inert = true;
-      createPanelElement.setAttribute("role", "dialog");
-      createPanelElement.setAttribute("aria-modal", "true");
-    };
-    createPanelElement.addEventListener("keydown", (event) => {
-      if (event.key !== "Tab" || event.defaultPrevented) return;
-      const controls = [...createPanelElement.querySelectorAll("button, a[href], input, select, textarea, [tabindex]")].filter((node) => node.tabIndex >= 0 && !node.matches(":disabled") && !node.closest("[inert], [hidden]") && node.getClientRects().length > 0);
-      if (!controls.length) {
-        event.preventDefault();
-        createPanelElement.focus();
-        return;
-      }
-      const index = controls.indexOf(document.activeElement);
-      if (!event.shiftKey && index === controls.length - 1 || event.shiftKey && index <= 0) {
-        event.preventDefault();
-        controls[event.shiftKey ? controls.length - 1 : 0].focus();
-      }
-    });
+    const createPanel = enhanceSidePanel(createPanelElement, { topBoundary: root2.querySelector(".ds-app-shell-header"), modal: true });
     createPanelElement.addEventListener("side-panel-closing", () => {
-      releaseCreateBackground();
       createDraftDirty = false;
       if (alive && panelValues().includes("create-device")) setHashValues("panel", panelValues().filter((value) => value !== "create-device"));
     });
@@ -12406,7 +12435,6 @@ body,
         }
       });
       const opening = createPanel.open({ title: "New device", content: form, isDirty: () => createDraftDirty });
-      blockCreateBackground();
       void opening.then(() => {
         if (createPanel.isOpen) form.querySelector("#device-name").focus();
       });
@@ -12486,7 +12514,6 @@ body,
       activeDialog?.close();
       activeDialog?.remove();
       activeDialog = null;
-      releaseCreateBackground();
       createPanel.dispose();
       host.replaceChildren();
       root2.replaceChildren();
