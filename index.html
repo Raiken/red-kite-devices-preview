@@ -7989,10 +7989,30 @@ html:has(.ds-batch-bar:not([hidden])) {
   margin: 0;
 }
 .delete-affected-section summary {
-  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  list-style: none;
+  color: var(--color-neutral-400);
   cursor: pointer;
   font-size: 13px;
   margin-top: 6px;
+}
+.delete-affected-section summary::-webkit-details-marker {
+  display: none;
+}
+.delete-affected-section summary:hover {
+  color: var(--color-neutral-500);
+}
+.delete-affected-section summary:focus-visible {
+  outline: 2px solid var(--color-info-info);
+  outline-offset: 2px;
+}
+.delete-affected-section summary svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 .modal .ds-gate-task {
   position: absolute;
@@ -15054,7 +15074,21 @@ html:has(.ds-batch-bar:not([hidden])) {
             section.append(list);
             if (values.length > 3) {
               const more = element2("details");
-              const summary = element2("summary", "", `Show ${values.length - 3} more`);
+              const summary = element2("summary");
+              const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+              icon.setAttribute("viewBox", "0 0 24 24");
+              icon.setAttribute("aria-hidden", "true");
+              icon.dataset.icon = "add";
+              const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+              path.setAttribute("d", "M12 3.25C12.4142 3.25 12.75 3.58579 12.75 4V11.25H20C20.4142 11.25 20.75 11.5858 20.75 12C20.75 12.4142 20.4142 12.75 20 12.75H12.75V20C12.75 20.4142 12.4142 20.75 12 20.75C11.5858 20.75 11.25 20.4142 11.25 20V12.75H4C3.58579 12.75 3.25 12.4142 3.25 12C3.25 11.5858 3.58579 11.25 4 11.25H11.25V4C11.25 3.58579 11.5858 3.25 12 3.25Z");
+              const label2 = document.createTextNode(`Show ${values.length - 3} more`);
+              icon.append(path);
+              summary.append(icon, label2);
+              more.addEventListener("toggle", () => {
+                label2.textContent = more.open ? "Show fewer" : `Show ${values.length - 3} more`;
+                icon.dataset.icon = more.open ? "subtract" : "add";
+                path.setAttribute("d", more.open ? "M3.75391 12.5H20.2458C20.66 12.5 20.9958 12.1642 20.9958 11.75C20.9958 11.3358 20.66 11 20.2458 11H3.75391C3.33969 11 3.00391 11.3358 3.00391 11.75C3.00391 12.1642 3.33969 12.5 3.75391 12.5Z" : "M12 3.25C12.4142 3.25 12.75 3.58579 12.75 4V11.25H20C20.4142 11.25 20.75 11.5858 20.75 12C20.75 12.4142 20.4142 12.75 20 12.75H12.75V20C12.75 20.4142 12.4142 20.75 12 20.75C11.5858 20.75 11.25 20.4142 11.25 20V12.75H4C3.58579 12.75 3.25 12.4142 3.25 12C3.25 11.5858 3.58579 11.25 4 11.25H11.25V4C11.25 3.58579 11.5858 3.25 12 3.25Z");
+              });
               const remaining = element2("ul");
               for (const value of values.slice(3)) remaining.append(element2("li", "", value));
               more.append(summary, remaining);
