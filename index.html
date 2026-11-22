@@ -3966,12 +3966,6 @@ body {
   .ds-side-panel {
     --ds-side-panel-host-edge:12px;
   }
-  .ds-side-panel[data-mode=docked] {
-    inset-block-end: 12px;
-    inset-inline-end: calc(var(--_dock-end, 0px) + 12px);
-    border-start-end-radius: 12px;
-    border-end-end-radius: 12px;
-  }
 }
 
 /* src/ion-ui/shell-scroll.css */
@@ -4000,6 +3994,8 @@ body {
     background: var(--color-black);
   }
   [data-ds-docked] .ds-app-shell-main {
+    margin-inline-end: 0;
+    margin-block-end: 0;
     border-start-end-radius: 0;
     border-end-end-radius: 0;
   }
@@ -6381,6 +6377,14 @@ body,
 }
 [data-theme=dark] .global-search-host .ds-global-search {
   --ds-global-search-backdrop:rgb(0 0 0 / 72%);
+}
+@container (max-width: 420px) {
+  .overview-status-card .overview-widget-body {
+    flex-wrap: wrap;
+  }
+  .overview-status-card .overview-breakdown {
+    flex: 1 1 100%;
+  }
 }
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
