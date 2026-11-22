@@ -1258,7 +1258,7 @@
     font: 400 var(--ds-type-control-size)/1.5 var(--ds-font);
   }
   .ds-global-search-dialog::backdrop {
-    background: color-mix(in srgb, var(--ds-color-veil) 45%, transparent);
+    background: var(--ds-global-search-backdrop, light-dark(rgb(3 3 16 / 48%), rgb(0 0 0 / 70%)));
   }
   .ds-global-search-dialog form {
     display: flex;
@@ -1267,6 +1267,8 @@
     min-block-size: min(16rem, calc(100dvh - 2rem));
   }
   .ds-global-search-input {
+    border-start-start-radius: calc(1rem - 1px);
+    border-start-end-radius: calc(1rem - 1px);
     display: flex;
     align-items: center;
     gap: .5rem;
@@ -1412,6 +1414,10 @@
     }
     .ds-global-search-dialog form {
       block-size: 100%;
+    }
+    .ds-global-search-input {
+      border-start-start-radius: 0;
+      border-start-end-radius: 0;
     }
     .ds-global-search-scopes {
       max-block-size: 30dvh;
@@ -3981,11 +3987,24 @@ body {
   flex: none;
 }
 @media (min-width: 769px) and (min-height: 421px) {
+  [data-ds-docked] body {
+    inline-size: calc(100% + var(--ds-side-panel-docked-room, 0px));
+    overflow: hidden;
+  }
   [data-ds-docked] .ds-app-shell {
+    inline-size: calc(100% - var(--ds-side-panel-docked-room, 0px));
     overflow: visible;
   }
   [data-ds-docked] .ds-app-shell-header {
     inline-size: calc(100% + var(--ds-side-panel-docked-room, 0px));
+    background: var(--color-black);
+  }
+  [data-ds-docked] .ds-app-shell-main {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+  [data-ds-docked] .page-header {
+    border-start-end-radius: 0;
   }
 }
 .ds-app-shell-body {
@@ -6356,6 +6375,12 @@ body,
 }
 .global-search-host .ds-global-search-help {
   margin: 16px;
+}
+.global-search-host .ds-global-search {
+  --ds-global-search-backdrop:rgb(3 3 16 / 48%);
+}
+[data-theme=dark] .global-search-host .ds-global-search {
+  --ds-global-search-backdrop:rgb(0 0 0 / 72%);
 }
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
