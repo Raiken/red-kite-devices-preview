@@ -9503,7 +9503,7 @@ body,
         event.preventDefault();
         panel.dispatchEvent(new view.CustomEvent("side-panel-escape", { cancelable: true }));
       }, { signal });
-      let backdropPress = false;
+      let backdropPress = false, pulse = null;
       modalHost.addEventListener("pointerdown", (event) => {
         backdropPress = event.button === 0 && event.target === modalHost;
       }, { signal });
@@ -9513,7 +9513,14 @@ body,
       modalHost.addEventListener("click", (event) => {
         const fromBackdrop = backdropPress;
         backdropPress = false;
-        if (!fromBackdrop || event.target !== modalHost || event.button !== 0 || dirty()) return;
+        if (!fromBackdrop || event.target !== modalHost || event.button !== 0) return;
+        if (dirty()) {
+          pulse?.cancel();
+          if (!prefersReducedMotion(document2)) {
+            pulse = panel.animate([{ scale: "1" }, { scale: ".996" }, { scale: "1" }], { duration: 200, easing: "ease-out" });
+          }
+          return;
+        }
         panel.dispatchEvent(new view.CustomEvent("side-panel-escape", { cancelable: true }));
       }, { signal });
       modalHost.addEventListener("cancel", (event) => {
@@ -9521,6 +9528,7 @@ body,
         panel.dispatchEvent(new view.CustomEvent("side-panel-escape", { cancelable: true }));
       }, { signal });
       cleanups.push(() => {
+        pulse?.cancel();
         if (modalHost.open) modalHost.close();
         if (modalHost.contains(panel)) modalHost.before(panel);
         modalHost.remove();
