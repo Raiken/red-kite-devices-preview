@@ -9517,7 +9517,7 @@ body,
         if (dirty()) {
           pulse?.cancel();
           if (!prefersReducedMotion(document2)) {
-            pulse = panel.animate([{ scale: "1" }, { scale: ".996" }, { scale: "1" }], { duration: 200, easing: "ease-out" });
+            pulse = panel.animate([{ scale: "1", easing: "ease-in-out" }, { scale: ".99", easing: "ease-in-out" }, { scale: "1" }], { duration: 280 });
           }
           return;
         }
