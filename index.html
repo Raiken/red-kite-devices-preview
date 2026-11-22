@@ -3413,8 +3413,8 @@ body {
   :where(.ds-side-panel)[data-mode=floating] {
     position: fixed;
     inset-block-start: calc(var(--_boundary-top, 0px) + var(--_gap));
-    inset-inline-end: var(--_gap);
-    block-size: max(0px, min(var(--_user-height, calc(100dvh - var(--_boundary-top, 0px) - 2 * var(--_gap))), calc(100dvh - var(--_boundary-top, 0px) - 2 * var(--_gap))));
+    inset-inline-end: calc(var(--_gap) + var(--ds-side-panel-host-edge, 0px));
+    block-size: max(0px, min(var(--_user-height, calc(100dvh - var(--_boundary-top, 0px) - 2 * var(--_gap) - var(--ds-side-panel-host-edge, 0px))), calc(100dvh - var(--_boundary-top, 0px) - 2 * var(--_gap) - var(--ds-side-panel-host-edge, 0px))));
     border: 1px solid var(--_rim);
     border-radius: var(--_radius);
     box-shadow: var(--ds-side-panel-shadow, var(--ds-shadow-float-left));
@@ -3649,6 +3649,12 @@ body {
   --ds-color-divider: var(--color-neutral-200);
   --ds-color-hairline: var(--color-neutral-200);
   --ds-color-card-edge: var(--color-neutral-200);
+  --ds-color-rim: var(--color-neutral-200);
+  --ds-shadow-popup: var(--shadow-md);
+  --ds-color-neutral-hover: var(--color-neutral-100);
+  --ds-color-neutral-pressed: var(--color-neutral-200);
+  --ds-color-ghost-hover: var(--color-neutral-100);
+  --ds-color-ghost-pressed: var(--color-neutral-200);
 }
 .device-detail section {
   margin-top: 24px;
@@ -3739,6 +3745,22 @@ body {
 @media (max-width: 768px) {
   .ds-side-panel .compare-device {
     display: none;
+  }
+}
+.ds-side-panel .side-panel-close svg {
+  display: none;
+}
+.ds-side-panel .side-panel-close::before {
+  content: "";
+  display: block;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>') center / contain no-repeat;
+}
+@media (min-width: 769px) {
+  .ds-side-panel {
+    --ds-side-panel-host-edge:12px;
   }
 }
 
@@ -7697,7 +7719,8 @@ body,
     const asked = () => panel.getAttribute(`data-open-${platform()}`);
     const rtl = () => view.getComputedStyle(panel).direction === "rtl";
     const anchor = () => rtl() ? "left" : "right";
-    const gap = () => mode() === "floating" && !phone() ? Math.max(0, parseFloat(view.getComputedStyle(panel).insetInlineEnd) || 0) : 0;
+    const hostEdge = () => mode() === "floating" && !phone() ? Math.max(0, parseFloat(view.getComputedStyle(panel).getPropertyValue("--ds-side-panel-host-edge")) || 0) : 0;
+    const gap = () => mode() === "floating" && !phone() ? Math.max(0, (parseFloat(view.getComputedStyle(panel).insetInlineEnd) || 0) - hostEdge()) : 0;
     const boundary = () => !phone() && topBoundary?.isConnected ? Math.max(0, Math.min(view.innerHeight, topBoundary.getBoundingClientRect().bottom)) : 0;
     const contentWidth = () => {
       const box = panel.parentElement?.getBoundingClientRect();
@@ -7709,7 +7732,7 @@ body,
       Math.round(view.innerWidth * 0.9),
       (contentWidth() - LIST_KEEP) / (mode() === "docked" ? Math.max(1, dockedBeside()) : 1)
     ));
-    const maxHeight = () => Math.max(0, Math.round(view.innerHeight - boundary() - 2 * gap()));
+    const maxHeight = () => Math.max(0, Math.round(view.innerHeight - boundary() - 2 * gap() - hostEdge()));
     const minHeight = () => Math.min(MIN_HEIGHT, maxHeight());
     const clampWidth = (width) => Math.min(maxWidth(), Math.max(MIN_WIDTH, Math.round(width)));
     const clampHeight = (height) => Math.min(maxHeight(), Math.max(minHeight(), Math.round(height)));
@@ -7807,12 +7830,12 @@ body,
     };
     const snapRects = () => {
       const space = gap();
-      const half = Math.round((view.innerWidth - space * 3) / 2);
-      const height = Math.max(0, view.innerHeight - boundary() - space * 2);
+      const half = Math.round((view.innerWidth - hostEdge() - space * 3) / 2);
+      const height = Math.max(0, view.innerHeight - boundary() - space * 2 - hostEdge());
       const top = boundary() + space;
       return {
         left: { left: space, top, width: half, height },
-        right: { left: view.innerWidth - space - half, top, width: half, height }
+        right: { left: view.innerWidth - hostEdge() - space - half, top, width: half, height }
       };
     };
     const zoneAt = (x) => x <= SNAP_ZONE ? "left" : x >= view.innerWidth - SNAP_ZONE ? "right" : null;
@@ -8275,6 +8298,13 @@ body,
   // src/ion-ui/widget-header.ts
   function decorateWidgetTitleBar(header) {
     header.classList.add("widget-titlebar");
+    if (header.classList.contains("ds-side-panel-head")) {
+      const close = header.querySelector('.ds-side-panel-actions button[id$="-close"]');
+      if (close) {
+        close.classList.add("side-panel-close");
+        header.prepend(close);
+      }
+    }
     header.querySelector(".widget-title, .ds-side-panel-title")?.classList.add("widget-titlebar-title");
     header.querySelector(".widget-header-actions, .ds-side-panel-actions")?.classList.add("widget-titlebar-actions");
   }
@@ -9886,6 +9916,8 @@ body,
       decorateWidgetTitleBar(panel.querySelector(".ds-side-panel-head"));
       const compare = button("Compare device", "ion-button ion-button--widget-s compare-device");
       compare.hidden = true;
+      compare.setAttribute("aria-keyshortcuts", "Alt+Shift+C");
+      compare.title = "Compare device (Alt+Shift+C)";
       const record = { ticket: 0, opener: null, device: null, requested: null, compare };
       panels.set(controller, record);
       panel.querySelector(".ds-side-panel-actions").prepend(compare);
@@ -9900,6 +9932,12 @@ body,
         openPanels2.push(copy);
         void showDevice(copy, record.device, compare, site.getDevices().map((item) => item.id));
         writePanelState();
+      });
+      panel.addEventListener("keydown", (event) => {
+        const target = event.target;
+        if (event.code !== "KeyC" || !event.altKey || !event.shiftKey || event.ctrlKey || event.metaKey || event.repeat || event.isComposing || !compare.checkVisibility() || !record.device || target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role=menu]')) return;
+        event.preventDefault();
+        compare.click();
       });
       panel.addEventListener("side-panel-closing", () => {
         record.ticket++;
