@@ -9503,6 +9503,19 @@ body,
         event.preventDefault();
         panel.dispatchEvent(new view.CustomEvent("side-panel-escape", { cancelable: true }));
       }, { signal });
+      let backdropPress = false;
+      modalHost.addEventListener("pointerdown", (event) => {
+        backdropPress = event.button === 0 && event.target === modalHost;
+      }, { signal });
+      modalHost.addEventListener("pointercancel", () => {
+        backdropPress = false;
+      }, { signal });
+      modalHost.addEventListener("click", (event) => {
+        const fromBackdrop = backdropPress;
+        backdropPress = false;
+        if (!fromBackdrop || event.target !== modalHost || event.button !== 0 || dirty()) return;
+        panel.dispatchEvent(new view.CustomEvent("side-panel-escape", { cancelable: true }));
+      }, { signal });
       modalHost.addEventListener("cancel", (event) => {
         event.preventDefault();
         panel.dispatchEvent(new view.CustomEvent("side-panel-escape", { cancelable: true }));
@@ -9874,6 +9887,12 @@ body,
     if (!trigger || !dialog || !form || !input || !status || !results) throw new TypeError("Expected the rendered global search markup.");
     const listeners = new view.AbortController();
     let request = null, ticket = 0, opener = null;
+    let initialFields = "", backdropPress = false;
+    const fields = () => JSON.stringify([...new view.FormData(form).entries()]);
+    const outside = (event) => {
+      const r = dialog.getBoundingClientRect();
+      return event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom;
+    };
     const option = () => ({ query: input.value.trim(), scope: form.elements.scope.value });
     const resetRequest = () => {
       request?.abort();
@@ -9944,6 +9963,7 @@ body,
         return;
       }
       opener = from;
+      initialFields = fields();
       dialog.showModal();
       input.focus();
       update();
@@ -9954,6 +9974,17 @@ body,
       open(trigger);
     }, { signal: listeners.signal });
     root2.querySelector("[data-search-close]").addEventListener("click", () => dialog.close(), { signal: listeners.signal });
+    dialog.addEventListener("pointerdown", (event) => {
+      backdropPress = event.button === 0 && event.target === dialog && outside(event);
+    }, { signal: listeners.signal });
+    dialog.addEventListener("pointercancel", () => {
+      backdropPress = false;
+    }, { signal: listeners.signal });
+    dialog.addEventListener("click", (event) => {
+      const fromBackdrop = backdropPress;
+      backdropPress = false;
+      if (fromBackdrop && event.button === 0 && event.target === dialog && outside(event) && fields() === initialFields) dialog.close();
+    }, { signal: listeners.signal });
     dialog.addEventListener("close", () => {
       if (dialog.open) return;
       resetRequest();
@@ -12254,6 +12285,28 @@ body,
         event.preventDefault();
         dismiss();
       });
+      let backdropPress = false, changed = false;
+      box.addEventListener("input", () => {
+        changed = true;
+      });
+      box.addEventListener("change", () => {
+        changed = true;
+      });
+      const onBackdrop = (event) => {
+        const rect = box.getBoundingClientRect();
+        return event.target === box && (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom);
+      };
+      box.addEventListener("pointerdown", (event) => {
+        backdropPress = event.button === 0 && onBackdrop(event);
+      });
+      box.addEventListener("pointercancel", () => {
+        backdropPress = false;
+      });
+      box.addEventListener("click", (event) => {
+        const started = backdropPress;
+        backdropPress = false;
+        if (started && !changed && event.button === 0 && onBackdrop(event)) dismiss();
+      });
       box.showModal();
       return { box, close: dismiss };
     }
@@ -12353,12 +12406,12 @@ body,
         }
       });
       form.querySelector("#cancel-create").addEventListener("click", dismiss);
-      form.addEventListener("input", () => {
-        createDraftDirty = true;
-      });
-      form.addEventListener("change", () => {
-        createDraftDirty = true;
-      });
+      const initialFields = JSON.stringify([...new FormData(form).entries()]);
+      const updateDirty = () => {
+        createDraftDirty = JSON.stringify([...new FormData(form).entries()]) !== initialFields;
+      };
+      form.addEventListener("input", updateDirty);
+      form.addEventListener("change", updateDirty);
       const submitError = element("p", "field-error");
       submitError.setAttribute("role", "alert");
       form.append(submitError);
