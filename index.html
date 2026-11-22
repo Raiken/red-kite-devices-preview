@@ -7044,6 +7044,42 @@ body,
   display: grid;
   gap: 14px;
 }
+.ds-side-panel .register-table-region {
+  container-type: normal;
+  --ds-color-text-body:var(--color-neutral-400);
+  --ds-color-text-muted:var(--color-neutral-400);
+  --ds-color-divider:var(--color-neutral-200);
+  --ds-color-focus:var(--color-info-info);
+}
+.ds-side-panel .register-table {
+  width: 100%;
+  border-collapse: collapse;
+  white-space: normal;
+}
+.ds-side-panel .register-table thead th {
+  height: 44px;
+  padding: 0 12px;
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-400);
+  font-size: 13px;
+  font-weight: 500;
+}
+.ds-side-panel .register-table tbody td {
+  padding: 10px 12px;
+  color: var(--color-neutral-400);
+  border-bottom: 1px solid var(--color-neutral-200);
+  font-size: 13px;
+  vertical-align: top;
+}
+.ds-side-panel .register-table tbody tr:nth-child(even) {
+  background: color-mix(in srgb, var(--color-neutral-000) 75%, var(--color-neutral-100));
+}
+.global-search-host .ds-global-search-help {
+  color: var(--ds-neutral-600);
+}
+[data-theme=dark] .global-search-host .ds-global-search-help {
+  color: var(--ds-neutral-300);
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -11376,9 +11412,11 @@ body,
     let activeDialog = null;
     let alive = true;
     let mutationPending = false;
+    let createDraftDirty = false;
+    let createLockedHash = "";
     const sample = site.getState().kind === "sample";
     const { shell, dispose: disposeShell } = mountShell(root2, site.getState().kind);
-    root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div id="inventory-header"></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll ds-data-table" role="region" tabindex="0" aria-label="Device inventory table, scroll horizontally for more columns"><table class="inventory-table" aria-label="Device inventory"><thead><tr><th class="ds-data-table-select"><span class="ds-select-all"><span class="ds-choice"><input class="ds-choice-control" data-ds-select-all type="checkbox" id="select-all" aria-label="Select all devices"></span></span></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
+    root2.querySelector("#app-content").innerHTML = '<section id="route-missing" hidden aria-labelledby="missing-title"><div id="missing-header"></div><div class="page-content"><p>Page not found.</p><button type="button" id="return-devices" class="ion-button ion-button--primary">Open Devices</button></div></section><div id="devices-page"><div id="devices-header"></div><div class="page-content"><section class="card" aria-label="Device inventory"><div id="inventory-header"></div><div id="inventory-state" class="inventory-state" role="status" hidden></div><div class="table-scroll ds-data-table" role="region" tabindex="0" aria-label="Device inventory table, scroll horizontally for more columns"><table class="ion-shared-table inventory-table" aria-label="Device inventory"><thead><tr><th class="ds-data-table-select"><span class="ds-select-all"><span class="ds-choice"><input class="ds-choice-control" data-ds-select-all type="checkbox" id="select-all" aria-label="Select all devices"></span></span></th><th>Device</th><th>Vendor</th><th>Model</th><th>IP address</th><th>Port</th><th>Unit ID</th><th>Type</th><th>In use</th><th>Status</th></tr></thead><tbody id="devices-body"></tbody></table></div></section><div id="bulk-host"></div><p id="notice" class="notice" role="status" aria-live="polite"></p></div></div>';
     root2.querySelector("#inventory-header").replaceWith(createWidgetHeader({ title: "Inventory", captionId: "device-count" }));
     const infrastructure = createInfrastructureView(site, (device, opener, additional) => open(device, opener, [], additional));
     root2.querySelector("#app-content").prepend(infrastructure.element);
@@ -11405,6 +11443,11 @@ body,
       shell,
       views: { pages: { infrastructure: overview, devices: devicesPage }, missing: missingPage },
       beforeChange: (next, previous) => {
+        if (createPanel.isOpen && (createDraftDirty || mutationPending) && next?.id !== "devices") {
+          if (location.hash !== createLockedHash) location.hash = createLockedHash;
+          announce2("Finish or cancel the new device before leaving.");
+          return false;
+        }
         if (activeDialog) {
           const currentHash = activeDialog.dataset.lockedHash || previous?.hash || routeById("devices").hash;
           if (location.hash !== currentHash) location.hash = currentHash;
@@ -11436,7 +11479,24 @@ body,
     });
     const body = root2.querySelector("#devices-body");
     const host = root2.querySelector("#panel-host");
-    host.innerHTML = sidePanelMarkup;
+    host.innerHTML = sidePanelMarkup + sidePanelMarkup.replace(/device-side-panel/g, "create-device-panel");
+    const createPanelElement = host.querySelector("#create-device-panel");
+    decorateWidgetTitleBar(createPanelElement.querySelector(".ds-side-panel-head"));
+    createPanelElement.querySelector("#create-device-panel-close [data-ds-button-label]").firstChild.textContent = "Close new device";
+    const createPanel = enhanceSidePanel(createPanelElement, { topBoundary: root2.querySelector(".ds-app-shell-header") });
+    createPanelElement.addEventListener("side-panel-closing", () => {
+      createDraftDirty = false;
+      if (alive && panelValues().includes("create-device")) setHashValues("panel", panelValues().filter((value) => value !== "create-device"));
+    });
+    createPanelElement.addEventListener("click", (event) => {
+      if (mutationPending) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    }, true);
+    createPanelElement.addEventListener("side-panel-escape", (event) => {
+      if (mutationPending) event.stopImmediatePropagation();
+    }, true);
     const panels = /* @__PURE__ */ new Map();
     const openPanels2 = [];
     let applyingUrl = false;
@@ -11623,7 +11683,7 @@ body,
       let registers = [];
       let status = "all";
       const content = element("div", "device-detail");
-      content.innerHTML = `<section class="detail-section"><h3>Device information</h3><div data-device-information></div></section><section class="detail-section"><div class="detail-section-header"><h3>Connection</h3><button type="button" class="detail-edit" data-edit-connection hidden>Edit</button></div><div data-device-connection></div></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" data-register-summary role="status"></p></div></div><label for="${prefix}-register-search">Search registers</label><input id="${prefix}-register-search" class="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p class="muted" data-result-count aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section>`;
+      content.innerHTML = `<section class="detail-section"><h3>Device information</h3><div data-device-information></div></section><section class="detail-section"><div class="detail-section-header"><h3>Connection</h3><button type="button" class="detail-edit" data-edit-connection hidden>Edit</button></div><div data-device-connection></div></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" data-register-summary role="status"></p></div></div><label for="${prefix}-register-search">Search registers</label><input id="${prefix}-register-search" class="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p class="muted" data-result-count aria-live="polite"></p><div class="table-scroll ds-data-table register-table-region" role="region" tabindex="0" aria-label="Device registers"><table class="ion-shared-table register-table" aria-label="Device registers"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section>`;
       if (sample) {
         const indicator = element("span", "detail-sample-indicator", "Sample data");
         content.querySelector(".detail-section h3").append(document.createTextNode(" \xB7 "), indicator);
@@ -11738,6 +11798,7 @@ body,
       const rows = content.querySelector(".register-table tbody");
       const filters = content.querySelector(".filters");
       const options = [["all", "All"], ["verified", "Verified"], ["error", "Error"], ["no status", "No status"]];
+      let registerTable;
       const render = () => {
         const query = input.value.trim().toLowerCase();
         const filtered = registers.filter((r) => (status === "all" || r.status === status) && (!query || [String(r.register), r.description, r.status].some((value) => value.toLowerCase().includes(query))));
@@ -11752,13 +11813,14 @@ body,
           rows.append(row);
         }
         if (!filtered.length) {
-          const row = element("tr");
+          const row = element("tr", "ds-data-table-note");
           const cell = element("td", "empty", registers.length === 0 ? "No registers available." : "No registers match. Clear the search or choose another status.");
           cell.colSpan = 3;
           row.append(cell);
           rows.append(row);
         }
         filters.querySelectorAll("button").forEach((item, index) => item.setAttribute("aria-pressed", String(options[index][0] === status)));
+        registerTable?.refresh();
       };
       for (const [value, label] of options) {
         const filter = button(label, "filter");
@@ -11804,6 +11866,8 @@ body,
       });
       const opened = await controller.open({ title: device.name, content });
       if (opened && valid()) {
+        registerTable = enhanceDataTable(content.querySelector(".register-table-region"));
+        panel.addEventListener("side-panel-before-render", () => registerTable?.dispose(), { once: true });
         const title = panel.querySelector(".ds-side-panel-title");
         const switcher = button(device.name, "device-title-button");
         switcher.setAttribute("aria-label", device.name);
@@ -11826,6 +11890,24 @@ body,
     }
     function syncPanelsFromUrl() {
       if (!alive) return;
+      if (createPanel.isOpen && !panelValues().includes("create-device")) {
+        if (mutationPending) {
+          location.hash = createLockedHash;
+          return;
+        }
+        const target = location.hash;
+        if (createDraftDirty) {
+          location.hash = createLockedHash;
+          void createPanel.close().then((closed) => {
+            if (closed && alive) location.hash = target;
+          });
+          return;
+        }
+        void createPanel.close();
+      } else if (!createPanel.isOpen && panelValues().includes("create-device") && resolveRoute(location.hash)?.id === "devices") {
+        createDevice(false);
+      }
+      if (createPanel.isOpen && panelValues().includes("create-device")) createLockedHash = location.hash;
       const desired = resolveRoute(location.hash) ? readDeviceIds() : [];
       if (activeDialog && location.hash !== activeDialog.dataset.lockedHash) {
         if (activeDialog.dataset.lockedHash) location.hash = activeDialog.dataset.lockedHash;
@@ -12047,7 +12129,7 @@ body,
           if (alive && box.isConnected) {
             if (failure instanceof MutationUncertainError) {
               retryBlocked = true;
-              error.textContent = failure.refreshed ? "The result is uncertain. Close this dialog and review the refreshed devices before trying again." : "The result is uncertain and devices could not be refreshed. Close this dialog and retry loading before making changes.";
+              error.textContent = failure.refreshed ? "The result is uncertain. Close this dialog and review the refreshed devices before trying again." : "The result is uncertain and devices could not be refreshed. Close this panel and retry loading before making changes.";
             } else error.textContent = "Could not delete devices. Please try again.";
           }
         } finally {
@@ -12063,9 +12145,15 @@ body,
       box.append(actions);
       cancel.focus();
     }
-    function createDevice() {
-      const opener = newButton.checkVisibility() ? newButton : root2.querySelector("#devices-header .page-header-mobile-actions summary");
-      const { box, close: dismiss } = dialog("Add device", opener);
+    function createDevice(updateUrl = true) {
+      if (createPanel.isOpen) return;
+      if (updateUrl && !panelValues().includes("create-device")) setHashValues("panel", [...panelValues(), "create-device"]);
+      createLockedHash = location.hash;
+      createDraftDirty = false;
+      const box = createPanelElement;
+      const dismiss = () => {
+        if (!mutationPending) void createPanel.close();
+      };
       const form = element("form", "device-form");
       form.noValidate = true;
       form.innerHTML = '<div class="field"><label for="device-name">Name</label><input id="device-name" name="name" required><span class="field-error" id="name-error"></span></div><div class="form-grid"><div class="field"><label for="device-vendor">Vendor (optional)</label><select id="device-vendor" name="vendor"><option value="">Select vendor</option></select><span class="field-error" id="vendor-error"></span></div><div class="field"><label for="device-model">Model (optional)</label><select id="device-model" name="model" disabled><option value="">Select vendor first</option></select><span class="field-error" id="model-error"></span></div></div><div class="field"><label for="device-ip">IP address</label><input id="device-ip" name="ip" inputmode="decimal" placeholder="192.168.1.10" required aria-describedby="ip-error"><span class="field-error" id="ip-error"></span></div><div class="form-grid"><div class="field"><label for="device-port">Port</label><input id="device-port" name="port" type="number" value="502" required><span class="field-error" id="port-error"></span></div><div class="field"><label for="device-unit">Unit ID</label><input id="device-unit" name="unit" type="number" value="-1" required><span class="field-error" id="unit-error"></span></div></div><div class="modal-actions"><button class="ion-button ion-button--primary" type="button" id="cancel-create">Cancel</button><button class="ion-button ion-button--cta" type="submit">Add device</button></div>';
@@ -12088,9 +12176,20 @@ body,
         }
       });
       form.querySelector("#cancel-create").addEventListener("click", dismiss);
+      form.addEventListener("input", () => {
+        createDraftDirty = true;
+      });
+      form.addEventListener("change", () => {
+        createDraftDirty = true;
+      });
       const submitError = element("p", "field-error");
       submitError.setAttribute("role", "alert");
       form.append(submitError);
+      const savingStatus = element("p", "muted");
+      savingStatus.setAttribute("role", "status");
+      savingStatus.tabIndex = -1;
+      savingStatus.hidden = true;
+      form.append(savingStatus);
       let retryBlocked = false;
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -12127,33 +12226,40 @@ body,
         controls.forEach((control) => {
           control.disabled = true;
         });
+        savingStatus.hidden = false;
+        savingStatus.textContent = "Adding device\u2026";
+        savingStatus.focus();
         try {
           await site.add({ name: name.value.trim(), ipAddress: ip.value.trim(), port: Number(port.value), unitId: Number(unit.value), vendorId: vendorItem?.id, vendor: vendorItem?.name, modelId: modelItem?.id, model: modelItem?.name });
           if (!alive || !box.isConnected) return;
           mutationPending = false;
+          createDraftDirty = false;
           dismiss();
           announce2(sample ? "Device added to sample data." : "Device added.");
         } catch (failure) {
           if (alive && box.isConnected) {
             if (failure instanceof MutationUncertainError) {
               retryBlocked = true;
-              submitError.textContent = failure.refreshed ? "The result is uncertain. Close this dialog and check the refreshed inventory before trying again." : "The result is uncertain and inventory could not be refreshed. Close this dialog and retry loading before making changes.";
+              submitError.textContent = failure.refreshed ? "The result is uncertain. Close this panel and check the refreshed inventory before trying again." : "The result is uncertain and inventory could not be refreshed. Close this dialog and retry loading before making changes.";
             } else submitError.textContent = "Could not add the device. Your entries are preserved; please try again.";
           }
         } finally {
           mutationPending = false;
-          if (box.isConnected) {
+          if (form.isConnected) {
+            savingStatus.hidden = true;
             controls.forEach((control) => {
               control.disabled = false;
             });
             model.disabled = !vendor.value;
             form.querySelector("[type=submit]").disabled = retryBlocked;
+            if (createPanel.isOpen) name.focus();
           }
           if (alive) renderInventory();
         }
       });
-      box.append(form);
-      form.querySelector("#device-name").focus();
+      void createPanel.open({ title: "New device", content: form, isDirty: () => createDraftDirty }).then(() => {
+        if (createPanel.isOpen) form.querySelector("#device-name").focus();
+      });
     }
     const batch = enhanceBatchBar(bulk, {
       onClear: () => {
@@ -12191,7 +12297,7 @@ body,
         }
       }
     });
-    newButton.addEventListener("click", createDevice);
+    newButton.addEventListener("click", () => createDevice());
     inventoryTable = enhanceDataTable(root2.querySelector("#devices-page .ds-data-table"), {
       onSelect(ids) {
         if (ids.length === selected.size && ids.every((id) => selected.has(id))) return;
@@ -12230,6 +12336,7 @@ body,
       activeDialog?.close();
       activeDialog?.remove();
       activeDialog = null;
+      createPanel.dispose();
       host.replaceChildren();
       root2.replaceChildren();
     };
