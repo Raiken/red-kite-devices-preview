@@ -1246,9 +1246,14 @@
 @layer ds.tokens, ds.base, ds.components;
 @layer ds.components {
   .ds-global-search-dialog {
+    --_search-top: clamp(1rem, 8dvh, 4.5rem);
     box-sizing: border-box;
+    position: fixed;
+    inset: var(--_search-top) 0 auto;
+    margin: 0 auto;
     inline-size: min(42rem, calc(100vw - 2rem));
-    max-block-size: min(42rem, calc(100dvh - 2rem));
+    max-block-size: min(42rem, calc(100dvh - var(--_search-top) - 1rem));
+    overflow: hidden;
     padding: 0;
     border: 1px solid var(--ds-color-rim);
     border-radius: 1rem;
@@ -1263,8 +1268,8 @@
   .ds-global-search-dialog form {
     display: flex;
     flex-direction: column;
-    max-block-size: inherit;
-    min-block-size: min(16rem, calc(100dvh - 2rem));
+    max-block-size: min(calc(42rem - 2px), calc(100dvh - var(--_search-top) - 1rem - 2px));
+    min-block-size: min(16rem, calc(100dvh - var(--_search-top) - 1rem - 2px));
   }
   .ds-global-search-input {
     border-start-start-radius: calc(1rem - 1px);
@@ -1368,8 +1373,9 @@
     color: var(--ds-color-text-muted);
   }
   .ds-global-search-results {
-    display: grid;
-    gap: .125rem;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
     overflow: auto;
     flex: 1 1 auto;
     min-block-size: 0;
@@ -1377,9 +1383,11 @@
     overscroll-behavior: contain;
   }
   .ds-global-search-results button {
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: start;
+    gap: .125rem;
     min-block-size: var(--ds-control-size-m);
     padding: .5rem;
     border: 0;
@@ -1404,6 +1412,7 @@
   }
   @media (max-width: 48rem) {
     .ds-global-search-dialog {
+      inset: 0;
       inline-size: 100%;
       max-inline-size: none;
       max-block-size: 100dvh;
@@ -1414,6 +1423,7 @@
     }
     .ds-global-search-dialog form {
       block-size: 100%;
+      max-block-size: 100%;
     }
     .ds-global-search-input {
       border-start-start-radius: 0;
@@ -3952,6 +3962,46 @@ body {
   background: currentColor;
   mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>') center / contain no-repeat;
 }
+.device-detail .detail-section {
+  margin-top: 0;
+}
+.device-detail .detail-section + .detail-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-neutral-200);
+}
+.device-detail .detail-section h3 {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.detail-list {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+  gap: 8px 16px;
+  margin: 0;
+}
+.detail-list dt,
+.detail-list dd {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.detail-list dt {
+  color: var(--color-neutral-400);
+}
+.detail-list dd {
+  color: var(--color-neutral-600);
+}
+.detail-sample-indicator {
+  color: var(--color-neutral-400);
+  text-transform: none;
+  letter-spacing: normal;
+}
 
 /* src/ion-ui/shell-scroll.css */
 .ds-app-shell {
@@ -6398,10 +6448,15 @@ body,
   cursor: pointer;
 }
 .device-title-button::after {
-  content: "\2304";
+  content: "";
   position: absolute;
   inset-inline-end: 0;
-  top: 0;
+  top: 50%;
+  width: 16px;
+  height: 16px;
+  background: currentColor;
+  mask: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>') center / contain no-repeat;
+  transform: translateY(-50%) rotate(90deg);
 }
 .device-title-button:hover {
   color: var(--color-primary-primary);
@@ -6409,7 +6464,7 @@ body,
 }
 .device-title-button:focus-visible {
   outline: 2px solid var(--color-info-info);
-  outline-offset: 2px;
+  outline-offset: -2px;
 }
 .panel-compare[hidden],
 .ds-global-search-scopes[hidden] {
@@ -7836,6 +7891,20 @@ body,
         subscribers.clear();
       }
     };
+  }
+
+  // src/ion-ui/detail-list.ts
+  function createDetailList(rows) {
+    const list = document.createElement("dl");
+    list.className = "detail-list";
+    for (const [label, value] of rows) {
+      const term = document.createElement("dt");
+      term.textContent = label;
+      const description = document.createElement("dd");
+      description.textContent = value;
+      list.append(term, description);
+    }
+    return list;
   }
 
   // src/ion-ui/info.ts
@@ -10580,15 +10649,23 @@ body,
       let registers = [];
       let status = "all";
       const content = element("div", "device-detail");
-      content.innerHTML = `<p class="sample-note" data-reading-source></p><section><h3>Device information</h3><dl class="metadata"></dl></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" data-register-summary role="status"></p></div></div><label for="${prefix}-register-search">Search registers</label><input id="${prefix}-register-search" class="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p class="muted" data-result-count aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section>`;
-      const sourceNote = content.querySelector("[data-reading-source]");
-      sourceNote.hidden = !sample;
-      sourceNote.textContent = sample ? "Sample readings \xB7 no live device connection" : "";
-      const metadata = content.querySelector("dl");
-      const details = [["Status", device.status + (sample ? " (sample)" : "")], ["IP address", device.ipAddress ?? "\u2014"], ["Port", String(device.port ?? "\u2014")], ["Unit ID", String(device.unitId ?? "\u2014")], ["Type", device.nodeType ?? device.type], ["Capabilities", device.capabilities ?? "\u2014"], ["In use", device.inUse ? "Yes" : "No"], ["Connected links", String(site.getConnections().filter((c) => c.fromId === device.id || c.toId === device.id).length)]];
-      for (const [label, value] of details) {
-        metadata.append(element("dt", "", label), element("dd", "", value));
+      content.innerHTML = `<section class="detail-section"><h3>Device information</h3><div data-device-information></div></section><section class="detail-section"><h3>Connection</h3><div data-device-connection></div></section><section class="register-section"><div class="section-heading"><div><h3>Modbus registers</h3><p class="muted" data-register-summary role="status"></p></div></div><label for="${prefix}-register-search">Search registers</label><input id="${prefix}-register-search" class="register-search" type="search" placeholder="Search by number, name or status"><div class="filters" role="group" aria-label="Filter by status"></div><p class="muted" data-result-count aria-live="polite"></p><div class="table-scroll"><table class="ion-table register-table"><thead><tr><th>Register</th><th>Description and value</th><th>Status</th></tr></thead><tbody></tbody></table></div></section>`;
+      if (sample) {
+        const indicator = element("span", "detail-sample-indicator", "Sample data");
+        content.querySelector(".detail-section h3").append(document.createTextNode(" \xB7 "), indicator);
       }
+      content.querySelector("[data-device-information]").append(createDetailList([
+        ["Status", device.status],
+        ["Type", device.nodeType ?? device.type],
+        ["Capabilities", device.capabilities ?? "\u2014"],
+        ["In use", device.inUse ? "Yes" : "No"],
+        ["Connected links", String(site.getConnections().filter((c) => c.fromId === device.id || c.toId === device.id).length)]
+      ]));
+      content.querySelector("[data-device-connection]").append(createDetailList([
+        ["IP address", device.ipAddress ?? "\u2014"],
+        ["Port", String(device.port ?? "\u2014")],
+        ["Unit ID", String(device.unitId ?? "\u2014")]
+      ]));
       const summary = content.querySelector("[data-register-summary]");
       summary.textContent = "Loading registers\u2026";
       const input = content.querySelector(".register-search");
@@ -10647,7 +10724,8 @@ body,
           filters.querySelectorAll("button").forEach((control) => {
             control.disabled = false;
           });
-          summary.textContent = registers.length + " total \xB7 " + registers.filter((r) => r.status === "error").length + " errors \xB7 " + registers.filter((r) => r.status === "verified").length + " verified";
+          const errors = registers.filter((r) => r.status === "error").length;
+          summary.textContent = registers.length + " total \xB7 " + errors + (errors === 1 ? " error \xB7 " : " errors \xB7 ") + registers.filter((r) => r.status === "verified").length + " verified";
           render();
         } catch {
           if (!valid()) return;
