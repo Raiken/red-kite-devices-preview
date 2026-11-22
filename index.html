@@ -8051,6 +8051,18 @@ html:has(.ds-batch-bar:not([hidden])) {
 .inventory-table .ds-data-table-select:has(input:disabled) {
   cursor: not-allowed;
 }
+.modal > .widget-titlebar {
+  padding: 0 0 12px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+.modal > .widget-titlebar .widget-titlebar-title {
+  margin: 0;
+  color: var(--color-neutral-600);
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+}
 </style></head><body><div id="app"></div><script>"use strict";
 (() => {
   var __defProp = Object.defineProperty;
@@ -15012,9 +15024,7 @@ html:has(.ds-batch-bar:not([hidden])) {
       const box = element2("dialog", "modal");
       box.setAttribute("aria-labelledby", "modal-title");
       box.dataset.lockedHash = location.hash;
-      const heading = element2("h2", "", title);
-      heading.id = "modal-title";
-      box.append(heading);
+      box.append(createWidgetHeader({ title, headingId: "modal-title" }));
       root2.append(box);
       activeDialog = box;
       const dismiss = () => {
